@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Office & Misc Supply Chatbot</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f5f5;--surface:#ffffff;--surface2:#f0f2f5;--surface3:#e4e7ec;
+  --accent:#2563eb;--accent2:#0d9488;--accent3:#e11d48;
+  --text:#1e293b;--text2:#64748b;--text3:#94a3b8;
+  --border:#e2e8f0;--shadow:0 4px 24px rgba(0,0,0,.08);
+  --radius:14px;
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+body{display:flex;align-items:center;justify-content:center;padding:12px}
+.app{width:100%;max-width:540px;height:96vh;max-height:800px;display:flex;flex-direction:column;background:var(--surface);border-radius:20px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;position:relative}
+
+.header{padding:16px 20px;background:linear-gradient(135deg,#ffffff,#f8fafc);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-shrink:0}
+.header-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 12px rgba(37,99,235,.2)}
+.header-info h1{font-size:14.5px;font-weight:700;letter-spacing:.3px}
+.header-info p{font-size:11px;color:var(--text2);margin-top:2px}
+.badge{margin-left:auto;font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(13,148,136,.08);color:var(--accent2);border:1px solid rgba(13,148,136,.2);font-weight:600}
+
+.messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.messages::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px}
+
+.msg{max-width:88%;animation:msgIn .35s cubic-bezier(.22,1,.36,1)}
+@keyframes msgIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.msg.bot{align-self:flex-start}
+.msg.user{align-self:flex-end}
+.msg .bubble{padding:12px 16px;font-size:13.2px;line-height:1.65;border-radius:var(--radius)}
+.msg.bot .bubble{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg.user .bubble{background:linear-gradient(135deg,var(--accent),#3b82f6);color:#fff;border-bottom-right-radius:4px;font-weight:500}
+.msg .time{font-size:10px;color:var(--text3);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.msg.bot .time{padding-left:4px}
+.msg.user .time{text-align:right;padding-right:4px}
+
+.tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:6px;font-weight:600;margin-bottom:6px}
+.tag.office{background:rgba(37,99,235,.1);color:var(--accent)}
+.tag.misc{background:rgba(225,29,72,.08);color:var(--accent3)}
+.tag.both{background:rgba(13,148,136,.1);color:var(--accent2)}
+
+.typing{display:flex;gap:5px;padding:12px 18px;align-self:flex-start}
+.typing span{width:7px;height:7px;background:var(--text3);border-radius:50%;animation:bounce .6s infinite alternate}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{to{transform:translateY(-6px);opacity:.4}}
+
+.input-area{padding:12px 16px 16px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;position:relative}
+.dropdown{position:absolute;bottom:100%;left:16px;right:16px;background:#ffffff;border:1px solid var(--border);border-radius:12px;max-height:260px;overflow-y:auto;display:none;box-shadow:0 -8px 28px rgba(0,0,0,.1);z-index:10;margin-bottom:6px}
+.dropdown::-webkit-scrollbar{width:4px}
+.dropdown::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px}
+.dropdown.show{display:block;animation:dropIn .2s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.drop-item{padding:10px 14px;font-size:12px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s,color .12s;display:flex;align-items:center;gap:10px}
+.drop-item:last-child{border-bottom:none}
+.drop-item:hover,.drop-item.active{background:var(--surface3);color:var(--text)}
+.drop-item .di-icon{font-size:13px;width:20px;text-align:center;flex-shrink:0}
+.drop-item .di-tag{font-size:9px;padding:2px 6px;border-radius:4px;margin-left:auto;flex-shrink:0;font-weight:600}
+.drop-item .di-tag.office{background:rgba(37,99,235,.08);color:var(--accent)}
+.drop-item .di-tag.misc{background:rgba(225,29,72,.08);color:var(--accent3)}
+.drop-item .di-tag.both{background:rgba(13,148,136,.08);color:var(--accent2)}
+
+.input-wrap{display:flex;gap:10px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:6px 8px 6px 16px;transition:border-color .2s}
+.input-wrap:focus-within{border-color:var(--accent)}
+#userInput{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13.5px;padding:8px 0}
+#userInput::placeholder{color:var(--text3)}
+#sendBtn{width:38px;height:38px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent),#3b82f6);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s;flex-shrink:0}
+#sendBtn:hover{transform:scale(1.06)}
+#sendBtn:active{transform:scale(.95)}
+#sendBtn svg{width:18px;height:18px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0 0}
+.chip{font-size:11px;padding:6px 12px;border-radius:20px;background:var(--surface3);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(37,99,235,.05)}
+
+.counter{text-align:center;padding:6px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-icon">📦</div>
+    <div class="header-info">
+      <h1>Office & Misc Supply Bot</h1>
+      <p>General Office + Miscellaneous Items</p>
+    </div>
+    <div class="badge">30 Topics</div>
+  </div>
+
+  <div class="messages" id="messages"></div>
+  <div class="counter" id="counter"></div>
+
+  <div class="input-area">
+    <div class="dropdown" id="dropdown"></div>
+    <div class="input-wrap">
+      <input type="text" id="userInput" placeholder="Ask about office or misc supplies..." autocomplete="off">
+      <button id="sendBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const entries = [
+  // ── GENERAL OFFICE (15) ──────────────────────────────────────
+  { cat:"office", keys:["overview","total","records","summary","dataset","how many","464"],
+    q:"How many office supply records are there?",
+    a:"The dataset has <b>464</b> office supply purchase records with <b>341 unique items</b> and <b>4,413 total units</b>. That's an average of <b>9.51 units/order</b> across <b>104 calendar days</b> (Jan 1 – Apr 13, 2026), or roughly <b>4.46 orders placed per day</b>." },
+
+  { cat:"office", keys:["ballpen","pen","writing instrument","marker","pilot","ink"],
+    q:"What are the top pen & ballpen purchases?",
+    a:"Pens/ballpens are the <b>highest-volume sub-category</b> at <b>823 units</b> across 50 orders (18.6% of all units). Key items:<br>• <b>MKTG BALLPEN FOR EVENTS</b> — 500 units (single bulk order)<br>• <b>PILOT PERMANENT MARKER</b> — 300 units (single order by OPR01)<br>• <b>Ballpen</b> — 76 units across 6 orders (most consistent recurring item)<br>• <b>Permanent Marker Red/Black</b> — 60 and 50 units respectively<br>• <b>Whiteboard Marker</b> — 60 units in one order" },
+
+  { cat:"office", keys:["tape","electrical","teflon","rubber","scotch","packing","armak"],
+    q:"Tell me about tape purchases.",
+    a:"Tape is the <b>broadest sub-category</b> with <b>53 unique variants</b>, <b>92 orders</b>, and <b>449 units</b>. Most reordered items:<br>• <b>SP ELECTRICAL TAPE (ARMAK)</b> — 8 orders / 46 units (most reordered overall)<br>• <b>SP TEFLON TAPE</b> — 7 orders / 50 units<br>• <b>SP RUBBER TAPE</b> — 5 orders / 20 units<br>• <b>CORRECTION TAPE</b> — 5 orders / 35 units (avg 6.4/order)<br>Varieties include electrical, teflon, rubber, packing, scotch, and specialty tapes." },
+
+  { cat:"office", keys:["paper","bond","a4","manila","bondpaper"],
+    q:"What about paper item purchases?",
+    a:"Paper covers <b>46 unique variants</b>, <b>58 orders</b>, and <b>749 units</b>:<br>• <b>MANILA PAPER</b> — 180 units in a single order (largest paper purchase)<br>• <b>A4 Bondpaper</b> and <b>BOND PAPER A4</b> — each ordered 3 times for steady replenishment<br>Paper consumption is distributed across all four months, suggesting steady moderate usage." },
+
+  { cat:"office", keys:["envelope","brown","long","short","expanding","document routing"],
+    q:"How are envelopes purchased?",
+    a:"Envelopes include <b>9 variants</b> across <b>14 transactions</b> totaling <b>480 units</b>:<br>• <b>Envelope Brown Short #150</b> — 2 orders / 100 units<br>• <b>Envelope Brown Long #150</b> — 2 orders / 100 units<br>• <b>LONG BROWN ENVELOPE</b> — 3 orders / 80 units<br>Envelopes average <b>34.3 units/order</b> — the highest per-transaction average, driven by bulk document-routing and filing needs." },
+
+  { cat:"office", keys:["stapler","correction","clip","id clip","metal"],
+    q:"What about staplers, clips & correction items?",
+    a:"These are low-volume but recurring needs:<br>• <b>Stapler</b> — 4 orders / 7 units (individual replacements)<br>• <b>CORRECTION TAPE</b> — 5 orders / 35 units (avg 6.4/order)<br>• <b>ID CLIP METAL</b> — single order of 100 units (bulk for ID distribution)<br>Most are purchased as single-piece replacements reflecting need-only buying." },
+
+  { cat:"office", keys:["packaging","packaging tape","paper towel","consumable"],
+    q:"What consumables have recurring orders?",
+    a:"High-frequency consumables with steady demand:<br>• <b>Packaging Tape</b> — 3 orders / 70 units total<br>• <b>Paper Towel</b> — multiple orders (2 currently open/pending)<br>• <b>Scotch Tape</b> — recurring with 2 open orders<br>These items show procurement delays, with each carrying 2 open/unfulfilled orders as of April 13." },
+
+  { cat:"office", keys:["printer","ink","cartridge","dcp","t250w","cyan","magenta","black","pink"],
+    q:"What's the status of printer ink orders?",
+    a:"<b>DCP-T250W INK</b> in all four colors — <b>Black, Cyan, Magenta, and Pink</b> — each carry <b>1 open order</b>. This suggests a full printer consumables replenishment cycle that is currently pending fulfillment." },
+
+  { cat:"office", keys:["bulk","largest","biggest","500","300","highest quantity","over 100","exceptional"],
+    q:"What are the largest bulk orders?",
+    a:"Only <b>4 orders exceeded 100 units</b>:<br>1. <b>MKTG BALLPEN FOR EVENTS</b> — 500 units (marketing event)<br>2. <b>PILOT PERMANENT MARKER</b> — 300 units (OPR01 operations)<br>3. <b>MANILA PAPER</b> — 180 units<br>4. <b>Envelope Brown Short & Long</b> — 100 units each<br>These are exceptional — the average order is only 9.51 units." },
+
+  { cat:"office", keys:["small","single","1 unit","few","frequency","once","need only"],
+    q:"How common are small/single-unit orders?",
+    a:"Small orders dominate: <b>72 orders (15.5%)</b> were for just 1 unit, and <b>257 orders (55.4%)</b> had fewer than 5 units. Additionally, <b>264 of 341 unique items (77.4%)</b> were ordered exactly once — most supplies are need-only purchases." },
+
+  { cat:"office", keys:["corpfn","corpfn02","top department","most orders","department leader","admin"],
+    q:"What does the top department (CORPFN02) order?",
+    a:"<b>CORPFN02</b> leads all departments with <b>113 orders</b> and <b>1,084 units</b> — highest in both frequency and volume. Their purchases are dominated by <b>envelope variants</b>: Brown Short, Brown Long, Long Brown, Expanding, and Plastic Envelopes — reflecting heavy document routing and admin filing workloads." },
+
+  { cat:"office", keys:["opr01","operations","maintenance","field","sandpaper","grit"],
+    q:"What does OPR01 purchase?",
+    a:"<b>OPR01</b> ranks 2nd with <b>67 orders / 904 units</b>. Top items:<br>• <b>PILOT PERMANENT MARKER</b> — 300 units<br>• <b>Sand Paper 400grit & 1000grit</b> — 50 units each<br>• <b>PILOT INK REFILL</b><br>• <b>Permanent Marker (Red & Black)</b><br>These support field and maintenance operations — distinctly different from admin departments." },
+
+  { cat:"office", keys:["mktg","mktg04","marketing","event","bulk stationery"],
+    q:"How does MKTG04 buy differently?",
+    a:"<b>MKTG04</b> is 3rd by quantity: <b>747 units</b> from only <b>17 orders</b>, averaging a massive <b>43.9 units/order</b>. This is entirely driven by event-related bulk stationery. Compare: most departments average under 10 units/order. MKTG04's pattern is few orders, big quantities." },
+
+  { cat:"office", keys:["other department","sc03","sc02","sc01","opr02","opr04","fqa","f&qa"],
+    q:"What about the other departments?",
+    a:"Remaining departments:<br>• <b>SC03</b> — 44 orders / 456 units (also has 22 open orders — most unresolved)<br>• <b>OPR02</b> — 16 orders / 306 units<br>• <b>SC02</b> — 27 orders / 184 units<br>• <b>SC01</b> — 31 orders / 146 units<br>• <b>OPR04</b> — 25 orders / 133 units<br>• <b>F&QA02</b> — 28 orders / 95 units (10 open orders)" },
+
+  { cat:"office", keys:["top three","combined","62 percent","three departments","concentration"],
+    q:"How concentrated is purchasing?",
+    a:"Highly concentrated. The top 3 departments — <b>CORPFN02, OPR01, MKTG04</b> — account for <b>2,735 units (62.0%)</b> of all office supply units. CORPFN02 + OPR01 alone represent <b>38.8% of orders</b> and <b>45.0% of units</b>." },
+
+  // ── MISCELLANEOUS / TOOLS / SPECIALTY (8) ────────────────────
+  { cat:"misc", keys:["screwdriver","pliers","tools","hand tool","set"],
+    q:"Are there tool/hardware purchases?",
+    a:"Yes — <b>SP SCREW DRIVERS AND PLIERS SET</b> was ordered <b>4 times</b> for a total of <b>6 units</b>. These are classified under general office but are clearly maintenance/facility tools. The repeat orders suggest sets being distributed to different teams or replacing worn tools." },
+
+  { cat:"misc", keys:["tape measure","laser","measurement","measuring"],
+    q:"What about measurement tools?",
+    a:"<b>SP TAPE MEASURE WITH LASER</b> had <b>4 orders</b> but only <b>2 units total</b> — indicating individual unit replacements rather than bulk buys. This is an unusually high order-to-unit ratio, suggesting these are specialized items requested one at a time." },
+
+  { cat:"misc", keys:["nylon","grass cutter","string","lawn","garden","outdoor"],
+    q:"Are there outdoor/maintenance supply orders?",
+    a:"<b>SP NYLON STRING FOR GRASS CUTTER</b> was ordered <b>5 times</b> for only <b>3 units total</b> — one of the most frequently reordered miscellaneous items. It also has <b>3 pending/open orders</b> as of April 13, making it the item with the most unresolved transactions." },
+
+  { cat:"misc", keys:["sandpaper","sand paper","grit","abrasive","400","1000"],
+    q:"What sandpaper/abrasive items are purchased?",
+    a:"OPR01 ordered <b>Sand Paper 400grit</b> and <b>Sand Paper 1000grit</b> at <b>50 units each</b>. These are operational supplies for surface preparation and maintenance work — not typical office supplies, but categorized under general purchasing." },
+
+  { cat:"misc", keys:["id clip","id card","identification","badge","metal clip"],
+    q:"What about ID/badge related items?",
+    a:"<b>ID CLIP METAL</b> was purchased in a <b>single order of 100 units</b> — likely for a company-wide ID badge distribution or replacement cycle. This bulk one-time purchase pattern is different from the recurring small-batch pattern of most office items." },
+
+  { cat:"misc", keys:["whiteboard","marker board","dry erase","presentation"],
+    q:"Any whiteboard/presentation supplies?",
+    a:"<b>Whiteboard Marker</b> was ordered once for <b>60 units</b> — a bulk purchase likely for meeting rooms or training sessions. Combined with permanent markers (Red: 60 units, Black: 50 units), marking supplies total over <b>170 units</b> in single bulk orders." },
+
+  { cat:"misc", keys:["permanent marker","red marker","black marker","marking","pilot"],
+    q:"What permanent markers were bought?",
+    a:"Significant marking supply purchases:<br>• <b>PILOT PERMANENT MARKER</b> — 300 pcs (OPR01, operational marking)<br>• <b>Permanent Marker (Red)</b> — 60 units<br>• <b>Permanent Marker (Black)</b> — 50 units<br>• <b>Whiteboard Marker</b> — 60 units<br>These are spread across operations and admin departments." },
+
+  { cat:"misc", keys:["ink refill","pilot ink","refill","cartridge refill"],
+    q:"What about ink refills?",
+    a:"<b>PILOT INK REFILL</b> is among OPR01's top items, supporting their heavy marker usage. Combined with the <b>DCP-T250W printer ink</b> orders (4 colors, all pending), ink/refill items represent a consistent but currently backlogged supply need." },
+
+  // ── CROSS-CUTTING INSIGHTS (7) ──────────────────────────────
+  { cat:"both", keys:["january","jan","first month","busiest"],
+    q:"How was January 2026?",
+    a:"January was the <b>busiest month by transactions</b>: <b>201 orders / 1,036 units</b>, with the highest daily rate at <b>6.5 orders/day</b>. Both general office and misc items saw heavy ordering — likely driven by start-of-year stocking." },
+
+  { cat:"both", keys:["february","feb","highest volume","surge","2172"],
+    q:"Why was February the highest volume month?",
+    a:"February had <b>2,172 units from 155 orders</b> — the largest volume month despite fewer transactions than January. The surge was driven by <b>bulk stationery replenishment</b>: large single orders for permanent markers, pens, envelopes, and operational supplies." },
+
+  { cat:"both", keys:["march","april","decline","slowdown","q1","trend"],
+    q:"What happened in March and April?",
+    a:"A significant drop: <b>March</b> fell to 79 orders / 820 units (2.5/day). <b>April</b> (13 days) has just 29 orders / 385 units (2.23/day). Jan+Feb together account for <b>76.7% of orders</b> and <b>72.7% of units</b> — purchasing is heavily front-loaded, possibly reflecting post-Q1 budget slowdown." },
+
+  { cat:"both", keys:["day of week","thursday","monday","weekend","saturday","sunday","tuesday"],
+    q:"Which days see the most purchasing?",
+    a:"<b>Thursday</b> leads with <b>145 orders (31.2%)</b>, followed by Monday (97) and Wednesday (83). Saturday still had <b>68 orders</b> — procurement doesn't fully stop on weekends. Tuesday is the least active weekday at just 17 orders. <b>No orders on any Sunday</b>." },
+
+  { cat:"both", keys:["open","pending","unresolved","backlog","unfulfilled","53"],
+    q:"How many orders are still open?",
+    a:"<b>53 orders (11.4%)</b> remain open as of April 13. By department:<br>• <b>SC03</b> — 22 open (highest)<br>• <b>OPR01</b> — 16 open<br>• <b>F&QA02</b> — 10 open<br>Key pending items: SP NYLON STRING (3 open), Packaging/Scotch Tape & Paper Towel (2 each), DCP-T250W ink in 4 colors (1 each)." },
+
+  { cat:"both", keys:["closed","fulfilled","completion","status","88"],
+    q:"What's the order fulfillment rate?",
+    a:"<b>411 of 464 orders (88.6%)</b> are closed/fulfilled. The 11.4% open rate is consistent with the broader dataset and reflects steady demand with minor fulfillment backlogs — characteristic of low-volume, high-frequency office/misc supply purchasing." },
+
+  { cat:"both", keys:["percent","share","all categories","proportion","total dataset","3363","716741"],
+    q:"How do office supplies compare to all categories?",
+    a:"Office supplies are <b>13.8%</b> of all 3,363 purchase records but only <b>0.62%</b> of 716,741 total units across all categories. This confirms that office/misc supplies are a high-frequency, low-volume category — many small orders rather than large procurement runs." }
+];
+
+const msgArea=document.getElementById('messages');
+const input=document.getElementById('userInput');
+const dropdown=document.getElementById('dropdown');
+const sendBtn=document.getElementById('sendBtn');
+const counter=document.getElementById('counter');
+let activeIdx=-1, answered=new Set();
+
+function updateCounter(){
+  counter.textContent=answered.size>0?`${answered.size} of 30 topics explored`:'';
+}
+
+function timeStr(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+
+function addMsg(html,type,cat){
+  const div=document.createElement('div');
+  div.className='msg '+type;
+  let tagHtml='';
+  if(type==='bot'&&cat){
+    const labels={office:'General Office',misc:'Miscellaneous',both:'Office & Misc'};
+    tagHtml=`<span class="tag ${cat}">${labels[cat]}</span><br>`;
+  }
+  div.innerHTML=`<div class="bubble">${tagHtml}${html}</div><div class="time">${timeStr()}</div>`;
+  msgArea.appendChild(div);
+  msgArea.scrollTop=msgArea.scrollHeight;
+  return div;
+}
+
+function showTyping(){
+  const t=document.createElement('div');
+  t.className='typing';t.id='typing';
+  t.innerHTML='<span></span><span></span><span></span>';
+  msgArea.appendChild(t);
+  msgArea.scrollTop=msgArea.scrollHeight;
+}
+function hideTyping(){const t=document.getElementById('typing');if(t)t.remove()}
+
+function findAnswer(text){
+  const lower=text.toLowerCase();
+  let best=null,bestScore=0,bestIdx=-1;
+  entries.forEach((e,i)=>{
+    let score=0;
+    for(const k of e.keys){if(lower.includes(k))score+=2}
+    const words=lower.split(/\s+/);
+    for(const w of words){if(w.length>2){for(const k of e.keys){if(k.includes(w))score+=1}}}
+    if(score>bestScore){bestScore=score;best=e;bestIdx=i}
+  });
+  if(bestScore>=2){answered.add(bestIdx);updateCounter();return best}
+  return null;
+}
+
+function filterEntries(text){
+  if(!text||text.length<1)return[];
+  const lower=text.toLowerCase();
+  const results=[];
+  entries.forEach((e,idx)=>{
+    let match=false;
+    for(const k of e.keys){if(k.includes(lower)){match=true;break}}
+    if(!match){const words=lower.split(/\s+/);for(const w of words){if(w.length>1){for(const k of e.keys){if(k.includes(w)){match=true;break}}}if(match)break}}
+    if(!match&&e.q.toLowerCase().includes(lower))match=true;
+    if(match)results.push({entry:e,idx});
+  });
+  return results.slice(0,7);
+}
+
+function renderDropdown(items){
+  if(!items.length){dropdown.classList.remove('show');dropdown.innerHTML='';activeIdx=-1;return}
+  const icons={office:'📋',misc:'🔧',both:'📊'};
+  dropdown.innerHTML=items.map((item,i)=>{
+    const e=item.entry;
+    const labels={office:'Office',misc:'Misc',both:'Both'};
+    return `<div class="drop-item" data-i="${i}"><span class="di-icon">${icons[e.cat]}</span><span>${e.q}</span><span class="di-tag ${e.cat}">${labels[e.cat]}</span></div>`;
+  }).join('');
+  dropdown.classList.add('show');
+  activeIdx=-1;
+  dropdown.querySelectorAll('.drop-item').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const i=parseInt(el.dataset.i);
+      selectEntry(items[i].entry,items[i].idx);
+    });
+  });
+}
+
+function selectEntry(entry,idx){
+  dropdown.classList.remove('show');dropdown.innerHTML='';
+  input.value='';
+  addMsg(entry.q,'user');
+  showTyping();
+  setTimeout(()=>{
+    hideTyping();
+    addMsg(entry.a,'bot',entry.cat);
+    if(typeof idx==='number'){answered.add(idx);updateCounter()}
+  },450+Math.random()*550);
+}
+
+function handleSend(){
+  const text=input.value.trim();
+  if(!text)return;
+  dropdown.classList.remove('show');dropdown.innerHTML='';
+  input.value='';
+  addMsg(text,'user');
+  showTyping();
+  const match=findAnswer(text);
+  setTimeout(()=>{
+    hideTyping();
+    if(match){addMsg(match.a,'bot',match.cat)}
+    else{addMsg("I have <b>30 topics</b> covering general office and miscellaneous supplies. Try asking about:<br>• <b>Pens, tape, paper, envelopes</b> (office)<br>• <b>Tools, sandpaper, grass cutter, markers</b> (misc)<br>• <b>Departments, monthly trends, open orders</b> (cross-cutting)<br><br>Or just start typing — the dropdown will suggest matching topics!",'bot')}
+  },500+Math.random()*600);
+}
+
+input.addEventListener('input',()=>renderDropdown(filterEntries(input.value.trim())));
+input.addEventListener('keydown',(e)=>{
+  const items=dropdown.querySelectorAll('.drop-item');
+  if(e.key==='ArrowDown'){e.preventDefault();activeIdx=Math.min(activeIdx+1,items.length-1);items.forEach((el,i)=>el.classList.toggle('active',i===activeIdx))}
+  else if(e.key==='ArrowUp'){e.preventDefault();activeIdx=Math.max(activeIdx-1,0);items.forEach((el,i)=>el.classList.toggle('active',i===activeIdx))}
+  else if(e.key==='Enter'){if(activeIdx>=0&&items.length)items[activeIdx].click();else handleSend()}
+});
+sendBtn.addEventListener('click',handleSend);
+input.addEventListener('focus',()=>{if(input.value.trim())renderDropdown(filterEntries(input.value.trim()))});
+document.addEventListener('click',(e)=>{if(!e.target.closest('.input-area'))dropdown.classList.remove('show')});
+
+// Welcome
+setTimeout(()=>{
+  const w=addMsg("Welcome! 👋 I'm your <b>Office & Miscellaneous Supply Assistant</b>. I cover <b>30 topics</b> from the Jan–Apr 2026 purchasing report, including:<br><br>📋 <b>General Office</b> — pens, tape, paper, envelopes, consumables<br>🔧 <b>Miscellaneous</b> — tools, sandpaper, grass cutter supplies, markers<br>📊 <b>Cross-cutting</b> — departments, trends, fulfillment status<br><br>Type a keyword or pick a topic below!",'bot');
+  const chipWrap=document.createElement('div');
+  chipWrap.className='chips';
+  ['Pens & ballpens','Tape items','Departments','Tools & hardware','Open orders','Monthly trends','Bulk orders','Envelopes'].forEach(label=>{
+    const c=document.createElement('div');c.className='chip';c.textContent=label;
+    c.addEventListener('click',()=>{input.value=label.split('&')[0].trim().split(' ')[0].toLowerCase();input.focus();renderDropdown(filterEntries(input.value))});
+    chipWrap.appendChild(c);
+  });
+  w.querySelector('.bubble').appendChild(chipWrap);
+},300);
+</script>
+</body>
+</html>
