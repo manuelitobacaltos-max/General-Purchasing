@@ -3,320 +3,1072 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>General Purchasing FAQ</title>
+<title>Purchase Request Form</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f5f5f5;--surface:#fff;--surface2:#f0f2f5;--surface3:#f8fafc;--border:#e2e8f0;--text:#1e293b;--text2:#64748b;--text3:#94a3b8;--accent:#2563eb;--accent2:#0d9488;--accent3:#e11d48;--red:#dc2626;--amber:#d97706;--radius:14px}
-html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
-.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:10;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.tab-brand{font-weight:700;font-size:15px;padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:8px}
-.tab-btn{padding:14px 20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:none;font-family:'DM Sans';border-bottom:2px solid transparent;transition:all .15s}
-.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
-.tab-btn:hover{color:var(--text)}
-.page{display:none;padding:24px;max-width:1200px;margin:0 auto}
-.page.active{display:block}
-.page-title{font-size:20px;font-weight:700}
-.page-sub{font-size:13px;color:var(--text2);margin-top:4px}
-.stat-row{display:flex;gap:12px;margin:16px 0}
-.stat-box{flex:1;background:var(--surface3);border-radius:10px;padding:12px 16px;border:1px solid var(--border)}
-.stat-box .v{font-size:20px;font-weight:700}.stat-box .l{font-size:11px;color:var(--text2);margin-top:2px}
-.chart-row{display:flex;gap:20px;margin-top:20px}
-.chart-card{flex:1;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.chart-card.full{flex:1 1 100%}
-.chart-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
-.chart-card p{font-size:11px;color:var(--text2);margin-bottom:12px}
-.risk-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:16px}
-.risk-table th{padding:8px 12px;text-align:left;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
-.risk-table th.r{text-align:right}
-.risk-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
-.risk-table td.r{text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px}
-.risk-table tr:nth-child(even){background:var(--surface3)}
-.risk-crit{color:#dc2626;font-weight:700}.risk-high{color:#d97706;font-weight:600}.risk-med{color:#2563eb;font-weight:500}.risk-low{color:var(--text3)}
-.rbar{height:6px;border-radius:3px;background:var(--surface2);min-width:60px;display:inline-block;vertical-align:middle;margin-right:6px}
-.rbar-fill{height:6px;border-radius:3px;display:block}
-
-.chat-page{display:flex;height:calc(100vh - 49px)}
-.faq-sidebar{width:340px;min-width:340px;border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden}
-.faq-header{padding:16px 20px;border-bottom:1px solid var(--border)}
-.faq-header h3{font-size:14px;font-weight:700}.faq-header p{font-size:11px;color:var(--text2);margin-top:2px}
-.faq-list{flex:1;overflow-y:auto;padding:8px}
-.faq-list::-webkit-scrollbar{width:4px}.faq-list::-webkit-scrollbar-thumb{background:#e4e7ec;border-radius:4px}
-.faq-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;color:var(--text2);padding:10px 12px;font-size:12px;font-family:'DM Sans';cursor:pointer;border-radius:10px;margin-bottom:1px;transition:all .12s;line-height:1.4}
-.faq-btn:hover{background:var(--surface2);color:var(--text)}
-.faq-tag{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;flex-shrink:0}
-.faq-tag.office{background:rgba(37,99,235,.08);color:var(--accent)}
-.faq-tag.misc{background:rgba(225,29,72,.08);color:var(--accent3)}
-.faq-tag.both{background:rgba(13,148,136,.08);color:var(--accent2)}
-.faq-counter{text-align:center;padding:8px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono';border-top:1px solid var(--border)}
-.chat-main{flex:1;display:flex;flex-direction:column;background:#fafafa}
-.messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
-.messages::-webkit-scrollbar{width:4px}.messages::-webkit-scrollbar-thumb{background:#e4e7ec;border-radius:4px}
-.msg{max-width:85%;animation:msgIn .3s cubic-bezier(.22,1,.36,1)}
-@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.msg.bot{align-self:flex-start}.msg.user{align-self:flex-end}
-.bubble{padding:12px 16px;font-size:13px;line-height:1.65;border-radius:14px}
-.msg.bot .bubble{background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg.user .bubble{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;border-bottom-right-radius:4px;font-weight:500}
-.msg .time{font-size:10px;color:var(--text3);margin-top:3px;font-family:'JetBrains Mono'}.msg.user .time{text-align:right}
-.chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0}
-.chip{font-size:11px;padding:6px 12px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .12s;font-family:'DM Sans'}.chip:hover{border-color:var(--accent);color:var(--accent)}
-.input-area{padding:14px 20px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;align-items:center}
-#userInput{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:11px 16px;border-radius:12px;font-size:13px;font-family:'DM Sans';outline:none;transition:border .2s}
-#userInput:focus{border-color:var(--accent)}#userInput::placeholder{color:var(--text3)}
-#sendBtn{width:38px;height:38px;border-radius:10px;border:none;background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s;flex-shrink:0}
-#sendBtn:hover{transform:scale(1.05)}
-#sendBtn svg{width:18px;height:18px}
-
-@media(max-width:768px){
-  .tabs{padding:0 12px;flex-wrap:wrap}
-  .tab-brand{font-size:13px;padding:10px 12px 10px 0}
-  .tab-btn{padding:10px 14px;font-size:12px}
-  .page{padding:14px}
-  .stat-row{flex-wrap:wrap;gap:8px}
-  .stat-box{flex:1 1 calc(33% - 6px);min-width:90px;padding:10px 12px}
-  .stat-box .v{font-size:16px}
-  .chart-row{flex-direction:column;gap:14px}
-  .chart-card{padding:14px}
-  .risk-table{font-size:10px;display:block;overflow-x:auto;white-space:nowrap}
-  .risk-table th,.risk-table td{padding:6px 8px}
-  .chat-page{flex-direction:column;height:auto;min-height:calc(100vh - 49px)}
-  .faq-sidebar{width:100%;min-width:unset;max-height:35vh;border-right:none;border-bottom:1px solid var(--border)}
-  .faq-header{padding:12px 14px}
-  .faq-list{padding:6px}
-  .faq-btn{padding:8px 10px;font-size:11px}
-  .chat-main{min-height:55vh}
-  .messages{padding:14px}
-  .bubble{padding:10px 14px;font-size:12px}
-  .input-area{padding:10px 14px}
-  #userInput{padding:10px 14px;font-size:12px}
-  .chip{font-size:10px;padding:5px 10px}
-  .page-title{font-size:17px}
+:root{
+  --bg:#eef2f6;--surface:#fff;--surface2:#f7f9fc;--border:#dde3ea;
+  --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --accent:#1d4ed8;--accent2:#0d9488;--danger:#dc2626;--warn:#d97706;--ok:#059669;
+  --radius:12px;
 }
-
-@media(max-width:400px){
-  .stat-box{flex:1 1 calc(50% - 4px)}
-  .stat-box .v{font-size:15px}
-  .faq-sidebar{max-height:30vh}
-  .tab-brand{display:none}
-}
+html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app{max-width:1100px;margin:0 auto;padding:18px}
+.header{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border-radius:var(--radius);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 16px rgba(29,78,216,.18)}
+.header h1{font-size:18px;font-weight:700}
+.header .meta{font-size:11px;opacity:.9;font-family:'JetBrains Mono',monospace}
+.header .right{text-align:right}
+.pr-no{font-size:13px;font-weight:600;background:rgba(255,255,255,.18);padding:5px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:14px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card h2{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.card h2 .num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.row.three{grid-template-columns:repeat(3,1fr)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+.field input,.field select,.field textarea{font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);transition:border .15s,background .15s;outline:none;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+.field input[readonly],.field textarea[readonly]{background:#eef2f6;color:var(--text2);cursor:default}
+.field textarea{resize:vertical;min-height:60px}
+.required::after{content:" *";color:var(--danger)}
+.search-wrap{position:relative}
+.search-wrap input{padding-right:32px}
+.search-wrap .icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.dropdown{position:absolute;z-index:30;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);max-height:300px;overflow-y:auto;width:100%;margin-top:2px;display:none}
+.dropdown.open{display:block}
+.dropdown::-webkit-scrollbar{width:6px}.dropdown::-webkit-scrollbar-thumb{background:#e4e7ec;border-radius:4px}
+.dropitem{padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dropitem:hover{background:var(--surface2)}
+.dropitem .nm{font-weight:600;color:var(--text)}
+.dropitem .ps{font-size:10px;color:var(--text3);font-family:'JetBrains Mono'}
+.dropitem .dp{font-size:10px;color:var(--text2)}
+table.items{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+table.items th{background:var(--surface2);padding:8px 10px;text-align:left;font-weight:600;color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid var(--border)}
+table.items th.r{text-align:right}table.items th.c{text-align:center}
+table.items td{padding:6px 8px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+table.items td input{width:100%;padding:6px 8px;border:1px solid transparent;background:transparent;font-size:12px;border-radius:4px;font-family:'DM Sans'}
+table.items td input:focus{border-color:var(--accent);background:#fff}
+table.items td input.num{text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px}
+table.items .total-cell{text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);padding:8px 10px}
+table.items .del-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
+.add-row-btn{margin-top:8px;background:none;border:1px dashed var(--border);color:var(--accent);padding:8px;width:100%;border-radius:8px;cursor:pointer;font-family:'DM Sans';font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.add-row-btn:hover{border-color:var(--accent);background:rgba(29,78,216,.04)}
+.totals-row{display:flex;justify-content:flex-end;padding-top:12px;margin-top:8px;border-top:2px solid var(--border)}
+.totals-box{display:grid;grid-template-columns:auto auto;gap:6px 24px;font-size:13px}
+.totals-box .lbl{color:var(--text2);font-weight:500}
+.totals-box .val{font-family:'JetBrains Mono',monospace;text-align:right;font-weight:600}
+.totals-box .grand{font-size:16px;color:var(--accent);font-weight:700;padding-top:6px;border-top:1px solid var(--border);grid-column:1/-1;display:grid;grid-template-columns:auto auto;gap:24px}
+.supervisor-card{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border:1px solid #f59e0b;border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.supervisor-card.found{background:linear-gradient(135deg,#d1fae5 0%,#a7f3d0 100%);border-color:#059669}
+.supervisor-card .lbl{font-size:10px;color:var(--text2);text-transform:uppercase;font-weight:700;letter-spacing:.05em}
+.supervisor-card .nm{font-size:15px;font-weight:700;color:var(--text);margin-top:2px}
+.supervisor-card .ps{font-size:11px;color:var(--text2);margin-top:2px}
+.supervisor-card .lc{font-size:10px;color:var(--text2);font-family:'JetBrains Mono';margin-top:4px}
+.approval-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{padding:9px 14px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'DM Sans';font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--surface2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:#1e40af}
+.btn.success{background:var(--ok);border-color:var(--ok);color:#fff}.btn.success:hover{background:#047857}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}.btn.danger:hover{background:#b91c1c}
+.btn.outline-danger{color:var(--danger);border-color:var(--danger)}.btn.outline-danger:hover{background:rgba(220,38,38,.06)}
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.status-badge.draft{background:#f1f5f9;color:var(--text2)}
+.status-badge.pending{background:#fef3c7;color:#92400e}
+.status-badge.approved{background:#d1fae5;color:#065f46}
+.status-badge.rejected{background:#fee2e2;color:#991b1b}
+.status-badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.footer-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
+.toast{position:fixed;top:20px;right:20px;background:var(--text);color:#fff;padding:11px 16px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:1000;font-size:12px;font-weight:500;animation:slideIn .3s;display:flex;align-items:center;gap:8px}
+.toast.success{background:var(--ok)}.toast.error{background:var(--danger)}.toast.info{background:var(--accent)}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:500;padding:18px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:var(--radius);padding:22px;max-width:440px;width:100%;box-shadow:0 16px 48px rgba(0,0,0,.25)}
+.modal h3{font-size:15px;font-weight:700;margin-bottom:6px}.modal p{font-size:12px;color:var(--text2);margin-bottom:12px}
+.modal textarea{width:100%;font-size:12px;font-family:'DM Sans';padding:10px;border:1px solid var(--border);border-radius:8px;resize:vertical;min-height:70px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+@media print{body{background:#fff}.app{max-width:100%;padding:0}.footer-actions,.add-row-btn,.approval-actions,.dropdown,table.items .del-btn,#changeSupBtn,#supOverrideWrap{display:none !important}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}table.items td input{border:none !important;background:transparent !important}}
+@media (max-width:720px){.row,.row.three{grid-template-columns:1fr}.header{flex-direction:column;gap:8px;text-align:center}.header .right{text-align:center}.app{padding:10px}.card{padding:14px}table.items{font-size:11px;display:block;overflow-x:auto;white-space:nowrap}.footer-actions{flex-direction:column-reverse}.footer-actions .btn{width:100%;justify-content:center}}
 </style>
 </head>
 <body>
-
-<div class="tabs">
-  <div class="tab-brand">General Purchasing FAQ</div>
-  <button class="tab-btn active" onclick="showPage('dashboard',this)">Dashboard</button>
-  <button class="tab-btn" onclick="showPage('chatbot',this)">FAQ Chatbot</button>
-</div>
-
-<div class="page active" id="page-dashboard">
-  <div class="page-title">General Purchasing Intelligence</div>
-  <div class="page-sub">Office & miscellaneous supply analysis | Jan 1 - Apr 13, 2026</div>
-
-  <div class="stat-row">
-    <div class="stat-box"><div class="v">464</div><div class="l">Total records</div></div>
-    <div class="stat-box"><div class="v">341</div><div class="l">Unique items</div></div>
-    <div class="stat-box"><div class="v">4,413</div><div class="l">Total units</div></div>
-    <div class="stat-box"><div class="v">9.51</div><div class="l">Avg units/order</div></div>
-    <div class="stat-box"><div class="v">53</div><div class="l">Open orders</div></div>
-    <div class="stat-box"><div class="v">88.6%</div><div class="l">Fulfillment rate</div></div>
-  </div>
-
-  <div class="chart-row">
-    <div class="chart-card"><h3>Monthly trend</h3><p>Units ordered and transaction count per month</p><canvas id="trendChart" height="160"></canvas></div>
-    <div class="chart-card"><h3>Department breakdown</h3><p>Top 6 departments by quantity per month (stacked)</p><canvas id="stackChart" height="160"></canvas></div>
-  </div>
-
-  <div class="chart-row">
-    <div class="chart-card full">
-      <h3>Department risk assessment</h3>
-      <p>Composite score: z-score (volume), MAD (robust outlier), skew ratio (bulk exploit), concentration %</p>
-      <canvas id="riskChart" height="120"></canvas>
-      <table class="risk-table">
-        <thead><tr><th>Dept</th><th>Risk</th><th class="r">Score</th><th class="r">Z-Score</th><th class="r">MAD</th><th class="r">Skew</th><th class="r">Volume</th><th class="r">Orders</th><th class="r">% Total</th></tr></thead>
-        <tbody id="riskBody"></tbody>
-      </table>
+<div class="app">
+  <div class="header">
+    <div>
+      <h1>Purchase Request Form</h1>
+      <div class="meta" id="todayDate"></div>
+    </div>
+    <div class="right">
+      <div class="pr-no" id="prNo">PR-XXXXXX</div>
+      <div style="margin-top:6px"><span class="status-badge draft" id="prStatus"><span class="dot"></span><span id="statusText">Draft</span></span></div>
     </div>
   </div>
-</div>
 
-<div class="page" id="page-chatbot">
-  <div class="chat-page">
-    <div class="faq-sidebar">
-      <div class="faq-header"><h3>30 Topics</h3><p>Office, miscellaneous, and cross-cutting insights</p></div>
-      <div class="faq-list" id="faqList"></div>
-      <div class="faq-counter" id="counter"></div>
-    </div>
-    <div class="chat-main">
-      <div class="messages" id="messages"></div>
-      <div class="input-area">
-        <input type="text" id="userInput" placeholder="Ask about purchasing topics..." autocomplete="off">
-        <button id="sendBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/></svg></button>
+  <div class="card">
+    <h2><span class="num">1</span>Requestor Information</h2>
+    <div class="row three">
+      <div class="field" style="grid-column:1/-1">
+        <label class="required">Employee (search by name)</label>
+        <div class="search-wrap">
+          <input type="text" id="empSearch" placeholder="Type your last or first name..." autocomplete="off">
+          <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <div class="dropdown" id="empDropdown"></div>
+        </div>
       </div>
+      <div class="field"><label>Department</label><input type="text" id="empDept" readonly placeholder="Auto-filled"></div>
+      <div class="field"><label>Location</label><input type="text" id="empLoc" readonly placeholder="Auto-filled"></div>
+      <div class="field"><label>Position</label><input type="text" id="empPos" readonly placeholder="Auto-filled"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span>Request Details</h2>
+    <div class="row three">
+      <div class="field"><label class="required">Date Requested</label><input type="date" id="dateReq"></div>
+      <div class="field"><label class="required">Date Needed</label><input type="date" id="dateNeeded"></div>
+      <div class="field"><label class="required">Priority</label>
+        <select id="priority"><option value="Normal">Normal</option><option value="Urgent">Urgent</option><option value="Critical">Critical</option></select>
+      </div>
+      <div class="field"><label class="required">Category</label>
+        <select id="category">
+          <option value="">-- Select --</option>
+          <option>Office Supplies</option>
+          <option>Spare Parts</option>
+          <option>Maintenance Supplies</option>
+          <option>IT Equipment</option>
+          <option>Safety Equipment</option>
+          <option>Cleaning &amp; Sanitation</option>
+          <option>Marketing Materials</option>
+          <option>Tools &amp; Hardware</option>
+          <option>Production Materials</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Charge To (Cost Center / Project)</label><input type="text" id="costCenter" placeholder="e.g. CORPFN02 / Project Name"></div>
+      <div class="field"><label>Preferred Supplier (optional)</label><input type="text" id="supplier" placeholder="Supplier name if known"></div>
+      <div class="field" style="grid-column:1/-1"><label class="required">Justification / Purpose</label>
+        <textarea id="purpose" placeholder="Why is this needed? Where will it be used?"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span>Requested Items</h2>
+    <table class="items">
+      <thead>
+        <tr>
+          <th style="width:36px" class="c">#</th>
+          <th style="width:32%">Item Description</th>
+          <th style="width:80px" class="r">Qty</th>
+          <th style="width:90px">UoM</th>
+          <th style="width:110px" class="r">Unit Price (PHP)</th>
+          <th class="r">Total (PHP)</th>
+          <th style="width:120px">Remarks</th>
+          <th style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody"></tbody>
+    </table>
+    <button class="add-row-btn" onclick="addItemRow()">+ Add Item Row</button>
+    <div class="totals-row">
+      <div class="totals-box">
+        <div class="lbl">Subtotal:</div><div class="val" id="subtotal">PHP 0.00</div>
+        <div class="lbl">VAT (12%):</div><div class="val" id="vat">PHP 0.00</div>
+        <div class="grand"><div>GRAND TOTAL</div><div id="grandTotal">PHP 0.00</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span>Supervisor Approval</h2>
+    <div class="supervisor-card" id="supCard">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div style="flex:1;min-width:0">
+          <div class="lbl">Immediate Supervisor <span id="supSource" style="font-weight:500;text-transform:none;letter-spacing:0;font-size:10px;opacity:.7">(auto-detected)</span></div>
+          <div class="nm" id="supName">Please select an employee first</div>
+          <div class="ps" id="supPos"></div>
+          <div class="lc" id="supLoc"></div>
+        </div>
+        <button class="btn" id="changeSupBtn" onclick="openSupOverride()" style="white-space:nowrap;flex-shrink:0">Change</button>
+      </div>
+    </div>
+    <div id="supOverrideWrap" style="display:none;margin-bottom:14px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px">
+      <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:6px">Override Supervisor &mdash; Search Employee</label>
+      <div class="search-wrap" style="position:relative">
+        <input type="text" id="supOverrideSearch" placeholder="Type name or position..." autocomplete="off" style="width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:'DM Sans';font-size:13px">
+        <div class="dropdown" id="supOverrideDropdown"></div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;justify-content:flex-end">
+        <button class="btn" onclick="closeSupOverride()">Cancel</button>
+        <button class="btn" onclick="resetSupervisor()">Reset to Auto</button>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:10px">
+      <label>Supervisor's Remarks / Notes</label>
+      <textarea id="supRemarks" placeholder="Comments from the supervisor (filled during approval)"></textarea>
+    </div>
+    <div class="approval-actions">
+      <button class="btn success" onclick="approvePR()">Approve</button>
+      <button class="btn outline-danger" onclick="openRejectModal()">Reject &amp; Return</button>
+      <button class="btn" onclick="resetApproval()">Reset Approval</button>
+    </div>
+  </div>
+
+  <div class="footer-actions">
+    <button class="btn" onclick="clearForm()">Clear Form</button>
+    <button class="btn" onclick="saveDraft()">Save Draft</button>
+    <button class="btn" onclick="exportJSON()">Export JSON</button>
+    <button class="btn" onclick="window.print()">Print / PDF</button>
+    <button class="btn primary" onclick="submitPR()">Submit for Approval</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="rejectModal">
+  <div class="modal">
+    <h3>Reject Purchase Request</h3>
+    <p>Please provide a reason. This will be sent back to the requestor.</p>
+    <textarea id="rejectReason" placeholder="Reason for rejection..."></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeRejectModal()">Cancel</button>
+      <button class="btn danger" onclick="confirmReject()">Confirm Rejection</button>
     </div>
   </div>
 </div>
 
 <script>
-const months=["2026-01","2026-02","2026-03","2026-04"];
-const monthly=[{month:"2026-01",qty:1051,orders:173},{month:"2026-02",qty:2269,orders:181},{month:"2026-03",qty:1015,orders:104},{month:"2026-04",qty:385,orders:29}];
-const deptMonth={"CORPFN02":{"2026-01":261,"2026-02":655,"2026-03":398},"OPR01":{"2026-01":178,"2026-02":250,"2026-03":214,"2026-04":305},"MKTG04":{"2026-01":35,"2026-02":708,"2026-03":6},"SC03":{"2026-01":166,"2026-02":73,"2026-03":258,"2026-04":74},"OPR02":{"2026-02":309},"SC02":{"2026-01":122,"2026-02":1,"2026-03":103}};
-const top6=["CORPFN02","OPR01","MKTG04","SC03","OPR02","SC02"];
-const deptColors=["#2563eb","#0d9488","#e11d48","#d97706","#7c3aed","#059669"];
-const anomaly=[
-  {dept:"CORPFN02",risk:"Critical",score:223.8,zscore:2.4,mad:5.24,skew:2.0,volume:1314,orders:133,pct:27.9},
-  {dept:"MKTG04",risk:"Critical",score:158.2,zscore:1.01,mad:2.68,skew:39.4,volume:749,orders:19,pct:15.9},
-  {dept:"OPR01",risk:"Critical",score:154.5,zscore:1.5,mad:3.57,skew:3.0,volume:947,orders:79,pct:20.1},
-  {dept:"SC03",risk:"High",score:78.5,zscore:0.58,mad:1.87,skew:2.1,volume:571,orders:55,pct:12.1},
-  {dept:"OPR02",risk:"Medium",score:33.5,zscore:-0.07,mad:0.69,skew:3.3,volume:309,orders:19,pct:6.6},
-  {dept:"SC02",risk:"Medium",score:22.5,zscore:-0.13,mad:0.45,skew:1.3,volume:226,orders:36,pct:4.8},
-  {dept:"SC01",risk:"Medium",score:21.2,zscore:-0.32,mad:0.09,skew:2.2,volume:154,orders:35,pct:3.3},
-  {dept:"OPR04",risk:"Medium",score:20.1,zscore:-0.36,mad:0.0,skew:2.5,volume:137,orders:27,pct:2.9}
+/* === EMPLOYEE DIRECTORY === */
+const EMPLOYEES = [
+  {id:1, last:"Abadilla", first:"Charo Mae", middle:"Agustin", dept:"Controlling Department", loc:"Makati", pos:"Chief Finance Controller"},
+  {id:2, last:"Abarquez", first:"Ella", middle:"Quinalayo", dept:"Controlling Department", loc:"CEBU", pos:"Credit and Collection Supervisor"},
+  {id:3, last:"Agocejos", first:"Johnrey", middle:"Endiera", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:4, last:"Agon", first:"Jiame", middle:"Rosal", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:5, last:"Alfante", first:"Jonel", middle:"Anzano", dept:"Credit and Collection", loc:"CEBU", pos:"Messenger"},
+  {id:6, last:"Alo", first:"Lawrence Anthony", middle:"Magdadaro", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:7, last:"Angeles", first:"Froilan", middle:"De Guzman", dept:"Production Management", loc:"BULACAN", pos:"Assistant Plant Manager"},
+  {id:8, last:"Bacani", first:"Alberto Jr.", middle:"Galang", dept:"Credit and Collection", loc:"BULACAN", pos:"Collector/Messenger"},
+  {id:9, last:"Badilla", first:"Ernesto Jr.", middle:"Pombo", dept:"Sales All Employees", loc:"MINDANAO", pos:"District Sales Manager"},
+  {id:10, last:"Basale", first:"Cris Dean", middle:"Saquez", dept:"Logistics", loc:"Argao Plant", pos:"SAP/Logistics Coordinator"},
+  {id:11, last:"Bautista", first:"Josef Eirone", middle:"Panio", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:12, last:"Bitoon", first:"Eric", middle:"Almado", dept:"Production Direct Labor", loc:"BULACAN", pos:"Sewer"},
+  {id:13, last:"Bolotano", first:"Daniel", middle:"German", dept:"Sales All Employees", loc:"MINDANAO", pos:"District Sales Manager"},
+  {id:14, last:"Bucio", first:"Ericson", middle:"Orapa", dept:"Quality Assurance", loc:"BUKIDNON PLANT", pos:"Quality Assurance Inspector"},
+  {id:15, last:"Buenaventura", first:"Edfrey", middle:"Simpliciano", dept:"Sales All Employees", loc:"LUZON", pos:"Regional Sales Manager"},
+  {id:16, last:"Camasura", first:"Jojie", middle:"Sumayang", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:17, last:"Cardenas", first:"KC Lyn", middle:"Flores", dept:"Customer Service Department", loc:"BACOLOD", pos:"Customer Service Specialist"},
+  {id:18, last:"Castro Jr.", first:"Jesus", middle:"Evangelista", dept:"Warehouse", loc:"BULACAN", pos:"Forklift Operator"},
+  {id:19, last:"Cajegas", first:"Clienth", middle:"Hambre", dept:"Human Resources", loc:"BUKIDNON PLANT", pos:"HR Generalist"},
+  {id:20, last:"Catingub", first:"Arnel", middle:"Muyco", dept:"Sales All Employees", loc:"MINDANAO", pos:"District Sales Manager"},
+  {id:21, last:"Cinco", first:"Efren", middle:"Balio", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:22, last:"Comendador", first:"Jacob", middle:"Sotoya", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager"},
+  {id:23, last:"Corpus", first:"Jerome", middle:"Basco", dept:"Information Technology", loc:"Makati", pos:"IT Officer"},
+  {id:24, last:"Dablio", first:"Edilyn", middle:"Macahilos", dept:"Logistics", loc:"BUKIDNON PLANT", pos:"SAP/Logistics Coordinator"},
+  {id:25, last:"Dabu", first:"Reggie", middle:"Dequin", dept:"Information Technology", loc:"Makati", pos:"IT Manager"},
+  {id:26, last:"Dagsa", first:"Elbert", middle:"Barbon", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:27, last:"Dagum", first:"Jerby", middle:"Gayas", dept:"Credit and Collection", loc:"Makati", pos:"Credit and Collection Specialist"},
+  {id:28, last:"De La Cruz", first:"Cris-ann", middle:"Urtezuela", dept:"Credit and Collection", loc:"CEBU", pos:"Credit and Collection Manager"},
+  {id:29, last:"Olasiman", first:"Emily", middle:"Ejoc", dept:"Formulation", loc:"CEBU", pos:"Formulation and Quality Manager"},
+  {id:30, last:"Estrada", first:"Erickson", middle:"Quiapo", dept:"Credit and Collection", loc:"GENERAL SANTOS", pos:"Collector/Messenger"},
+  {id:31, last:"Felonia", first:"Romel", middle:"Mendoza", dept:"Credit and Collection", loc:"BULACAN", pos:"Collector/Messenger"},
+  {id:32, last:"Flores", first:"Rona Cristy", middle:"Tagalog", dept:"Customer Service Department", loc:"BUKIDNON PLANT", pos:"Customer Service Specialist"},
+  {id:33, last:"Gabio", first:"Jessie", middle:"V", dept:"Sales All Employees", loc:"BACOLOD", pos:"Technical Sales Representative"},
+  {id:34, last:"Gasingan", first:"Ma Lynie", middle:"Diego", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager - Pet Food"},
+  {id:35, last:"Garin", first:"Alan", middle:"Rosal", dept:"Production Direct Labor", loc:"BULACAN", pos:"Basemix"},
+  {id:36, last:"Gatchalian", first:"Jefrey", middle:"Adriano", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager"},
+  {id:37, last:"Guillaume", first:"Mathieu Francis Marie", middle:"", dept:"Corporate Management", loc:"VISAYAS", pos:"President & CEO"},
+  {id:38, last:"Jose", first:"Arbien John", middle:"Umayam", dept:"Logistics", loc:"BULACAN", pos:"SAP/Logistics Coordinator"},
+  {id:39, last:"Labaguis", first:"Mark Joseph", middle:"Trinidad", dept:"Warehouse", loc:"BULACAN", pos:"Warehouse Checker"},
+  {id:40, last:"Libutan", first:"Parlo", middle:"", dept:"Purchasing", loc:"BULACAN", pos:"Purchasing Specialist - Spare Parts"},
+  {id:41, last:"Lubas", first:"Israel", middle:"Yurag", dept:"Logistics", loc:"HOREB Cebu", pos:"Logistics Coordinator"},
+  {id:42, last:"Lustre", first:"Genesis Jane", middle:"Mamac", dept:"Quality Assurance", loc:"BUKIDNON PLANT", pos:"Quality Assurance Supervisor"},
+  {id:43, last:"Macasaet", first:"Ken", middle:"Tenerife", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:44, last:"Madelo", first:"Dennemor", middle:"", dept:"Credit and Collection", loc:"BUKIDNON PLANT", pos:"Billing Associate"},
+  {id:45, last:"Mamauag", first:"Renelle Vann", middle:"Abriol", dept:"Sales All Employees", loc:"MINDANAO", pos:"District Sales Manager"},
+  {id:46, last:"Mansueto", first:"Kieth", middle:"Acosta", dept:"Quality Assurance", loc:"CCPC", pos:"Quality Assurance Inspector"},
+  {id:47, last:"Miranda", first:"James", middle:"Luengas", dept:"Quality Assurance", loc:"BUKIDNON PLANT", pos:"Quality Assurance Inspector"},
+  {id:48, last:"Nohe", first:"Yoann", middle:"", dept:"Supply Chain Management", loc:"CEBU", pos:"Supply Chain Manager"},
+  {id:49, last:"Oliva", first:"Windel", middle:"Sampan", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:50, last:"Ordeniza", first:"Joseph", middle:"Yamuta", dept:"Production Direct Labor", loc:"BUKIDNON PLANT", pos:"Pellet Mill Operator"},
+  {id:51, last:"Pagdanganan", first:"Jenny Lyn", middle:"Cabrera", dept:"Purchasing", loc:"BULACAN", pos:"Senior Buyer - Local"},
+  {id:52, last:"Painandos", first:"Juvylo", middle:"", dept:"Sales All Employees", loc:"MINDANAO", pos:"District Sales Manager"},
+  {id:53, last:"Peralta", first:"Carlo", middle:"Antonio", dept:"Quality Assurance", loc:"BULACAN", pos:"Quality Assurance Staff"},
+  {id:54, last:"Perlas", first:"Noel", middle:"Rolloque", dept:"Production Direct Labor", loc:"BULACAN", pos:"Pellet Mill Operator"},
+  {id:55, last:"Bernados", first:"Jessah Mae", middle:"Poblete", dept:"Controlling Department", loc:"CEBU", pos:"General Accountant"},
+  {id:56, last:"Quider", first:"Gregie", middle:"Malait", dept:"Production Direct Labor", loc:"CCPC", pos:"Production Staff"},
+  {id:57, last:"Quijano", first:"Grexon", middle:"Sasil", dept:"Production Direct Labor", loc:"CCPC", pos:"RM Batcher"},
+  {id:58, last:"Ragaas", first:"Christina", middle:"Madriaga", dept:"Customer Service Department", loc:"BULACAN", pos:"Customer Service Specialist"},
+  {id:59, last:"Ramos", first:"Khenvic Vhicoy", middle:"Lorenzo", dept:"Production Indirect Labor", loc:"BULACAN", pos:"Production Coordinator"},
+  {id:60, last:"Beduya", first:"Rachel Mae", middle:"Remulta", dept:"Purchasing", loc:"CEBU", pos:"Purchasing Manager"},
+  {id:61, last:"Rivera", first:"Ivy Joy", middle:"Diolata", dept:"Quality Assurance", loc:"BULACAN", pos:"Quality Assurance Supervisor"},
+  {id:62, last:"Romelard", first:"Christophe", middle:"Robert", dept:"Corporate Management", loc:"VISAYAS", pos:"Group Finance Officer"},
+  {id:63, last:"Rosario", first:"Marvin", middle:"Alberca", dept:"Production Management", loc:"CEBU", pos:"Operations Manager"},
+  {id:64, last:"Salmorin", first:"Joseph", middle:"Dimaano", dept:"Logistics", loc:"BULACAN", pos:"Truck Driver"},
+  {id:65, last:"Saluta", first:"Romel", middle:"Gomez", dept:"Logistics", loc:"BUKIDNON PLANT", pos:"Pier Coordinator"},
+  {id:66, last:"Saranillo", first:"Ronyl", middle:"Degamo", dept:"Customer Service Department", loc:"HOREB Cebu", pos:"CSD / Logistics Regional Supervisor"},
+  {id:67, last:"Silvestre", first:"Jerone", middle:"Tamesa", dept:"Maintenance", loc:"BULACAN", pos:"Production and Maintenance Supervisor"},
+  {id:68, last:"Taban-ud", first:"Richard", middle:"Azcona", dept:"Sales All Employees", loc:"VISAYAS", pos:"Poultry Veterinarian & Technical Head"},
+  {id:69, last:"Torre", first:"Jan Michael", middle:"Cabalfin", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:70, last:"Bacalla", first:"Lian", middle:"Urriza", dept:"Customer Service Department", loc:"BULACAN", pos:"Customer Service Manager"},
+  {id:71, last:"Vergara", first:"Bernie", middle:"Judy", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:72, last:"Villaflor", first:"Cheralyn", middle:"Artajo", dept:"Customer Service Department", loc:"BUKIDNON PLANT", pos:"Regional Supervisor-CS and Logistics"},
+  {id:73, last:"Zafra", first:"Pauline Joy", middle:"Gonzales", dept:"Customer Service Department", loc:"BULACAN", pos:"Customer Service Specialist"},
+  {id:74, last:"Antipaso", first:"Raymund", middle:"Barcelo", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:75, last:"Cagande", first:"Joel", middle:"Balili", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:76, last:"Causing", first:"Bernard Auman", middle:"Escanlar", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:77, last:"Concejo", first:"Joemar", middle:"Guillermo", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:78, last:"Castillo", first:"John kenneth", middle:"Halili", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:79, last:"Dimaguila", first:"Roel", middle:"Urriza", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:80, last:"Enriquez", first:"Rhandolf", middle:"Reyes", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:81, last:"Gerosano", first:"Ruel", middle:"Gomolon", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:82, last:"Libaton", first:"Christian", middle:"Lapiz", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:83, last:"Limon", first:"Romy", middle:"Sucab", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:84, last:"Mesia", first:"Daniel", middle:"Logramonte", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:85, last:"Nieves", first:"Joselito", middle:"Amaca", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:86, last:"Peñamante", first:"Daniel", middle:"Peñaverde", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:87, last:"Pening", first:"Geraldine", middle:"Omambac", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:88, last:"Sanchez", first:"Dioscoro III", middle:"Tañaña", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:89, last:"Salvacion", first:"John Bryan", middle:"", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:90, last:"Suguino", first:"Al", middle:"Casimiro", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:91, last:"Tembrevilla", first:"Franco", middle:"Andrade", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:92, last:"Audeje", first:"Urbano Jr.", middle:"Palomar", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:93, last:"Yago", first:"Ariel", middle:"Villamar", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:94, last:"Villaester", first:"Julito", middle:"Mulle", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:95, last:"Lumico", first:"Alfonso", middle:"Rivera", dept:"Treasury", loc:"Makati", pos:"Treasury Specialist"},
+  {id:96, last:"Cadorna", first:"Cherryl", middle:"Arquisal", dept:"Regulatory and Compliance", loc:"CEBU", pos:"Payroll Master"},
+  {id:97, last:"Dizon", first:"Jane", middle:"Yusi", dept:"Sales All Employees", loc:"Makati", pos:"SR. SALES ASSOCIATE"},
+  {id:98, last:"Ayuro", first:"Camille", middle:"Olarte", dept:"Regulatory and Compliance", loc:"Makati", pos:"Regulatory Affairs Officer"},
+  {id:99, last:"Taduran", first:"Gary", middle:"Borromeo", dept:"Production Direct Labor", loc:"BULACAN", pos:"Intake/Palletizer"},
+  {id:100, last:"Bernardo", first:"Eugene", middle:"Gentapo", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:101, last:"Pasatiempo", first:"Rico", middle:"Montemayor", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:102, last:"Batiller", first:"Marlon", middle:"", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:103, last:"Bancala", first:"Raymundo", middle:"Abria", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:104, last:"Heyrosa", first:"Alchier", middle:"Ibale", dept:"Warehouse", loc:"HOREB Cebu", pos:"Warehouse Utility"},
+  {id:105, last:"Muyco", first:"Jonathan", middle:"Petacion", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:106, last:"Abad", first:"Fernando Jr", middle:"Banga", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:107, last:"Casas", first:"Danmark", middle:"Maningo", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:108, last:"Quillosa", first:"Cecilyn", middle:"Navarro", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:109, last:"Pausal", first:"Felicisimo", middle:"", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:110, last:"Declines", first:"Vergil", middle:"", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:111, last:"Daffon", first:"Jordan", middle:"Lapeceros", dept:"Sales All Employees", loc:"MINDANAO", pos:"Key Accounts Manager"},
+  {id:112, last:"Macasaol", first:"Virgilio", middle:"Timtim", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:113, last:"Ralo", first:"Michael", middle:"Delica", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:114, last:"Adan", first:"Enrico", middle:"Pulga", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:115, last:"Ymas", first:"Richie", middle:"Hermias", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:116, last:"Alvarez", first:"El Shalyn", middle:"Dalupang", dept:"Credit and Collection", loc:"BULACAN", pos:"Billing Associate"},
+  {id:117, last:"Salamero Jr.", first:"Salustiano", middle:"Maganda", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:118, last:"Manzanillo", first:"Jinnefer", middle:"E", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:119, last:"Villamar", first:"Emerson", middle:"B.", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:120, last:"Tapangan", first:"Dante", middle:"P.", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:121, last:"Cosico", first:"Angelica", middle:"Caliso", dept:"Marketing", loc:"CEBU", pos:"Junior Marketing Manager"},
+  {id:122, last:"Bencito", first:"Glen Dale", middle:"Tuliao", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:123, last:"Andriano", first:"Dino", middle:"Laborte", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:124, last:"Durano Jr.", first:"Dominador", middle:"Castaños", dept:"Sales Admin", loc:"CEBU", pos:"Executive Vice President"},
+  {id:125, last:"Pojas", first:"Jessa", middle:"Torreon", dept:"Controlling Department", loc:"CEBU", pos:"General Accountant"},
+  {id:126, last:"Eduave", first:"Lloyd", middle:"Tinoy", dept:"Quality Assurance", loc:"HOREB Cebu", pos:"Quality Assurance Inspector"},
+  {id:127, last:"Espliguez", first:"Mart", middle:"Gaitan", dept:"Sales All Employees", loc:"MINDANAO", pos:"Regional Sales Manager"},
+  {id:128, last:"Mirabuena", first:"Rey", middle:"Remegio", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:129, last:"Elleso", first:"Bernard", middle:"Urbina", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:130, last:"Mag-uyon", first:"Jed", middle:"Trumpeta", dept:"Sales Admin", loc:"CEBU", pos:"EVP Sales Assistant"},
+  {id:131, last:"Gambalan", first:"Freddie", middle:"Reyes", dept:"Production Management", loc:"VPI Isabela", pos:"Assistant Plant Manager"},
+  {id:132, last:"Bingayan", first:"Fidel", middle:"Bebania", dept:"Maintenance", loc:"VPI Isabela", pos:"Mechanical Technician"},
+  {id:133, last:"Cabalang Jr.", first:"Erwin", middle:"Magto", dept:"Production Direct Labor", loc:"VPI Isabela", pos:"Central Control Room Operator"},
+  {id:134, last:"Sebastian", first:"Gerriza Mae", middle:"Dionisio", dept:"Customer Service Department", loc:"BULACAN", pos:"Customer Service Specialist"},
+  {id:135, last:"Ubando", first:"Russel", middle:"Galisim", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Coordinator"},
+  {id:136, last:"Gumiran", first:"Jorgie", middle:"Zipagan", dept:"Quality Assurance", loc:"VPI Isabela", pos:"Quality Assurance Inspector"},
+  {id:137, last:"Cacatian", first:"Ronnie", middle:"Montilla", dept:"Warehouse", loc:"VPI Isabela", pos:"Forklift Operator"},
+  {id:138, last:"Canceran", first:"Cherubim", middle:"Rosa", dept:"Sales All Employees", loc:"DAVAO", pos:"Technical Sales Representative"},
+  {id:139, last:"De Nuevo Jr.", first:"Orlando", middle:"Luyun", dept:"Warehouse", loc:"VPI Isabela", pos:"Warehouse Checker"},
+  {id:140, last:"Alivar", first:"Archie", middle:"Salvaleon", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:141, last:"Garde", first:"Jovann Jay", middle:"Salgado", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:142, last:"Salgado", first:"Henry", middle:"Camit", dept:"Sales All Employees", loc:"MINDANAO", pos:"District Sales Manager"},
+  {id:143, last:"Jumao-as", first:"Jason", middle:"Escuadro", dept:"Sales All Employees", loc:"CEBU", pos:"Technical Manager"},
+  {id:144, last:"Dario", first:"Faustino", middle:"Alegado", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager"},
+  {id:145, last:"De Belen", first:"Reniel", middle:"Beridico", dept:"Controlling Department", loc:"Makati", pos:"Accounts Payable Specialist"},
+  {id:146, last:"Cabanban", first:"Richard", middle:"Piador", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:147, last:"Sobrejuanite", first:"Neil", middle:"Duot", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:148, last:"Dela Cruz", first:"Junior", middle:"Padilla", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:149, last:"Eleptico", first:"Joel", middle:"Balili", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:150, last:"Lagdaan", first:"Richard", middle:"Teves", dept:"Sales All Employees", loc:"LUZON", pos:"Regional Sales Manager"},
+  {id:151, last:"Abonado", first:"Marjian Ciene", middle:"Realino", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:152, last:"Eyoy", first:"Joe Patrick", middle:"Embang", dept:"Sales All Employees", loc:"VISAYAS", pos:"Regional Sales Manager"},
+  {id:153, last:"Gutierrez", first:"Julius Alexander", middle:"Herana", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Warehouse Supervisor"},
+  {id:154, last:"Lacson", first:"Kenneth", middle:"Mataganas", dept:"Production Management", loc:"BULACAN", pos:"Regional Plant Manager"},
+  {id:155, last:"Maghanoy", first:"Richelle Joy", middle:"Aguilar", dept:"Credit and Collection", loc:"VPI Isabela", pos:"Billing Associate"},
+  {id:156, last:"Abilar", first:"Aaron", middle:"Abilar", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:157, last:"Husain", first:"Rena", middle:"Rosales", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:158, last:"Calderon", first:"John Rey", middle:"Barrientos", dept:"Production Direct Labor", loc:"BUKIDNON PLANT", pos:"Central Control Room Operator"},
+  {id:159, last:"Calderon", first:"Carminda", middle:"Manese", dept:"Sales All Employees", loc:"LUZON", pos:"Key Accounts Manager"},
+  {id:160, last:"Bugarin", first:"George Emil", middle:"Sumang", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:161, last:"Magas", first:"Alexander", middle:"", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:162, last:"Flordeliza Jr", first:"Enrique", middle:"Pancho", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:163, last:"Diaz", first:"Lanny", middle:"Dumagat", dept:"Treasury", loc:"CEBU", pos:"Treasury Specialist"},
+  {id:164, last:"Salvador", first:"Sheena Marie", middle:"Carillo", dept:"Warehouse", loc:"AC Extension - New Warehouse", pos:"Inventory Analyst"},
+  {id:165, last:"Alamo", first:"Rejean", middle:"Colegio", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"RM Team Leader"},
+  {id:166, last:"Montenegro", first:"Rodel", middle:"Pama", dept:"Quality Assurance", loc:"BUKIDNON PLANT", pos:"Quality Assurance Inspector"},
+  {id:167, last:"Yere", first:"Pablo Saol", middle:"Alcabedos", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:168, last:"Canceran", first:"Jefferson", middle:"Villanueva", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:169, last:"Bingayan", first:"Patrick Mhel", middle:"Malabad", dept:"Credit and Collection", loc:"VPI Isabela", pos:"Collector/ Messenger"},
+  {id:170, last:"Nazareth", first:"Lenmark", middle:"Tapalla", dept:"Logistics", loc:"HOREB Cebu", pos:"Pier Coordinator"},
+  {id:171, last:"Arnibal", first:"Alvin", middle:"Caragay", dept:"Controlling Department", loc:"CEBU", pos:"Accounts Payable Manager"},
+  {id:172, last:"Rosales", first:"Sheynly", middle:"Maquilan", dept:"Production Indirect Labor", loc:"HOREB Cebu", pos:"Production Supervisor"},
+  {id:173, last:"Ragasajo", first:"Gabriel", middle:"Quinal", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:174, last:"Sabejon", first:"Marvin", middle:"", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:175, last:"Soco", first:"Cristy", middle:"Garbo", dept:"Customer Service Department", loc:"HOREB Cebu", pos:"Customer Service Specialist"},
+  {id:176, last:"Abucay", first:"Darell", middle:"Alcover", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Assistant Mixer Operator"},
+  {id:177, last:"Abuzo", first:"Matias", middle:"Cabag", dept:"Warehouse", loc:"HOREB Cebu", pos:"Warehouse Checker"},
+  {id:178, last:"Almacin", first:"Alexander", middle:"Gongob", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Pouring Crew"},
+  {id:179, last:"Auman", first:"Dale", middle:"Pepito", dept:"Warehouse", loc:"HOREB Cebu", pos:"RM Team Leader"},
+  {id:180, last:"Baguio", first:"Renante", middle:"Abucay", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Macro Weigher"},
+  {id:181, last:"Caingcoy", first:"Zaldy", middle:"Orebia", dept:"Warehouse", loc:"HOREB Cebu", pos:"Warehouse Checker"},
+  {id:182, last:"Camento Jr.", first:"Policarpo", middle:"Bagiuo", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Boiler Operator"},
+  {id:183, last:"Caparoso", first:"Jovanne", middle:"Goc ong", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Macro Weigher"},
+  {id:184, last:"Caparoso", first:"Mark Eric", middle:"Goc ong", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Assistant Mixer Operator"},
+  {id:185, last:"Dajotoy Jr.", first:"Miguel", middle:"Escabal", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Boiler Operator"},
+  {id:186, last:"Ermac", first:"Regie", middle:"Dumaguit", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Pouring Crew"},
+  {id:187, last:"Ermac", first:"Ronilo", middle:"Intaligando", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Bagging Line Crew"},
+  {id:188, last:"Garbo", first:"Juvie", middle:"Real", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Bagging Line Crew"},
+  {id:189, last:"Gilbuela", first:"Michael", middle:"Cantila", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Basemix Preparer"},
+  {id:190, last:"Ibale Jr.", first:"Dennis", middle:"Rivera", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Mixer Operator"},
+  {id:191, last:"Jugalbot", first:"Jayson", middle:"Cuyos", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Limestone Weigher"},
+  {id:192, last:"Laag", first:"Mark Anthony", middle:"Cañete", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Bagging Line Crew"},
+  {id:193, last:"Labrador", first:"Manuel", middle:"Dayanan", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Mixer Operator"},
+  {id:194, last:"Magale", first:"Rey Marc Jhay", middle:"Polinio", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Macro Weigher"},
+  {id:195, last:"Maquilan Jr.", first:"Abraham", middle:"Mecaros", dept:"Production Indirect Labor", loc:"HOREB Cebu", pos:"Foreman"},
+  {id:196, last:"Maquilan", first:"Nelmer", middle:"Micaros", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Macro Weigher / Assistant Boiler Operator"},
+  {id:197, last:"Mejias", first:"Manolito", middle:"Estoce", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Pouring Crew"},
+  {id:198, last:"Monte", first:"Joven", middle:"Capute", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Macro Weigher"},
+  {id:199, last:"Muaña", first:"Reynan", middle:"Saldasal", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Pellet Mill Operator"},
+  {id:200, last:"Otero", first:"Mario", middle:"Merquita", dept:"Maintenance", loc:"HOREB Cebu", pos:"Maintenance Crew"},
+  {id:201, last:"Quijano", first:"Benjie", middle:"Rivera", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Bagging Line Crew"},
+  {id:202, last:"Rosellosa Jr.", first:"Michael", middle:"Sumalinog", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Macro Weigher"},
+  {id:203, last:"Sanchez", first:"Arnulfo", middle:"Degamo", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Macro Weigher"},
+  {id:204, last:"Saycon", first:"Richard", middle:"Zerna", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Pouring Crew"},
+  {id:205, last:"Sumatra", first:"Agapito", middle:"Mayol", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Macro Weigher"},
+  {id:206, last:"Caingcoy", first:"John Rey", middle:"Orebia", dept:"Warehouse", loc:"HOREB Cebu", pos:"Forklift Operator"},
+  {id:207, last:"Lapera", first:"Lebert", middle:"Rivera", dept:"Warehouse", loc:"HOREB Cebu", pos:"Forklift Operator"},
+  {id:208, last:"Muñoz", first:"Jaime", middle:"Candones", dept:"Production Direct Labor", loc:"HOREB Cebu", pos:"Basemix Preparer"},
+  {id:209, last:"Simon", first:"Jernel", middle:"Acob", dept:"Logistics", loc:"VPI Isabela", pos:"SAP/Logistics Coordinator"},
+  {id:210, last:"Pagtama", first:"Abegail Anney", middle:"Agtuca", dept:"Sales All Employees", loc:"LUZON", pos:"district sales manager"},
+  {id:211, last:"Campugan", first:"Arthur", middle:"Baranggan", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:212, last:"Paradillo", first:"Cathyren", middle:"Branzuela", dept:"Controlling Department", loc:"CEBU", pos:"Accounting Supervisor"},
+  {id:213, last:"Asis", first:"Luisito", middle:"Giganto", dept:"Controlling Department", loc:"CEBU", pos:"Accounts Payable Specialist"},
+  {id:214, last:"Delos Santos", first:"Rowena", middle:"Pellerin", dept:"Controlling Department", loc:"CEBU", pos:"General Accountant"},
+  {id:215, last:"Tajolosa", first:"Rommel", middle:"Casinio", dept:"Quality Assurance", loc:"BULACAN", pos:"Quality Assurance Inspector"},
+  {id:216, last:"Piala", first:"Emma", middle:"Yanong", dept:"Quality Assurance", loc:"Argao Plant", pos:"Quality Assurance Inspector"},
+  {id:217, last:"Sualog", first:"Mindan", middle:"Manila", dept:"Sales All Employees", loc:"MINDANAO", pos:"Farm Trialist"},
+  {id:218, last:"Arago", first:"Charles", middle:"Carayugan", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager"},
+  {id:219, last:"Are", first:"Rechie", middle:"Bituan", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Warehouse Checker"},
+  {id:220, last:"Alba", first:"Kristine Joy", middle:"Sagador", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Warehouse Coordinator"},
+  {id:221, last:"Caballero", first:"Miguel", middle:"Gutang", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:222, last:"Vinas", first:"Gregorio", middle:"Edano", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:223, last:"Salminao", first:"Jurex", middle:"Serrano", dept:"Sales All Employees", loc:"MINDANAO", pos:"Farm Trialist"},
+  {id:224, last:"Salas", first:"Nhica", middle:"", dept:"Warehouse", loc:"BULACAN", pos:"Warehouse Supervisor"},
+  {id:225, last:"Frejas", first:"Mary Chris", middle:"Pulido", dept:"Treasury", loc:"Makati", pos:"Treasury Specialist"},
+  {id:226, last:"Casinillo", first:"Remar", middle:"Bolo", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Warehouse Checker"},
+  {id:227, last:"Platitas", first:"Rodel", middle:"Ulla", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:228, last:"Yecyec", first:"Jessica", middle:"Beronio", dept:"Warehouse", loc:"ALAE Outside Warehouse", pos:"Warehouse Coordinator"},
+  {id:229, last:"Hambura", first:"Roger", middle:"Avenido", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:230, last:"Etulle", first:"Alfredo", middle:"Toledo", dept:"Logistics", loc:"HOREB Cebu", pos:"Truck Driver"},
+  {id:231, last:"Tingson", first:"Jenerie", middle:"Alera", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:232, last:"Rama", first:"Bernie", middle:"Secretaria", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:233, last:"Boncodin", first:"Klea Belle", middle:"Morandarte", dept:"Controlling Department", loc:"Makati", pos:"Accounts Payable Specialist"},
+  {id:234, last:"Orpilla", first:"Jeraldine", middle:"Limon", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:235, last:"Batulan", first:"Rodzrey", middle:"Ypil", dept:"Quality Assurance", loc:"HOREB Cebu", pos:"Quality Assurance Inspector"},
+  {id:236, last:"Guerrero", first:"Aileen", middle:"Veloso", dept:"Marketing", loc:"BULACAN", pos:"Marketing Manager"},
+  {id:237, last:"Igot", first:"Erwin", middle:"Cortez", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:238, last:"Balmeo", first:"Elmer", middle:"Aquino", dept:"Production Direct Labor", loc:"BUKIDNON PLANT", pos:"Central Control Room Operator"},
+  {id:239, last:"Elpedang", first:"Jerson", middle:"Orboc", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:240, last:"Daclan", first:"Dewi Marie", middle:"Alforque", dept:"Purchasing", loc:"CEBU", pos:"Purchasing Officer"},
+  {id:241, last:"Buenavente", first:"Romeo Jr.", middle:"Avocado", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:242, last:"Sarmiento", first:"Maria Generva", middle:"", dept:"Warehouse", loc:"BULACAN", pos:"SAP Logistics Coordinator"},
+  {id:243, last:"Arsolon", first:"Marjon", middle:"Palma", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:244, last:"Alcantara", first:"Nicanor", middle:"K", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:245, last:"Garcia", first:"Noel", middle:"Pajarito", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:246, last:"Cabrera", first:"Joseph Bernald", middle:"Antonio", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:247, last:"Negrido", first:"Crisanto", middle:"Gonzaga", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:248, last:"Mayo", first:"Herman", middle:"Mirador", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:249, last:"Grecia", first:"Israel", middle:"Porras", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:250, last:"Rubia", first:"Christian Gil", middle:"Algabre", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:251, last:"Asiddao", first:"Heaven John", middle:"", dept:"Treasury", loc:"Makati", pos:"Treasury Specialist"},
+  {id:252, last:"Meriño", first:"Carl Bryan", middle:"Doroliat", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:253, last:"Tica", first:"Jonalyn", middle:"Balauro", dept:"Quality Assurance", loc:"BUKIDNON PLANT", pos:"Quality Assurance Inspector"},
+  {id:254, last:"Ayawan", first:"Angelyn", middle:"Alperante", dept:"Marketing", loc:"CEBU", pos:"Graphic Designer"},
+  {id:255, last:"Gutierrez Jr.", first:"Ervin", middle:"Valer", dept:"Safety", loc:"BULACAN", pos:"HSE Supervisor – Luzon"},
+  {id:256, last:"Fat", first:"Eliazar", middle:"S.", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:257, last:"Ragmac", first:"Rhyan", middle:"Niere", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Warehouse Checker"},
+  {id:258, last:"Rubia", first:"Cherry Gil", middle:"Algabre", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:259, last:"Casinillo", first:"Niño", middle:"Bolo", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Warehouse Coordinator"},
+  {id:260, last:"Reponte", first:"Reysun", middle:"Quezon", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:261, last:"Rosal", first:"Ruben", middle:"Ballesteros", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:262, last:"Cauitan", first:"Jay-ar", middle:"Abanto", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:263, last:"Pascual Jr.", first:"Roman", middle:"Batara", dept:"Production Direct Labor", loc:"VPI Isabela", pos:"Pellet Mill Operator"},
+  {id:264, last:"Benemerito", first:"Samuel", middle:"Marquez", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager"},
+  {id:265, last:"Toylo", first:"Lemuel Kent", middle:"Sudaria", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:266, last:"Revana", first:"Ryan", middle:"Cortez", dept:"Production Direct Labor", loc:"BULACAN", pos:"Central Control Room Operator"},
+  {id:267, last:"Castillo", first:"Alexis Joy", middle:"Moral", dept:"Marketing", loc:"BULACAN", pos:"Marketing Staff"},
+  {id:268, last:"Arellano", first:"Jodan", middle:"Alcoseba", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:269, last:"Urtezuela", first:"Aileen", middle:"Mercader", dept:"Human Resources", loc:"CEBU", pos:"Utility"},
+  {id:270, last:"Garde", first:"Edwin", middle:"Castor", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:271, last:"Catubig", first:"Jomar", middle:"Baya", dept:"Marketing", loc:"HOREB Cebu", pos:"Marketing Staff"},
+  {id:272, last:"Egama", first:"Key Lord Dave", middle:"Juarez", dept:"Quality Assurance", loc:"BUKIDNON PLANT", pos:"QA Inspector"},
+  {id:273, last:"Gorillo", first:"Roel", middle:"Eliaga", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:274, last:"Cosico", first:"Charise", middle:"Caliso", dept:"Administrative Functions", loc:"CEBU", pos:"Company Architect/Admin Officer"},
+  {id:275, last:"Maniega", first:"Elvin", middle:"Jugalbot", dept:"Quality Assurance", loc:"HOREB Cebu", pos:"QA Inspector"},
+  {id:276, last:"Baluyot", first:"Gilbert", middle:"Sulmaca", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:277, last:"Bacaro", first:"Cherlsea Marie", middle:"Tan", dept:"Human Resources", loc:"CEBU", pos:"Talent Acquisition and Analytics Officer"},
+  {id:278, last:"Acaso", first:"Christopher", middle:"Redula", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Forklift Operator"},
+  {id:279, last:"Gargar", first:"Erne", middle:"Estriba", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Forklift Operator"},
+  {id:280, last:"Cavan", first:"Paulo Chino", middle:"Mag-Aso", dept:"Corporate Management", loc:"CEBU", pos:"Company Driver"},
+  {id:281, last:"Acar", first:"Erwin Rico", middle:"Mendoza", dept:"Production Management", loc:"HOREB Cebu", pos:"Plant Manager"},
+  {id:282, last:"Samar", first:"Jhobelle", middle:"Arceo", dept:"Production Indirect Labor", loc:"BULACAN", pos:"Production Coordinator"},
+  {id:283, last:"Bungabong", first:"Rewin", middle:"Manaoat", dept:"Credit and Collection", loc:"Makati", pos:"Credit and Collection Field Assistant"},
+  {id:284, last:"Ferros", first:"Jeffrey", middle:"Mejico", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:285, last:"Salazar", first:"Eric", middle:"Javinez", dept:"Sales All Employees", loc:"VISAYAS", pos:"Regional Sales Manager - Western Visayas"},
+  {id:286, last:"Necio", first:"Armando Jr.", middle:"Crisostomo", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:287, last:"Ersan", first:"Gregorio", middle:"Atillo", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:288, last:"Pening", first:"Cherie Mae", middle:"Micmic", dept:"Credit and Collection", loc:"CEBU", pos:"Credit and Collection Specialist"},
+  {id:289, last:"Fabrigaras", first:"Daphnie Joy", middle:"Marabulas", dept:"Marketing", loc:"BULACAN", pos:"Digital Marketing Specialist"},
+  {id:290, last:"Repeso", first:"Isidro", middle:"Encina", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:291, last:"Robredillo", first:"Vivencio Jr.", middle:"Pomarejos", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:292, last:"Espinal", first:"Silvano", middle:"Cajes", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:293, last:"Icoy", first:"Rico", middle:"Sanchez", dept:"Production Indirect Labor", loc:"HOREB Cebu", pos:"Production Coordinator"},
+  {id:294, last:"Cuyos", first:"Melanie", middle:"Garbo", dept:"Purchasing", loc:"CEBU", pos:"Purchasing Officer"},
+  {id:295, last:"Blancaflor", first:"Ramil", middle:"Henby", dept:"Internal Audit", loc:"CEBU", pos:"Internal Audit Manager"},
+  {id:296, last:"Laguerta", first:"Clint Japheth", middle:"Francisco", dept:"Quality Assurance", loc:"BUKIDNON PLANT", pos:"QC Analyst"},
+  {id:297, last:"Jardin", first:"Jonny", middle:"Martinez", dept:"Logistics", loc:"BUKIDNON PLANT", pos:"Truck Driver"},
+  {id:298, last:"Sasutil", first:"Noel Jr.", middle:"Gargar", dept:"Logistics", loc:"BUKIDNON PLANT", pos:"Truck Driver"},
+  {id:299, last:"Arradaza", first:"Arc Geil", middle:"Damayo", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:300, last:"Pahuyo", first:"Mark", middle:"Balinquit", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:301, last:"Pagsanhan", first:"Glizzette", middle:"Vicente", dept:"Quality Assurance", loc:"BULACAN", pos:"QC Analyst"},
+  {id:302, last:"Mondero", first:"Ralph", middle:"Vingno", dept:"Sales All Employees", loc:"VISAYAS", pos:"Officer In Charge"},
+  {id:303, last:"Holanda", first:"Marie Antoinette", middle:"Maling", dept:"Production Indirect Labor", loc:"CEBU", pos:"Continuous Improvement Lead"},
+  {id:304, last:"Mosqueda", first:"Rex", middle:"Cabunoc", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:305, last:"Cezar", first:"Warren", middle:"Cordez", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:306, last:"Josol", first:"Edward", middle:"Duarte", dept:"Controlling Department", loc:"CEBU", pos:"Accounting Manager"},
+  {id:307, last:"Eguiron", first:"Jonathan", middle:"Narvaez", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager"},
+  {id:308, last:"Ocubillo", first:"Oscar", middle:"Miro", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager"},
+  {id:309, last:"Bacu", first:"Roxan", middle:"Manalili", dept:"Human Resources", loc:"CEBU", pos:"Compensation and Benefits Specialist"},
+  {id:310, last:"Batictic", first:"Herbert", middle:"Giducos", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:311, last:"Colegio", first:"Juliet", middle:"Altobar", dept:"Logistics", loc:"BUKIDNON PLANT", pos:"SAP Logistics Coordinator"},
+  {id:312, last:"Manaog", first:"Josephen", middle:"Catangui", dept:"Sales All Employees", loc:"LUZON", pos:"District Sales Manager"},
+  {id:313, last:"Tampioc", first:"Jake", middle:"Gadiane", dept:"Sales All Employees", loc:"VISAYAS", pos:"District Sales Manager"},
+  {id:314, last:"Ando", first:"Loe", middle:"Casio", dept:"Regulatory and Compliance", loc:"CEBU", pos:"Tax Accountant"},
+  {id:315, last:"Sabino", first:"Arnold", middle:"Garcellano", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:316, last:"Cabugnason", first:"Jomar", middle:"Agir", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:317, last:"Dela Cruz", first:"Jomar", middle:"", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:318, last:"Dinulan", first:"Junifer", middle:"", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:319, last:"Palarca", first:"Matt Louie", middle:"Antonio", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:320, last:"Barotil", first:"Wil Lord", middle:"Balaquit", dept:"Internal Audit", loc:"CEBU", pos:"Auditor"},
+  {id:321, last:"Abalayan", first:"Jokko", middle:"Nadonza", dept:"Sales All Employees", loc:"DAVAO", pos:"Technical Sales Representative"},
+  {id:322, last:"Lim", first:"Cherwin", middle:"Mancenido", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:323, last:"Estorque", first:"Racti May", middle:"Ascarez", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:324, last:"Pabatao", first:"Severino II", middle:"Dompol", dept:"Maintenance", loc:"BUKIDNON PLANT", pos:"Electrical Technician"},
+  {id:325, last:"Castanares", first:"Margie", middle:"Egonia", dept:"Purchasing", loc:"CEBU", pos:"Purchasing Officer"},
+  {id:326, last:"Cañete", first:"Maria Shiena", middle:"Ibale", dept:"Logistics", loc:"HOREB Cebu", pos:"SAP Logistics Coordinator"},
+  {id:327, last:"Aguiton", first:"Hosea", middle:"Maningas", dept:"Maintenance", loc:"BULACAN", pos:"Mechanical Technician"},
+  {id:328, last:"Ballesteros", first:"Ma. Tricia", middle:"Federis", dept:"Human Resources", loc:"Makati", pos:"HR Generalist"},
+  {id:329, last:"Tabar", first:"Michelle", middle:"Sumaya", dept:"Logistics", loc:"HOREB Cebu", pos:"Warehouse Supervisor"},
+  {id:330, last:"Bellita", first:"Jhane Marie", middle:"Pulido", dept:"Human Resources", loc:"CEBU", pos:"Talent Development and Employee Relations Officer"},
+  {id:331, last:"Canicula", first:"Melvin", middle:"Gealolo", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:332, last:"Alim", first:"Wilfredo", middle:"Agrabio", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:333, last:"Padua", first:"Charles Maxim", middle:"Pabillore", dept:"Production Direct Labor", loc:"BUKIDNON PLANT", pos:"Basemix Preparer"},
+  {id:334, last:"Benliro", first:"Edison", middle:"Ausan", dept:"Production Direct Labor", loc:"BULACAN", pos:"Basemix Preparer"},
+  {id:335, last:"Palencia", first:"Odjie", middle:"Bobier", dept:"Production Direct Labor", loc:"BULACAN", pos:"Pellet Mill Helper"},
+  {id:336, last:"Arado", first:"Celso", middle:"Rantayo", dept:"Maintenance", loc:"BULACAN", pos:"Mechanical Technician"},
+  {id:337, last:"Liberato", first:"Jaypee", middle:"Santos", dept:"Production Direct Labor", loc:"BULACAN", pos:"Pellet Mill Helper"},
+  {id:338, last:"Alcantara", first:"Kenneth", middle:"Sano", dept:"Production Direct Labor", loc:"BULACAN", pos:"Bagger Operator"},
+  {id:339, last:"Sta. Maria", first:"Jerrbin", middle:"De Guzman", dept:"Warehouse", loc:"BULACAN", pos:"Logistics Supervisor"},
+  {id:340, last:"Agpalza", first:"Mikael Joshua", middle:"Cabadido", dept:"Maintenance", loc:"VPI Isabela", pos:"Maintenance Planner"},
+  {id:341, last:"Aboga-a", first:"Devenio Jr.", middle:"Calunsag", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:342, last:"Caya-on", first:"Psybe Rose", middle:"Alquiza", dept:"Regulatory and Compliance", loc:"Makati", pos:"Regulatory and Compliance Specialist"},
+  {id:343, last:"Eseco", first:"Jerome", middle:"Mosada", dept:"Quality Assurance", loc:"BULACAN", pos:"Quality Assurance Inspector"},
+  {id:344, last:"Penafiel", first:"Antonio", middle:"Juariza", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:345, last:"Frias", first:"Janica Nichole", middle:"Garbo", dept:"Logistics", loc:"HOREB Cebu", pos:"SAP Logistics Coordinator"},
+  {id:346, last:"Hernandez", first:"Thyron Jay", middle:"Agilam", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:347, last:"Echipare", first:"Vergelyn", middle:"Encina", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:348, last:"Lubrica", first:"Eric", middle:"Roma", dept:"Warehouse", loc:"BUKIDNON PLANT", pos:"Warehouse Checker"},
+  {id:349, last:"Garinggo", first:"Michelle", middle:"Menierva", dept:"Controlling Department", loc:"CEBU", pos:"Accounting Staff"},
+  {id:350, last:"Petinio", first:"Jake Jefferson", middle:"Olvis", dept:"Quality Assurance", loc:"HOREB Cebu", pos:"Quality Assurance Inspector"},
+  {id:351, last:"Casanares", first:"Ginno", middle:"Castillo", dept:"Sales All Employees", loc:"CEBU", pos:"Poultry Specialist / Technical Sales Representative"},
+  {id:352, last:"Minoza", first:"Harriz", middle:"Sumaylo", dept:"Production Indirect Labor", loc:"BUKIDNON PLANT", pos:"Production Coordinator"},
+  {id:353, last:"Moradas", first:"Channy Jean", middle:"Yakapin", dept:"Logistics", loc:"BUKIDNON PLANT", pos:"SAP Logistics Coordinator"},
+  {id:354, last:"Demillo", first:"Gem Dave", middle:"Ravina", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:355, last:"Garcia", first:"Margie", middle:"Leabres", dept:"Controlling Department", loc:"Makati", pos:"Accounts Payable Supervisor"},
+  {id:356, last:"Palenjie", first:"Ricardo Jr.", middle:"Padparan", dept:"Warehouse", loc:"BACOLOD", pos:"Warehouse Checker"},
+  {id:357, last:"Panolino", first:"Zenith", middle:"Didulo", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:358, last:"Otapil", first:"Junrel", middle:"Platil", dept:"Production Indirect Labor", loc:"Argao Plant", pos:"Production Coordinator"},
+  {id:359, last:"Bardaje", first:"John Joey", middle:"Jabeguero", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:360, last:"Agustin", first:"Jessica Mae", middle:"De Leon", dept:"Formulation", loc:"CEBU", pos:"Formulation Specialist"},
+  {id:361, last:"Davis", first:"Lybert", middle:"Indam", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:362, last:"Globio", first:"Robert", middle:"Beato", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:363, last:"Velasquez", first:"Andy", middle:"Salmeron", dept:"Maintenance", loc:"Argao Plant", pos:"Mechanical Technician"},
+  {id:364, last:"Etomay", first:"Jerlyn", middle:"Brigoli", dept:"Purchasing", loc:"CEBU", pos:"Purchasing Officer"},
+  {id:365, last:"Avelino", first:"Mebelyn", middle:"Antonio", dept:"Quality Assurance", loc:"HOREB Cebu", pos:"Quality Assurance Inspector"},
+  {id:366, last:"Gesolga", first:"Celjun", middle:"Mercedes", dept:"Production Direct Labor", loc:"BUKIDNON PLANT", pos:"Central Control Room Operator"},
+  {id:367, last:"Durana", first:"Richard", middle:"Demalata", dept:"Production Management", loc:"BUKIDNON PLANT", pos:"Assistant Plant Manager"},
+  {id:368, last:"Mendoza", first:"Honey Rose", middle:"Garduno", dept:"Quality Assurance", loc:"BULACAN", pos:"Quality Assurance Inspector"},
+  {id:369, last:"Tambagan", first:"Radny", middle:"Cabanog", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representatives"},
+  {id:370, last:"Alenton", first:"Hanlit Christian", middle:"Luchana", dept:"Production Direct Labor", loc:"Argao Plant", pos:"Pellet Mill Operator"},
+  {id:371, last:"Soliva", first:"Laura", middle:"Librel", dept:"Warehouse", loc:"Argao Plant", pos:"Warehouse Checker"},
+  {id:372, last:"Verdida", first:"Anthony", middle:"", dept:"Production Direct Labor", loc:"Argao Plant", pos:"CCR Operator/ Mixer"},
+  {id:373, last:"Gabutero", first:"Monchito Jr.", middle:"Tenebroso", dept:"Production Direct Labor", loc:"Argao Plant", pos:"CCR Operator/ Mixer"},
+  {id:374, last:"Pableo", first:"Jose Orgie", middle:"Estoconing", dept:"Production Direct Labor", loc:"Argao Plant", pos:"Pellet Mill Operator"},
+  {id:375, last:"Mendez", first:"Elsworth", middle:"", dept:"Production Direct Labor", loc:"Argao Plant", pos:"Basemix Preparer"},
+  {id:376, last:"Auxtero", first:"Paul Vincent", middle:"Caong", dept:"Production Indirect Labor", loc:"TORIL, Davao Plant", pos:"Production Coordinator"},
+  {id:377, last:"Lilo-an", first:"Marcelino", middle:"Teves", dept:"Production Direct Labor", loc:"Argao Plant", pos:"Basemix Preparer"},
+  {id:378, last:"Dagpin", first:"John Markel", middle:"Doller", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:379, last:"Intelegando", first:"Felix Jr.", middle:"Coro", dept:"Customer Service Department", loc:"BUKIDNON PLANT", pos:"Customer Service Specialist"},
+  {id:380, last:"Barba", first:"Shene Ryanne", middle:"Licuanan", dept:"Maintenance", loc:"BUKIDNON PLANT", pos:"Mechanical Technician"},
+  {id:381, last:"Piape", first:"Tressia", middle:"Valderama", dept:"Production Indirect Labor", loc:"BUKIDNON PLANT", pos:"Production Coordinator"},
+  {id:382, last:"Aguilar", first:"Philip Roy", middle:"Bardinas", dept:"Maintenance", loc:"BUKIDNON PLANT", pos:"Maintenance Planner"},
+  {id:383, last:"Nano", first:"Vince Adrian", middle:"Malinab", dept:"Quality Assurance", loc:"TORIL, Davao Plant", pos:"Quality Assurance Inspector"},
+  {id:384, last:"Ramasasa", first:"Remz Francis", middle:"Balgwis", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:385, last:"Larios", first:"Bryan Lester", middle:"Lapitan", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:386, last:"Mendiola", first:"John Moses", middle:"Pascasio", dept:"Warehouse", loc:"BULACAN", pos:"Warehouse Checker"},
+  {id:387, last:"Dable", first:"Ernie", middle:"Catunao", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:388, last:"Tan", first:"Russel Camillus", middle:"Jalandoni", dept:"Maintenance", loc:"HOREB Cebu", pos:"Electrical Technician"},
+  {id:389, last:"Pableo", first:"Maricor", middle:"Ombos", dept:"Purchasing", loc:"CEBU", pos:"Senior Buyer- Importation"},
+  {id:390, last:"Castro", first:"Regner", middle:"Ramos", dept:"Production Indirect Labor", loc:"HOREB Cebu", pos:"Production Coordinator"},
+  {id:391, last:"Delos Santos", first:"Danilo", middle:"De Guzman", dept:"Logistics", loc:"BULACAN", pos:"Truck Driver"},
+  {id:392, last:"Ytang", first:"Sanmar", middle:"Sumayang", dept:"Warehouse", loc:"TORIL, Davao Plant", pos:"Warehouse Checker"},
+  {id:393, last:"Sibongga", first:"Winston", middle:"Tano", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:394, last:"Namata", first:"Zhane", middle:"Actub", dept:"Maintenance", loc:"BULACAN", pos:"Electrical Technician"},
+  {id:395, last:"Nacilla", first:"Marie Joan", middle:"Ostria", dept:"Customer Service Department", loc:"HOREB Cebu", pos:"Customer Service Specialist"},
+  {id:396, last:"Mendez III", first:"Alejandro", middle:"Bianzon", dept:"Safety", loc:"HOREB Cebu", pos:"HSE Specialist"},
+  {id:397, last:"Martin", first:"Marc Jamarius", middle:"Juan", dept:"Production Direct Labor", loc:"VPI Isabela", pos:"Pellet Mill Operator"},
+  {id:398, last:"Rivero", first:"Rodenthor", middle:"Castro", dept:"Credit and Collection", loc:"Makati", pos:"Collector/Messenger"},
+  {id:399, last:"Luciano", first:"Angelica", middle:"Tabujara", dept:"Credit and Collection", loc:"BULACAN", pos:"Billing Specialist"},
+  {id:400, last:"Madredano", first:"Jessa", middle:"Pimentel", dept:"Production Indirect Labor", loc:"CCPC", pos:"Production Coordinator"},
+  {id:401, last:"Cascano", first:"Lorena", middle:"Salas", dept:"Logistics", loc:"BULACAN", pos:"SAP Logistics Coordinator"},
+  {id:402, last:"Pallorina", first:"Quendelyn", middle:"Silvino", dept:"Quality Assurance", loc:"TORIL, Davao Plant", pos:"Quality Assurance Inspector"},
+  {id:403, last:"Abais", first:"Cyril", middle:"Cajes", dept:"Controlling Department", loc:"CEBU", pos:"General Accountant"},
+  {id:404, last:"Porlonga", first:"Sabiniano III", middle:"Briones", dept:"Internal Audit", loc:"CEBU", pos:"Internal Auditor"},
+  {id:405, last:"Llavore", first:"Shannien", middle:"Saberon", dept:"Supply Chain Management", loc:"CEBU", pos:"Assistant Supply Chain Manager"},
+  {id:406, last:"Bitco", first:"Ralgen", middle:"Domo", dept:"Production Direct Labor", loc:"BULACAN", pos:"CCR Operator"},
+  {id:407, last:"Peliro", first:"Julius", middle:"Ababa", dept:"Purchasing", loc:"CEBU", pos:"Purchasing Specialist - Spare Parts"},
+  {id:408, last:"Casis", first:"Argie", middle:"Pilapil", dept:"Warehouse", loc:"HOREB Cebu", pos:"Assistant Warehouse Checker"},
+  {id:409, last:"Labadan", first:"Vivian", middle:"Lanzaderas", dept:"Production Direct Labor", loc:"BUKIDNON PLANT", pos:"Process in Line Quality Assurance"},
+  {id:410, last:"Llobrera", first:"Ritchly", middle:"Ometer", dept:"Internal Audit", loc:"CEBU", pos:"Internal Auditor"},
+  {id:411, last:"Esguerra", first:"Michael Anthony", middle:"Reyes", dept:"Warehouse", loc:"BULACAN", pos:"Warehouse Checker"},
+  {id:412, last:"Calingasan", first:"Jeric", middle:"Almarez", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:413, last:"Serna", first:"Jaynil", middle:"Bongcallis", dept:"Purchasing", loc:"BUKIDNON PLANT", pos:"Purchasing Specialist - Spare Parts"},
+  {id:414, last:"Baldivino", first:"Aldrin", middle:"Rosilla", dept:"Sales All Employees", loc:"DAVAO", pos:"Technical Sales Representative"},
+  {id:415, last:"Sameon Jr", first:"Judito", middle:"Delos Ninos", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:416, last:"Mendez", first:"Mark Alpie", middle:"Cutora", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:417, last:"Dofeliz", first:"Meagan Rose", middle:"Gordon", dept:"Production Indirect Labor", loc:"TORIL, Davao Plant", pos:"Production Coordinator"},
+  {id:418, last:"Suralta", first:"Mark Bryan", middle:"Ybanez", dept:"Maintenance", loc:"HOREB Cebu", pos:"Maintenance Supervisor"},
+  {id:419, last:"Dela Cruz", first:"Jovelyn", middle:"Cantuangco", dept:"Production Indirect Labor", loc:"VPI Isabela", pos:"Production Coordinator"},
+  {id:420, last:"Molito", first:"Rochelle", middle:"Andoyo", dept:"Warehouse", loc:"BULACAN", pos:"Warehouse Checker"},
+  {id:421, last:"Quider", first:"Andrew", middle:"Cagoscos", dept:"Logistics", loc:"HOREB Cebu", pos:"Logistics Supervisor"},
+  {id:422, last:"Canoy", first:"Christian", middle:"Ordeniza", dept:"Maintenance", loc:"BUKIDNON PLANT", pos:"Mechanical Technician"},
+  {id:423, last:"Ybañez", first:"Wilson", middle:"Manila", dept:"Logistics", loc:"TORIL, Davao Plant", pos:"SAP Logistics Coordinator"},
+  {id:424, last:"Davirao", first:"Felix", middle:"Potestas", dept:"Warehouse", loc:"Argao Plant", pos:"Warehouse Checker"},
+  {id:425, last:"Ali", first:"Rodel", middle:"Florentino", dept:"Maintenance", loc:"BUKIDNON PLANT", pos:"Electrical Technician"},
+  {id:426, last:"Llegunas", first:"Nino", middle:"Remolino", dept:"Quality Assurance", loc:"Argao Plant", pos:"Quality Assurance Inspector"},
+  {id:427, last:"Ponlaroche", first:"Joel Mark", middle:"Jabaybay", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:428, last:"Magtunao", first:"Michael", middle:"Sanciano", dept:"Warehouse", loc:"BACOLOD", pos:"Warehouse Checker"},
+  {id:429, last:"Taglucot", first:"Joarib", middle:"Cabactulan", dept:"Credit and Collection", loc:"BUKIDNON PLANT", pos:"Collector/Messenger"},
+  {id:430, last:"Cesista", first:"Gilbert", middle:"Anacta", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:431, last:"Luis", first:"Julius", middle:"Nieves", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:432, last:"Delos Santos", first:"Melanie", middle:"Lopez", dept:"Marketing", loc:"BULACAN", pos:"E-commerce Marketing Associate"},
+  {id:433, last:"Cañete", first:"Genevieve", middle:"Ponce", dept:"Warehouse", loc:"HOREB Cebu", pos:"Warehouse Team Leader"},
+  {id:434, last:"Zunajo", first:"Vincen", middle:"Mariano", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:435, last:"Acosta Jr.", first:"Marcelino", middle:"Camat", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:436, last:"Carrera", first:"Joel", middle:"Paclibar", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
+  {id:437, last:"Azarraga", first:"John Cedrick", middle:"Cortel", dept:"Production Direct Labor", loc:"BULACAN", pos:"CCR Operator"},
+  {id:438, last:"Sasutil", first:"Jenny", middle:"Gargar", dept:"Logistics", loc:"BUKIDNON PLANT", pos:"Logistics Driver"},
+  {id:439, last:"Berou", first:"Jonathan", middle:"Aguinid", dept:"Logistics", loc:"BUKIDNON PLANT", pos:"Logistics Driver"},
+  {id:440, last:"Jacinto", first:"Jeorge Michael", middle:"Purificacion", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:441, last:"Carulasan", first:"Vengie", middle:"Taypin", dept:"Maintenance", loc:"LUZON", pos:"Mechanical Technician"},
+  {id:442, last:"Ortega", first:"Louella Jane", middle:"", dept:"Logistics", loc:"Argao Plant", pos:"SAP Logistics Coordinator"},
+  {id:443, last:"Managay", first:"Jovanni", middle:"Manguilimutan", dept:"Sales All Employees", loc:"CEBU", pos:"Technical Sales Representative"},
+  {id:444, last:"Paghubasan", first:"Fernando", middle:"Espinosa", dept:"Logistics", loc:"BULACAN", pos:"Logistics Driver"},
+  {id:445, last:"Molito", first:"Jhoanna Carol", middle:"Andoyo", dept:"Warehouse", loc:"BULACAN", pos:"Warehouse Team Leader"},
+  {id:446, last:"Garcia", first:"Keanne Margarette", middle:"Diocampo", dept:"Production Indirect Labor", loc:"CEBU", pos:"Continuous Improvement Analyst"},
+  {id:447, last:"Gaoat", first:"Marlyn", middle:"Fermin", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:448, last:"Maquilan", first:"Kent Alexson", middle:"Pable", dept:"Warehouse", loc:"HOREB Cebu", pos:"Warehouse Checker/Forklift Operator"},
+  {id:449, last:"Dres", first:"Mulawin", middle:"Bumatay", dept:"Logistics", loc:"VPI Isabela", pos:"SAP Logistics Coordinator"},
+  {id:450, last:"Ponteros", first:"Christian", middle:"", dept:"Production Indirect Labor", loc:"Argao Plant", pos:"Production Coordinator"},
+  {id:451, last:"Estrada", first:"Michael Rey", middle:"Navarette", dept:"Sales All Employees", loc:"LUZON", pos:"Technical Sales Representative"},
+  {id:452, last:"Arpon", first:"Carlos Miguel", middle:"Balucan", dept:"Safety", loc:"BUKIDNON PLANT", pos:"HSE Specialist"},
+  {id:453, last:"Ebao", first:"Marc", middle:"Neri", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:454, last:"Medrano", first:"Paul Michael", middle:"Monforte", dept:"Logistics", loc:"BULACAN", pos:"Logistics/Truck Driver"},
+  {id:455, last:"Poliran", first:"Earl John", middle:"Vallente", dept:"Information Technology", loc:"CEBU", pos:"IT Assistant"},
+  {id:456, last:"Gumanoy", first:"Charly", middle:"Aunzo", dept:"Sales All Employees", loc:"MINDANAO", pos:"Technical Sales Representative"},
+  {id:457, last:"Bacaltos", first:"Manuelito", middle:"Advincula", dept:"Information Technology", loc:"CEBU", pos:"Software Specialist, AI Developer & Integration"},
 ];
 
-const entries=[
-  {cat:"office",keys:["overview","total","records","summary","dataset","how many","464"],q:"How many office supply records are there?",a:"The dataset has <b>464</b> office supply purchase records with <b>341 unique items</b> and <b>4,413 total units</b>. That's an average of <b>9.51 units/order</b> across <b>104 calendar days</b> (Jan 1 – Apr 13, 2026), or roughly <b>4.46 orders placed per day</b>."},
-  {cat:"office",keys:["ballpen","pen","writing instrument","marker","pilot","ink"],q:"What are the top pen & ballpen purchases?",a:"Pens/ballpens are the <b>highest-volume sub-category</b> at <b>823 units</b> across 50 orders (18.6% of all units). Key items:<br>• <b>MKTG BALLPEN FOR EVENTS</b> — 500 units (single bulk order)<br>• <b>PILOT PERMANENT MARKER</b> — 300 units (single order by OPR01)<br>• <b>Ballpen</b> — 76 units across 6 orders (most consistent recurring item)"},
-  {cat:"office",keys:["tape","electrical","teflon","rubber","scotch","packing","armak"],q:"Tell me about tape purchases.",a:"Tape is the <b>broadest sub-category</b> with <b>53 unique variants</b>, <b>92 orders</b>, and <b>449 units</b>. Most reordered items:<br>• <b>SP ELECTRICAL TAPE (ARMAK)</b> — 8 orders / 46 units<br>• <b>SP TEFLON TAPE</b> — 7 orders / 50 units<br>• <b>CORRECTION TAPE</b> — 5 orders / 35 units (avg 6.4/order)"},
-  {cat:"office",keys:["paper","bond","a4","manila","bondpaper"],q:"What about paper item purchases?",a:"Paper covers <b>46 unique variants</b>, <b>58 orders</b>, and <b>749 units</b>:<br>• <b>MANILA PAPER</b> — 180 units in a single order (largest paper purchase)<br>• <b>A4 Bondpaper</b> and <b>BOND PAPER A4</b> — each ordered 3 times for steady replenishment."},
-  {cat:"office",keys:["envelope","brown","long","short","expanding","document routing"],q:"How are envelopes purchased?",a:"Envelopes include <b>9 variants</b> across <b>14 transactions</b> totaling <b>480 units</b>. Average <b>34.3 units/order</b> — the highest per-transaction average, driven by bulk document-routing and filing needs."},
-  {cat:"office",keys:["stapler","correction","clip","id clip","metal"],q:"What about staplers, clips & correction items?",a:"Low-volume but recurring needs:<br>• <b>Stapler</b> — 4 orders / 7 units<br>• <b>CORRECTION TAPE</b> — 5 orders / 35 units (avg 6.4/order)<br>• <b>ID CLIP METAL</b> — single order of 100 units (bulk for ID distribution)"},
-  {cat:"office",keys:["packaging","paper towel","consumable"],q:"What consumables have recurring orders?",a:"High-frequency consumables:<br>• <b>Packaging Tape</b> — 3 orders / 70 units total<br>• <b>Paper Towel</b> — multiple orders (2 currently open/pending)<br>• <b>Scotch Tape</b> — recurring with 2 open orders<br>These items show procurement delays."},
-  {cat:"office",keys:["printer","ink","cartridge","dcp","cyan","magenta","black","pink"],q:"What's the status of printer ink orders?",a:"<b>DCP-T250W INK</b> in all four colors — Black, Cyan, Magenta, and Pink — each carry <b>1 open order</b>. Full printer consumables replenishment cycle pending."},
-  {cat:"office",keys:["bulk","largest","biggest","500","300","highest quantity","over 100"],q:"What are the largest bulk orders?",a:"Only <b>4 orders exceeded 100 units</b>:<br>1. <b>MKTG BALLPEN FOR EVENTS</b> — 500 units<br>2. <b>PILOT PERMANENT MARKER</b> — 300 units<br>3. <b>MANILA PAPER</b> — 180 units<br>4. <b>Envelope Brown Short & Long</b> — 100 units each<br>The average order is only 9.51 units."},
-  {cat:"office",keys:["small","single","1 unit","few","frequency","once","need only"],q:"How common are small/single-unit orders?",a:"Small orders dominate: <b>72 orders (15.5%)</b> were for just 1 unit, and <b>257 orders (55.4%)</b> had fewer than 5 units. Additionally, <b>264 of 341 unique items (77.4%)</b> were ordered exactly once — most supplies are need-only purchases."},
-  {cat:"office",keys:["corpfn","corpfn02","top department","most orders","department leader","admin"],q:"What does the top department (CORPFN02) order?",a:"<b>CORPFN02</b> leads with <b>113 orders</b> and <b>1,084 units</b> — highest in both frequency and volume. Purchases dominated by <b>envelope variants</b>: Brown Short, Brown Long, Expanding, and Plastic Envelopes."},
-  {cat:"office",keys:["opr01","operations","maintenance","field","sandpaper","grit"],q:"What does OPR01 purchase?",a:"<b>OPR01</b> ranks 2nd with <b>67 orders / 904 units</b>. Top items:<br>• <b>PILOT PERMANENT MARKER</b> — 300 units<br>• <b>Sand Paper 400grit & 1000grit</b> — 50 units each<br>• <b>PILOT INK REFILL</b><br>These support field and maintenance operations."},
-  {cat:"office",keys:["mktg","mktg04","marketing","event","bulk stationery"],q:"How does MKTG04 buy differently?",a:"<b>MKTG04</b> is 3rd by quantity: <b>747 units</b> from only <b>17 orders</b>, averaging a massive <b>43.9 units/order</b>. This is entirely driven by event-related bulk stationery. Most departments average under 10 units/order."},
-  {cat:"office",keys:["other department","sc03","sc02","sc01","opr02","opr04","fqa","f&qa"],q:"What about the other departments?",a:"Remaining departments:<br>• <b>SC03</b> — 44 orders / 456 units (22 open orders — most unresolved)<br>• <b>OPR02</b> — 16 orders / 306 units<br>• <b>SC02</b> — 27 orders / 184 units<br>• <b>SC01</b> — 31 orders / 146 units<br>• <b>OPR04</b> — 25 orders / 133 units<br>• <b>F&QA02</b> — 28 orders / 95 units (10 open orders)"},
-  {cat:"office",keys:["top three","combined","62 percent","three departments","concentration"],q:"How concentrated is purchasing?",a:"Highly concentrated. The top 3 departments — <b>CORPFN02, OPR01, MKTG04</b> — account for <b>2,735 units (62.0%)</b> of all office supply units. CORPFN02 + OPR01 alone represent <b>38.8% of orders</b> and <b>45.0% of units</b>."},
-  {cat:"misc",keys:["screwdriver","pliers","tools","hand tool","set"],q:"Are there tool/hardware purchases?",a:"<b>SP SCREW DRIVERS AND PLIERS SET</b> was ordered <b>4 times</b> for a total of <b>6 units</b>. Classified under general office but clearly maintenance/facility tools."},
-  {cat:"misc",keys:["tape measure","laser","measurement","measuring"],q:"What about measurement tools?",a:"<b>SP TAPE MEASURE WITH LASER</b> had <b>4 orders</b> but only <b>2 units total</b> — indicating individual unit replacements rather than bulk buys."},
-  {cat:"misc",keys:["nylon","grass cutter","string","lawn","garden","outdoor"],q:"Are there outdoor/maintenance supply orders?",a:"<b>SP NYLON STRING FOR GRASS CUTTER</b> was ordered <b>5 times</b> for only <b>3 units total</b>. Also has <b>3 pending/open orders</b> as of April 13 — the most unresolved transactions."},
-  {cat:"misc",keys:["sandpaper","sand paper","grit","abrasive","400","1000"],q:"What sandpaper/abrasive items are purchased?",a:"OPR01 ordered <b>Sand Paper 400grit</b> and <b>Sand Paper 1000grit</b> at <b>50 units each</b>. Operational supplies for surface preparation."},
-  {cat:"misc",keys:["id clip","id card","identification","badge","metal clip"],q:"What about ID/badge related items?",a:"<b>ID CLIP METAL</b> was purchased in a <b>single order of 100 units</b> — likely for a company-wide ID badge distribution or replacement cycle."},
-  {cat:"misc",keys:["whiteboard","marker board","dry erase","presentation"],q:"Any whiteboard/presentation supplies?",a:"<b>Whiteboard Marker</b> was ordered once for <b>60 units</b>. Combined with permanent markers (Red: 60, Black: 50), marking supplies total over <b>170 units</b>."},
-  {cat:"misc",keys:["permanent marker","red marker","black marker","marking","pilot"],q:"What permanent markers were bought?",a:"Significant marking supply purchases:<br>• <b>PILOT PERMANENT MARKER</b> — 300 pcs (OPR01)<br>• <b>Permanent Marker (Red)</b> — 60 units<br>• <b>Permanent Marker (Black)</b> — 50 units<br>• <b>Whiteboard Marker</b> — 60 units"},
-  {cat:"misc",keys:["ink refill","pilot ink","refill","cartridge refill"],q:"What about ink refills?",a:"<b>PILOT INK REFILL</b> is among OPR01's top items, supporting their heavy marker usage. Combined with the <b>DCP-T250W printer ink</b> orders (4 colors, all pending), ink/refill items represent a consistent but currently backlogged supply need."},
-  {cat:"both",keys:["january","jan","first month","busiest"],q:"How was January 2026?",a:"January was the <b>busiest month by transactions</b>: <b>201 orders / 1,036 units</b>, with the highest daily rate at <b>6.5 orders/day</b>. Likely driven by start-of-year stocking."},
-  {cat:"both",keys:["february","feb","highest volume","surge","2172"],q:"Why was February the highest volume month?",a:"February had <b>2,172 units from 155 orders</b> — the largest volume month despite fewer transactions. Surge driven by <b>bulk stationery replenishment</b>."},
-  {cat:"both",keys:["march","april","decline","slowdown","q1","trend"],q:"What happened in March and April?",a:"Significant drop: <b>March</b> fell to 79 orders / 820 units. <b>April</b> (13 days) has just 29 orders / 385 units. Jan+Feb account for <b>76.7% of orders</b> and <b>72.7% of units</b>."},
-  {cat:"both",keys:["day of week","thursday","monday","weekend","saturday","sunday"],q:"Which days see the most purchasing?",a:"<b>Thursday</b> leads with <b>145 orders (31.2%)</b>, followed by Monday (97) and Wednesday (83). Saturday still had <b>68 orders</b>. <b>No orders on any Sunday</b>."},
-  {cat:"both",keys:["open","pending","unresolved","backlog","unfulfilled","53"],q:"How many orders are still open?",a:"<b>53 orders (11.4%)</b> remain open as of April 13. By department:<br>• <b>SC03</b> — 22 open (highest)<br>• <b>OPR01</b> — 16 open<br>• <b>F&QA02</b> — 10 open"},
-  {cat:"both",keys:["closed","fulfilled","completion","status","88"],q:"What's the order fulfillment rate?",a:"<b>411 of 464 orders (88.6%)</b> are closed/fulfilled. The 11.4% open rate reflects steady demand with minor fulfillment backlogs."},
-  {cat:"both",keys:["percent","share","all categories","proportion","total dataset","3363","716741"],q:"How do office supplies compare to all categories?",a:"Office supplies are <b>13.8%</b> of all 3,363 purchase records but only <b>0.62%</b> of 716,741 total units. High-frequency, low-volume category."}
+/* === SUPERVISOR HIERARCHY === */
+const RANK_PATTERNS = [
+  [1,  /president|ceo|chief executive/i],
+  [2,  /executive vice president|\bevp\b|group finance officer/i],
+  [3,  /chief.*controller|chief finance|chief operations/i],
+  [4,  /\bdirector\b|regional plant manager|plant manager|regional sales manager|regional supervisor/i],
+  [5,  /key accounts manager|district sales manager|operations manager|formulation.*manager|marketing manager|hr manager|finance manager|accounting manager|warehouse manager|customer service manager|purchasing manager|supply chain manager|credit and collection manager|internal audit manager|it manager|assistant plant manager|assistant supply chain manager|\bmanager\b/i],
+  [6,  /\bsupervisor\b|foreman|team leader|officer in charge|continuous improvement lead|\bhead\b/i],
+  [7,  /senior buyer|\bsr\.|senior\b|\blead\b/i],
+  [8,  /\bofficer\b|specialist|coordinator|analyst|architect|generalist/i],
+  [9,  /associate|assistant\b|junior\b/i],
+  [10, /staff|trialist|representative|inspector|technician|operator|driver|messenger|checker|crew|sewer|batcher|weigher|preparer|basemix|utility|helper|payroll master|tax accountant|general accountant|graphic designer|forklift operator/i],
 ];
+function rankFor(pos){
+  if(!pos) return 11;
+  for(const [r,re] of RANK_PATTERNS) if(re.test(pos)) return r;
+  return 11;
+}
+const LEADER_RE = /manager|supervisor|head\b|director|president|ceo|evp|chief|officer in charge|foreman|team leader|continuous improvement lead|plant manager|regional/i;
+function isLeader(pos){ return LEADER_RE.test(pos||""); }
 
-function showPage(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  btn.classList.add('active');
+function findSupervisor(emp){
+  if(!emp) return null;
+  const myRank = rankFor(emp.pos);
+  if(myRank <= 1) return {topOfChain:true};
+  let deptCands = EMPLOYEES.filter(e => e.id !== emp.id && e.dept === emp.dept && rankFor(e.pos) < myRank);
+  // Tier 1: same dept, same loc, leader title
+  let t1 = deptCands.filter(e => e.loc === emp.loc && isLeader(e.pos));
+  if(t1.length){ t1.sort((a,b) => rankFor(a.pos) - rankFor(b.pos)); return t1[0]; }
+  // Tier 2: same dept, same loc, any
+  let t2 = deptCands.filter(e => e.loc === emp.loc);
+  if(t2.length){ t2.sort((a,b) => rankFor(a.pos) - rankFor(b.pos)); return t2[0]; }
+  // Tier 3: same dept, any loc, leader title
+  let t3 = deptCands.filter(e => isLeader(e.pos));
+  if(t3.length){ t3.sort((a,b) => rankFor(a.pos) - rankFor(b.pos)); return {...t3[0], crossLoc:true}; }
+  // Tier 4: same dept, any loc, any
+  if(deptCands.length){
+    deptCands.sort((a,b) => rankFor(a.pos) - rankFor(b.pos));
+    return {...deptCands[0], crossLoc:true};
+  }
+  // Tier 5: org top
+  const orgTop = EMPLOYEES.filter(e => rankFor(e.pos) <= 2);
+  if(orgTop.length) return {...orgTop[0], crossDept:true};
+  return null;
 }
 
-function timeStr(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+/* === STATE === */
+let state = {requestor:null, supervisor:null, supervisorSource:'auto', status:'Draft'};
 
-// CHARTS
-window.addEventListener('DOMContentLoaded',()=>{
-  new Chart(document.getElementById('trendChart'),{type:'bar',data:{labels:months,datasets:[
-    {type:'line',label:'Units',data:monthly.map(m=>m.qty),borderColor:'#2563eb',backgroundColor:'#2563eb',borderWidth:2.5,pointRadius:5,tension:0.3,yAxisID:'y'},
-    {type:'bar',label:'Orders',data:monthly.map(m=>m.orders),backgroundColor:'rgba(13,148,136,0.3)',yAxisID:'y'}
-  ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:10}}}},scales:{y:{grid:{color:'#f0f2f5'},ticks:{font:{family:'DM Sans',size:10}}}}}});
+/* === INIT === */
+function init(){
+  const today = new Date();
+  document.getElementById('todayDate').textContent = today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const yy=String(today.getFullYear()).slice(2), mm=String(today.getMonth()+1).padStart(2,'0'), dd=String(today.getDate()).padStart(2,'0');
+  document.getElementById('prNo').textContent = 'PR-' + yy+mm+dd + '-' + String(Math.floor(Math.random()*9999)).padStart(4,'0');
+  document.getElementById('dateReq').value = today.toISOString().slice(0,10);
+  addItemRow();
+  setupEmpSearch();
+  setupSupOverrideSearch();
+}
 
-  new Chart(document.getElementById('stackChart'),{type:'bar',data:{labels:months,datasets:top6.map((d,i)=>({label:d,data:months.map(m=>deptMonth[d][m]||0),backgroundColor:deptColors[i]}))},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:10}}}},scales:{x:{stacked:true},y:{stacked:true,grid:{color:'#f0f2f5'},ticks:{font:{family:'DM Sans',size:10}}}}}});
-
-  const maxScore=Math.max(...anomaly.map(a=>a.score));
-  const riskColors=anomaly.map(a=>a.risk==='Critical'?'#dc2626':a.risk==='High'?'#d97706':a.risk==='Medium'?'#2563eb':'#cbd5e1');
-  new Chart(document.getElementById('riskChart'),{type:'bar',data:{labels:anomaly.map(a=>a.dept),datasets:[{data:anomaly.map(a=>a.score),backgroundColor:riskColors,borderRadius:4}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{max:maxScore*1.2,grid:{color:'#f0f2f5'},ticks:{font:{family:'DM Sans',size:10}}},y:{ticks:{font:{family:'DM Sans',size:11}}}}}});
-
-  const tb=document.getElementById('riskBody');
-  anomaly.forEach((a,i)=>{
-    const rc=a.risk==='Critical'?'risk-crit':a.risk==='High'?'risk-high':a.risk==='Medium'?'risk-med':'risk-low';
-    tb.innerHTML+=`<tr><td style="font-weight:600">${a.dept}</td><td class="${rc}">${a.risk}</td><td class="r">${a.score}</td><td class="r">${a.zscore}</td><td class="r">${a.mad}</td><td class="r">${a.skew}x</td><td class="r">${a.volume.toLocaleString()}</td><td class="r">${a.orders}</td><td class="r">${a.pct}%</td></tr>`;
+/* === EMP SEARCH === */
+function setupEmpSearch(){
+  const input = document.getElementById('empSearch');
+  const dd = document.getElementById('empDropdown');
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if(!q){ dd.classList.remove('open'); return; }
+    const matches = EMPLOYEES.filter(e =>
+      e.last.toLowerCase().includes(q) ||
+      e.first.toLowerCase().includes(q) ||
+      (e.middle && e.middle.toLowerCase().includes(q))
+    ).slice(0,20);
+    if(!matches.length){ dd.innerHTML = '<div class="dropitem" style="color:#94a3b8">No employee found</div>'; dd.classList.add('open'); return; }
+    dd.innerHTML = matches.map(e =>
+      '<div class="dropitem" data-id="'+e.id+'">' +
+        '<div><div class="nm">'+e.last+', '+e.first+(e.middle?' '+e.middle:'')+'</div><div class="dp">'+e.dept+' &mdash; '+e.loc+'</div></div>' +
+        '<div class="ps">'+e.pos+'</div>' +
+      '</div>'
+    ).join('');
+    dd.classList.add('open');
+    dd.querySelectorAll('.dropitem[data-id]').forEach(it => {
+      it.onclick = () => selectEmployee(parseInt(it.dataset.id));
+    });
   });
+  input.addEventListener('focus', () => { if(input.value.trim()) dd.classList.add('open'); });
+  document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) dd.classList.remove('open'); });
+}
 
-  // FAQ LIST
-  const fl=document.getElementById('faqList');
-  const catLabel={office:'Office',misc:'Misc',both:'Cross-cutting'};
-  entries.forEach((e,i)=>{
-    const btn=document.createElement('button');btn.className='faq-btn';
-    btn.innerHTML=`<span class="faq-tag ${e.cat}">${catLabel[e.cat]}</span>${e.q}`;
-    btn.onclick=()=>askFaq(i);
-    fl.appendChild(btn);
+function selectEmployee(id){
+  const emp = EMPLOYEES.find(e => e.id === id);
+  if(!emp) return;
+  state.requestor = emp;
+  document.getElementById('empSearch').value = emp.last+', '+emp.first+(emp.middle?' '+emp.middle:'');
+  document.getElementById('empDept').value = emp.dept;
+  document.getElementById('empLoc').value = emp.loc;
+  document.getElementById('empPos').value = emp.pos;
+  document.getElementById('empDropdown').classList.remove('open');
+  state.supervisor = findSupervisor(emp);
+  state.supervisorSource = 'auto';
+  updateSupervisorCard();
+}
+
+function updateSupervisorCard(){
+  const sup = state.supervisor;
+  const card = document.getElementById('supCard');
+  document.getElementById('supSource').textContent = state.supervisorSource === 'manual' ? '(manually set)' : '(auto-detected)';
+  if(!sup){
+    card.classList.remove('found');
+    document.getElementById('supName').textContent = 'No supervisor found';
+    document.getElementById('supPos').textContent = '';
+    document.getElementById('supLoc').textContent = '';
+    return;
+  }
+  if(sup.topOfChain){
+    card.classList.remove('found');
+    document.getElementById('supName').textContent = 'Top of organizational hierarchy';
+    document.getElementById('supPos').textContent = 'No further approval needed';
+    document.getElementById('supLoc').textContent = '';
+    return;
+  }
+  card.classList.add('found');
+  document.getElementById('supName').textContent = sup.last+', '+sup.first+(sup.middle?' '+sup.middle:'');
+  document.getElementById('supPos').textContent = sup.pos;
+  let locTxt = sup.dept+' — '+sup.loc;
+  if(sup.crossDept) locTxt += ' (cross-department)';
+  else if(sup.crossLoc) locTxt += ' (cross-location)';
+  document.getElementById('supLoc').textContent = locTxt;
+}
+
+/* === SUPERVISOR OVERRIDE === */
+function openSupOverride(){
+  if(!state.requestor){ toast('Select an employee first','error'); return; }
+  document.getElementById('supOverrideWrap').style.display = 'block';
+  document.getElementById('supOverrideSearch').value = '';
+  document.getElementById('supOverrideSearch').focus();
+}
+function closeSupOverride(){
+  document.getElementById('supOverrideWrap').style.display = 'none';
+  document.getElementById('supOverrideDropdown').classList.remove('open');
+}
+function resetSupervisor(){
+  if(!state.requestor) return;
+  state.supervisor = findSupervisor(state.requestor);
+  state.supervisorSource = 'auto';
+  updateSupervisorCard();
+  closeSupOverride();
+  toast('Supervisor reset to auto-detected','info');
+}
+function setupSupOverrideSearch(){
+  const input = document.getElementById('supOverrideSearch');
+  const dd = document.getElementById('supOverrideDropdown');
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if(!q){ dd.classList.remove('open'); return; }
+    const matches = EMPLOYEES.filter(e =>
+      (state.requestor ? e.id !== state.requestor.id : true) && (
+        e.last.toLowerCase().includes(q) ||
+        e.first.toLowerCase().includes(q) ||
+        e.pos.toLowerCase().includes(q) ||
+        e.dept.toLowerCase().includes(q)
+      )
+    ).slice(0,20);
+    if(!matches.length){ dd.innerHTML = '<div class="dropitem" style="color:#94a3b8">No employee found</div>'; dd.classList.add('open'); return; }
+    dd.innerHTML = matches.map(e =>
+      '<div class="dropitem" data-id="'+e.id+'">' +
+        '<div><div class="nm">'+e.last+', '+e.first+(e.middle?' '+e.middle:'')+'</div><div class="dp">'+e.dept+' &mdash; '+e.loc+'</div></div>' +
+        '<div class="ps">'+e.pos+'</div>' +
+      '</div>'
+    ).join('');
+    dd.classList.add('open');
+    dd.querySelectorAll('.dropitem[data-id]').forEach(it => {
+      it.onclick = () => {
+        const sup = EMPLOYEES.find(e => e.id === parseInt(it.dataset.id));
+        if(!sup) return;
+        state.supervisor = sup;
+        state.supervisorSource = 'manual';
+        updateSupervisorCard();
+        closeSupOverride();
+        toast('Supervisor manually set','success');
+      };
+    });
   });
-
-  // WELCOME
-  addMsg(`Welcome! I'm your <b>General Purchasing FAQ Assistant</b>. I cover <b>30 topics</b> from the Jan–Apr 2026 purchasing report.<br><br>Type a keyword or pick a topic from the sidebar!`,'bot');
-  showChips([0,8,10,23,27]);
-});
-
-const msgArea=document.getElementById('messages');
-const input=document.getElementById('userInput');
-const sendBtn=document.getElementById('sendBtn');
-let answered=new Set();
-
-function updateCounter(){
-  const c=document.getElementById('counter');
-  c.textContent=answered.size>0?`${answered.size} of 30 topics explored`:'';
+  document.addEventListener('click', e => { if(!e.target.closest('#supOverrideWrap')) dd.classList.remove('open'); });
 }
 
-function addMsg(html,type,cat){
-  const d=document.createElement('div');d.className='msg '+type;
-  const catTag=cat?`<span class="faq-tag ${cat}" style="margin-bottom:6px;display:inline-block">${{office:'Office',misc:'Misc',both:'Cross-cutting'}[cat]}</span><br>`:'';
-  d.innerHTML=`<div class="bubble">${type==='bot'?catTag:''}${html}</div><div class="time">${timeStr()}</div>`;
-  msgArea.appendChild(d);
-  msgArea.scrollTop=msgArea.scrollHeight;
-  return d;
+/* === ITEM ROWS === */
+let itemCounter = 0;
+function addItemRow(){
+  itemCounter++;
+  const id = itemCounter;
+  const tbody = document.getElementById('itemsBody');
+  const tr = document.createElement('tr');
+  tr.dataset.id = id;
+  tr.innerHTML =
+    '<td class="c" style="font-weight:600;color:#475569">'+(tbody.children.length+1)+'</td>' +
+    '<td><input type="text" placeholder="e.g. Bondpaper A4 substance 20" oninput="recalc()"></td>' +
+    '<td><input type="number" class="num" min="0" step="0.01" placeholder="0" oninput="recalc()"></td>' +
+    '<td><input type="text" placeholder="pcs / pack / ream"></td>' +
+    '<td><input type="number" class="num" min="0" step="0.01" placeholder="0.00" oninput="recalc()"></td>' +
+    '<td class="total-cell">PHP 0.00</td>' +
+    '<td><input type="text" placeholder="Optional"></td>' +
+    '<td><button class="del-btn" onclick="deleteRow('+id+')" title="Remove">&times;</button></td>';
+  tbody.appendChild(tr);
+  renumberRows();
 }
 
-function showChips(indices){
-  const cd=document.createElement('div');cd.className='chips';
-  indices.forEach(i=>{
-    const c=document.createElement('button');c.className='chip';c.textContent=entries[i].q;
-    c.onclick=()=>{cd.remove();askFaq(i)};
-    cd.appendChild(c);
+function deleteRow(id){
+  const tr = document.querySelector('tr[data-id="'+id+'"]');
+  if(tr && document.getElementById('itemsBody').children.length > 1) tr.remove();
+  else toast('At least one item row is required','error');
+  renumberRows();
+  recalc();
+}
+
+function renumberRows(){
+  document.querySelectorAll('#itemsBody tr').forEach((tr,i) => { tr.querySelector('td.c').textContent = i+1; });
+}
+
+function recalc(){
+  let subtotal = 0;
+  document.querySelectorAll('#itemsBody tr').forEach(tr => {
+    const qty = parseFloat(tr.querySelectorAll('input')[1].value) || 0;
+    const price = parseFloat(tr.querySelectorAll('input')[3].value) || 0;
+    const total = qty * price;
+    tr.querySelector('.total-cell').textContent = 'PHP ' + total.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    subtotal += total;
   });
-  msgArea.appendChild(cd);
-  msgArea.scrollTop=msgArea.scrollHeight;
+  const vat = subtotal * 0.12;
+  const grand = subtotal + vat;
+  document.getElementById('subtotal').textContent = 'PHP ' + subtotal.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('vat').textContent = 'PHP ' + vat.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('grandTotal').textContent = 'PHP ' + grand.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
-function askFaq(idx){
-  const e=entries[idx];
-  addMsg(e.q,'user');
-  setTimeout(()=>{
-    addMsg(e.a,'bot',e.cat);
-    answered.add(idx);updateCounter();
-    const rem=[];for(let i=0;i<entries.length;i++){if(!answered.has(i))rem.push(i);if(rem.length>=4)break}
-    if(rem.length>0)showChips(rem);
-  },300);
+/* === STATUS & ACTIONS === */
+function setStatus(s){
+  state.status = s;
+  document.getElementById('prStatus').className = 'status-badge ' + s.toLowerCase();
+  document.getElementById('statusText').textContent = s;
 }
 
-function matchQuery(q){
-  q=q.toLowerCase();let best=-1,bestS=0;
-  entries.forEach((e,i)=>{let s=0;e.keys.forEach(k=>{if(q.includes(k))s++});if(s>bestS){bestS=s;best=i}});
-  return best;
+function validate(){
+  if(!state.requestor){ toast('Please select an employee first','error'); return false; }
+  if(!document.getElementById('dateReq').value){ toast('Date Requested is required','error'); return false; }
+  if(!document.getElementById('dateNeeded').value){ toast('Date Needed is required','error'); return false; }
+  if(!document.getElementById('category').value){ toast('Category is required','error'); return false; }
+  if(!document.getElementById('purpose').value.trim()){ toast('Please provide a justification','error'); return false; }
+  const validItems = [...document.querySelectorAll('#itemsBody tr')].filter(tr => {
+    const desc = tr.querySelectorAll('input')[0].value.trim();
+    const qty = parseFloat(tr.querySelectorAll('input')[1].value) || 0;
+    return desc && qty > 0;
+  });
+  if(!validItems.length){ toast('Please add at least one item with description and quantity','error'); return false; }
+  return true;
 }
 
-function handleSend(){
-  const val=input.value.trim();if(!val)return;
-  addMsg(val,'user');input.value='';
-  const idx=matchQuery(val);
-  setTimeout(()=>{
-    if(idx>=0){
-      addMsg(entries[idx].a,'bot',entries[idx].cat);
-      answered.add(idx);updateCounter();
-    }else{
-      addMsg("I have <b>30 topics</b> covering general purchasing data. Try asking about:<br>• <b>Pens, tape, paper, envelopes</b> (office)<br>• <b>Tools, sandpaper, grass cutter, markers</b> (misc)<br>• <b>Departments, monthly trends, open orders</b> (cross-cutting)<br><br>Or just pick a topic from the sidebar!",'bot','both');
-    }
-    const rem=[];for(let i=0;i<entries.length;i++){if(!answered.has(i))rem.push(i);if(rem.length>=4)break}
-    if(rem.length>0)showChips(rem);
-  },300);
+function submitPR(){
+  if(!validate()) return;
+  setStatus('Pending');
+  const supName = state.supervisor && !state.supervisor.topOfChain ? state.supervisor.last+', '+state.supervisor.first : 'supervisor';
+  toast('Submitted to ' + supName + ' for approval','success');
 }
 
-sendBtn.onclick=handleSend;
-input.onkeydown=e=>{if(e.key==='Enter')handleSend()};
+function approvePR(){
+  if(state.status === 'Draft'){ toast('Submit the PR first before approving','info'); return; }
+  if(state.status === 'Approved'){ toast('Already approved','info'); return; }
+  setStatus('Approved');
+  toast('Purchase Request approved','success');
+}
+
+function openRejectModal(){
+  if(state.status === 'Draft'){ toast('Submit the PR first before rejecting','info'); return; }
+  document.getElementById('rejectModal').classList.add('open');
+}
+function closeRejectModal(){ document.getElementById('rejectModal').classList.remove('open'); }
+function confirmReject(){
+  const r = document.getElementById('rejectReason').value.trim();
+  if(!r){ toast('Please provide a rejection reason','error'); return; }
+  document.getElementById('supRemarks').value = (document.getElementById('supRemarks').value + '\n[REJECTED] ' + r).trim();
+  setStatus('Rejected');
+  closeRejectModal();
+  toast('Purchase Request rejected and returned to requestor','error');
+}
+
+function resetApproval(){
+  setStatus('Draft');
+  document.getElementById('supRemarks').value = '';
+  toast('Approval reset to Draft','info');
+}
+
+function clearForm(){
+  if(!confirm('Clear the entire form? This cannot be undone.')) return;
+  document.getElementById('empSearch').value = '';
+  ['empDept','empLoc','empPos','dateNeeded','costCenter','supplier','purpose','supRemarks'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('category').value = '';
+  document.getElementById('priority').value = 'Normal';
+  document.getElementById('itemsBody').innerHTML = '';
+  addItemRow();
+  state = {requestor:null, supervisor:null, supervisorSource:'auto', status:'Draft'};
+  updateSupervisorCard();
+  recalc();
+  setStatus('Draft');
+  const today = new Date();
+  const yy=String(today.getFullYear()).slice(2), mm=String(today.getMonth()+1).padStart(2,'0'), dd=String(today.getDate()).padStart(2,'0');
+  document.getElementById('prNo').textContent = 'PR-' + yy+mm+dd + '-' + String(Math.floor(Math.random()*9999)).padStart(4,'0');
+  document.getElementById('dateReq').value = today.toISOString().slice(0,10);
+  toast('Form cleared','info');
+}
+
+function saveDraft(){
+  console.log('DRAFT SAVED:', collectData());
+  toast('Draft saved (check console for payload)','success');
+}
+
+function exportJSON(){
+  const data = collectData();
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = data.pr_no + '.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('JSON downloaded','success');
+}
+
+function collectData(){
+  const items = [...document.querySelectorAll('#itemsBody tr')].map(tr => {
+    const inputs = tr.querySelectorAll('input');
+    return {
+      description: inputs[0].value.trim(),
+      quantity: parseFloat(inputs[1].value) || 0,
+      uom: inputs[2].value.trim(),
+      unit_price: parseFloat(inputs[3].value) || 0,
+      total: (parseFloat(inputs[1].value)||0) * (parseFloat(inputs[3].value)||0),
+      remarks: inputs[4].value.trim()
+    };
+  }).filter(i => i.description);
+  return {
+    pr_no: document.getElementById('prNo').textContent,
+    status: state.status,
+    date_requested: document.getElementById('dateReq').value,
+    date_needed: document.getElementById('dateNeeded').value,
+    priority: document.getElementById('priority').value,
+    category: document.getElementById('category').value,
+    cost_center: document.getElementById('costCenter').value,
+    preferred_supplier: document.getElementById('supplier').value,
+    justification: document.getElementById('purpose').value,
+    requestor: state.requestor,
+    supervisor: state.supervisor,
+    supervisor_source: state.supervisorSource,
+    supervisor_remarks: document.getElementById('supRemarks').value,
+    items: items,
+    subtotal: document.getElementById('subtotal').textContent,
+    vat: document.getElementById('vat').textContent,
+    grand_total: document.getElementById('grandTotal').textContent,
+    timestamp: new Date().toISOString()
+  };
+}
+
+function toast(msg, type){
+  type = type || 'info';
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition='opacity .3s'; }, 2500);
+  setTimeout(() => t.remove(), 2900);
+}
+
+init();
 </script>
 </body>
 </html>
