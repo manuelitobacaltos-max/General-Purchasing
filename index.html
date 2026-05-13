@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,6 +93,26 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 @media print{body{background:#fff}.app{max-width:100%;padding:0}.footer-actions,.add-row-btn,.approval-actions,.dropdown,table.items .del-btn,#changeSupBtn,#supOverrideWrap{display:none !important}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}table.items td input{border:none !important;background:transparent !important}}
 @media (max-width:720px){.row,.row.three{grid-template-columns:1fr}.header{flex-direction:column;gap:8px;text-align:center}.header .right{text-align:center}.app{padding:10px}.card{padding:14px}table.items{font-size:11px;display:block;overflow-x:auto;white-space:nowrap}.footer-actions{flex-direction:column-reverse}.footer-actions .btn{width:100%;justify-content:center}}
+.dropitem.active{background:rgba(29,78,216,.10);border-left:3px solid var(--accent)}
+.dropitem mark{background:#fef08a;color:var(--text);padding:0 2px;border-radius:2px}
+.loading-bar{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));background-size:200% 100%;animation:loadingShimmer 1.5s infinite;border-radius:2px;margin-top:10px;display:none}
+.loading-bar.active{display:block}
+@keyframes loadingShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.conn-status{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace;margin-left:6px}
+.conn-status.online{background:rgba(5,150,105,.18);color:#065f46}
+.conn-status.offline{background:rgba(217,119,6,.18);color:#92400e}
+.conn-status.loading{background:rgba(29,78,216,.18);color:#1e40af}
+.conn-status .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.help-text{font-size:10px;color:var(--text3);margin-top:3px;font-style:italic}
+.draft-saved-indicator{position:fixed;bottom:18px;left:18px;background:rgba(5,150,105,.95);color:#fff;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;display:none;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(0,0,0,.18);z-index:900}
+.draft-saved-indicator.show{display:flex;animation:slideUpFade 2.2s}
+@keyframes slideUpFade{0%{opacity:0;transform:translateY(8px)}15%,80%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+.field input.email-input{font-family:'JetBrains Mono',monospace;font-size:12px}
+.field input.invalid,.field select.invalid,.field textarea.invalid{border-color:var(--danger);background:#fef2f2}
+.completion-bar{height:4px;background:#e2e8f0;border-radius:2px;margin-top:8px;overflow:hidden}
+.completion-bar .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--ok));transition:width .35s ease;border-radius:2px}
+.kbd-hint{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;background:#f1f5f9;color:var(--text2);padding:1px 5px;border-radius:3px;border:1px solid #cbd5e1;margin-left:4px;font-weight:500}
 </style>
 </head>
 <body>
@@ -102,24 +124,34 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
     </div>
     <div class="right">
       <div class="pr-no" id="prNo">PR-XXXXXX</div>
-      <div style="margin-top:6px"><span class="status-badge draft" id="prStatus"><span class="dot"></span><span id="statusText">Draft</span></span></div>
+      <div style="margin-top:6px">
+        <span class="status-badge draft" id="prStatus"><span class="dot"></span><span id="statusText">Draft</span></span>
+        <span class="conn-status offline" id="connStatus" title="Backend / SQL Server connection status"><span class="dot"></span><span id="connText">Local</span></span>
+      </div>
     </div>
   </div>
+
+  <div class="completion-bar" title="Form completion"><div class="fill" id="completionFill" style="width:0%"></div></div>
 
   <div class="card">
     <h2><span class="num">1</span>Requestor Information</h2>
     <div class="row three">
       <div class="field" style="grid-column:1/-1">
-        <label class="required">Employee (search by name)</label>
+        <label class="required">Employee (search by name, last name, or position) <span class="kbd-hint">↑ ↓ Enter Esc</span></label>
         <div class="search-wrap">
-          <input type="text" id="empSearch" placeholder="Type your last or first name..." autocomplete="off">
+          <input type="text" id="empSearch" placeholder="Type at least 2 characters to search..." autocomplete="off">
           <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           <div class="dropdown" id="empDropdown"></div>
         </div>
+        <div class="help-text" id="empCount">Loading employee directory...</div>
+        <div class="loading-bar" id="empLoading"></div>
       </div>
+      <div class="field"><label>Employee ID</label><input type="text" id="empId" readonly placeholder="Auto-filled"></div>
       <div class="field"><label>Department</label><input type="text" id="empDept" readonly placeholder="Auto-filled"></div>
       <div class="field"><label>Location</label><input type="text" id="empLoc" readonly placeholder="Auto-filled"></div>
       <div class="field"><label>Position</label><input type="text" id="empPos" readonly placeholder="Auto-filled"></div>
+      <div class="field"><label>Email</label><input type="email" id="empEmail" class="email-input" placeholder="firstname.lastname@vienovo.ph"></div>
+      <div class="field"><label>Contact Number</label><input type="tel" id="empPhone" placeholder="+63 9XX XXX XXXX"></div>
     </div>
   </div>
 
@@ -190,6 +222,7 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
           <div class="nm" id="supName">Please select an employee first</div>
           <div class="ps" id="supPos"></div>
           <div class="lc" id="supLoc"></div>
+          <div class="lc email-input" id="supEmail" style="margin-top:3px"></div>
         </div>
         <button class="btn" id="changeSupBtn" onclick="openSupOverride()" style="white-space:nowrap;flex-shrink:0">Change</button>
       </div>
@@ -218,11 +251,15 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
 
   <div class="footer-actions">
     <button class="btn" onclick="clearForm()">Clear Form</button>
+    <button class="btn" onclick="loadDraft()">Load Draft</button>
     <button class="btn" onclick="saveDraft()">Save Draft</button>
     <button class="btn" onclick="exportJSON()">Export JSON</button>
+    <button class="btn" onclick="exportCSV()">Export CSV</button>
+    <button class="btn" onclick="emailSupervisor()">Email Supervisor</button>
     <button class="btn" onclick="window.print()">Print / PDF</button>
     <button class="btn primary" onclick="submitPR()">Submit for Approval</button>
   </div>
+  <div class="draft-saved-indicator" id="draftIndicator">&#10003; Draft auto-saved</div>
 </div>
 
 <div class="modal-bg" id="rejectModal">
@@ -238,8 +275,41 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
 </div>
 
 <script>
-/* === EMPLOYEE DIRECTORY === */
-const EMPLOYEES = [
+/* =====================================================================
+   PURCHASE REQUEST FORM  v2 - improved with:
+   - Backend API auto-loader (SQL Server via Node/Express stub)
+   - Explicit supervisor mapping (SUPERVISOR_OVERRIDES) + heuristic fallback
+   - Keyboard navigation in dropdowns (Arrow keys, Enter, Esc)
+   - localStorage auto-save / restore draft
+   - Form completion progress bar
+   - CSV export, supervisor email integration (mailto:)
+   - Field validation highlighting
+   ===================================================================== */
+
+const CONFIG = {
+  // Set to your backend API base URL (Node.js stub provided as `api_server.js`).
+  // Leave empty string to use the built-in EMPLOYEES list below (offline mode).
+  API_BASE_URL: "",                          // e.g. "http://localhost:3000/api"
+  COMPANY_DOMAIN: "vienovo.ph",
+  AUTOSAVE_INTERVAL_MS: 30000,               // auto-save draft every 30s
+  VAT_RATE: 0.12,
+  PR_PREFIX: "PR",
+  STORAGE_KEY: "pr_form_draft_v2"
+};
+
+/* === EXPLICIT SUPERVISOR OVERRIDES =================================
+   Map employee.id -> supervisor employee.id (or full name string).
+   Use this for cases the rank-based heuristic gets wrong.
+   You can also populate this from the backend (GET /api/supervisor-map).
+   =================================================================== */
+const SUPERVISOR_OVERRIDES = {
+  // Examples — adjust based on your org chart:
+  // 19: 62,                        // Charo Mae Abadilla -> Christophe Romelard
+  // 457: 25,                       // Manuelito Bacaltos -> Reggie Dabu
+};
+
+/* === EMPLOYEE DIRECTORY (fallback when no backend) === */
+let EMPLOYEES = [
   {id:1, last:"Abadilla", first:"Charo Mae", middle:"Agustin", dept:"Controlling Department", loc:"Makati", pos:"Chief Finance Controller"},
   {id:2, last:"Abarquez", first:"Ella", middle:"Quinalayo", dept:"Controlling Department", loc:"CEBU", pos:"Credit and Collection Supervisor"},
   {id:3, last:"Agocejos", first:"Johnrey", middle:"Endiera", dept:"Sales All Employees", loc:"VISAYAS", pos:"Technical Sales Representative"},
@@ -722,6 +792,16 @@ function isLeader(pos){ return LEADER_RE.test(pos||""); }
 
 function findSupervisor(emp){
   if(!emp) return null;
+  // Tier 0: explicit per-employee override (preferred)
+  if(SUPERVISOR_OVERRIDES[emp.id] !== undefined){
+    const ov = autoAssignApprover(SUPERVISOR_OVERRIDES[emp.id]);
+    if(ov) return ov;
+  }
+  // Also respect a `sup` field on the employee record (string name or numeric id)
+  if(emp.sup){
+    const ov = autoAssignApprover(emp.sup);
+    if(ov) return ov;
+  }
   const myRank = rankFor(emp.pos);
   if(myRank <= 1) return {topOfChain:true};
   let deptCands = EMPLOYEES.filter(e => e.id !== emp.id && e.dept === emp.dept && rankFor(e.pos) < myRank);
@@ -747,44 +827,237 @@ function findSupervisor(emp){
 
 /* === STATE === */
 let state = {requestor:null, supervisor:null, supervisorSource:'auto', status:'Draft'};
+let dropdownActiveIdx = -1;
+let autosaveTimer = null;
+
+/* === EMAIL HELPER === */
+function emailOf(emp){
+  if(!emp) return '';
+  if(emp.email) return emp.email;
+  // Convention: firstname.lastname@vienovo.ph (lowercased, no spaces/diacritics)
+  const norm = str => (str||'').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'').trim();
+  const first = norm(emp.first.split(' ')[0]);
+  const last  = norm(emp.last.replace(/\bjr\.?$|\bsr\.?$|\bii+$/i,''));
+  return first + '.' + last + '@' + CONFIG.COMPANY_DOMAIN;
+}
 
 /* === INIT === */
-function init(){
+async function init(){
   const today = new Date();
   document.getElementById('todayDate').textContent = today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  const yy=String(today.getFullYear()).slice(2), mm=String(today.getMonth()+1).padStart(2,'0'), dd=String(today.getDate()).padStart(2,'0');
-  document.getElementById('prNo').textContent = 'PR-' + yy+mm+dd + '-' + String(Math.floor(Math.random()*9999)).padStart(4,'0');
+  generatePRNumber();
   document.getElementById('dateReq').value = today.toISOString().slice(0,10);
   addItemRow();
+  await loadEmployeesFromBackend();
   setupEmpSearch();
   setupSupOverrideSearch();
+  setupKeyboardShortcuts();
+  attachAutoSave();
+  setupCompletionTracking();
+  document.getElementById('empCount').textContent = EMPLOYEES.length + ' employees loaded';
+  // Restore draft if present
+  if(localStorage.getItem(CONFIG.STORAGE_KEY)){
+    setTimeout(() => {
+      if(confirm('Found a saved draft. Restore it?')) loadDraft();
+    }, 400);
+  }
+}
+
+function generatePRNumber(){
+  const today = new Date();
+  const yy=String(today.getFullYear()).slice(2),
+        mm=String(today.getMonth()+1).padStart(2,'0'),
+        dd=String(today.getDate()).padStart(2,'0');
+  // Try to use a local counter for the day, fall back to random
+  const counterKey = 'pr_counter_' + yy+mm+dd;
+  let n = parseInt(localStorage.getItem(counterKey) || '0', 10);
+  n++;
+  localStorage.setItem(counterKey, n);
+  document.getElementById('prNo').textContent = CONFIG.PR_PREFIX + '-' + yy+mm+dd + '-' + String(n).padStart(4,'0');
+}
+
+/* === BACKEND LOADER === */
+async function loadEmployeesFromBackend(){
+  const conn = document.getElementById('connStatus');
+  const txt  = document.getElementById('connText');
+  const bar  = document.getElementById('empLoading');
+  if(!CONFIG.API_BASE_URL){
+    conn.classList.remove('online','loading'); conn.classList.add('offline');
+    txt.textContent = 'Local';
+    return;
+  }
+  try {
+    conn.classList.remove('online','offline'); conn.classList.add('loading');
+    txt.textContent = 'Connecting...';
+    bar.classList.add('active');
+    const res = await fetch(CONFIG.API_BASE_URL + '/employees', {
+      headers: {'Accept':'application/json'},
+      // credentials: 'include',
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if(Array.isArray(data) && data.length) EMPLOYEES = data;
+    conn.classList.remove('loading','offline'); conn.classList.add('online');
+    txt.textContent = 'SQL Server';
+    // Also try loading explicit supervisor map
+    try {
+      const mapRes = await fetch(CONFIG.API_BASE_URL + '/supervisor-map');
+      if(mapRes.ok) {
+        const map = await mapRes.json();
+        Object.assign(SUPERVISOR_OVERRIDES, map);
+      }
+    } catch(e){ /* optional */ }
+  } catch(e){
+    console.warn('Backend unavailable, using local fallback:', e.message);
+    conn.classList.remove('online','loading'); conn.classList.add('offline');
+    txt.textContent = 'Local (offline)';
+  } finally {
+    bar.classList.remove('active');
+  }
+}
+
+/* === AUTO-ASSIGN APPROVER (by id or by name) === */
+function autoAssignApprover(idOrName){
+  if(idOrName === null || idOrName === undefined) return null;
+  if(typeof idOrName === 'number') return EMPLOYEES.find(e => e.id === idOrName) || null;
+  const norm = (idOrName + '').toLowerCase().trim();
+  return EMPLOYEES.find(e =>
+    (e.last + ', ' + e.first).toLowerCase() === norm ||
+    (e.first + ' ' + e.last).toLowerCase() === norm ||
+    (e.last.toLowerCase() === norm) ||
+    ((e.first + ' ' + (e.middle||'') + ' ' + e.last).replace(/\s+/g,' ').toLowerCase().trim() === norm)
+  ) || null;
+}
+
+/* === KEYBOARD SHORTCUTS === */
+function setupKeyboardShortcuts(){
+  document.addEventListener('keydown', e => {
+    // Ctrl/Cmd + S = save draft
+    if((e.ctrlKey||e.metaKey) && e.key === 's'){ e.preventDefault(); saveDraft(); }
+    // Ctrl/Cmd + Enter = submit
+    if((e.ctrlKey||e.metaKey) && e.key === 'Enter'){ e.preventDefault(); submitPR(); }
+  });
+}
+
+/* === AUTOSAVE === */
+function attachAutoSave(){
+  const inputs = document.querySelectorAll('input, select, textarea');
+  inputs.forEach(i => i.addEventListener('change', () => { scheduleAutosave(); updateCompletion(); }));
+  if(autosaveTimer) clearInterval(autosaveTimer);
+  autosaveTimer = setInterval(() => {
+    if(state.requestor){
+      localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(collectData()));
+      const ind = document.getElementById('draftIndicator');
+      ind.classList.remove('show'); void ind.offsetWidth; ind.classList.add('show');
+    }
+  }, CONFIG.AUTOSAVE_INTERVAL_MS);
+}
+function scheduleAutosave(){
+  if(state.requestor){
+    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(collectData()));
+  }
+}
+
+/* === FORM COMPLETION === */
+function setupCompletionTracking(){
+  const tracked = ['empSearch','dateReq','dateNeeded','category','purpose'];
+  tracked.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', updateCompletion);
+    if(el) el.addEventListener('change', updateCompletion);
+  });
+  document.querySelector('#itemsBody').addEventListener('input', updateCompletion);
+  updateCompletion();
+}
+function updateCompletion(){
+  const required = [
+    !!state.requestor,
+    !!document.getElementById('dateReq').value,
+    !!document.getElementById('dateNeeded').value,
+    !!document.getElementById('category').value,
+    !!document.getElementById('purpose').value.trim(),
+    [...document.querySelectorAll('#itemsBody tr')].some(tr => {
+      const ins = tr.querySelectorAll('input');
+      return ins[0].value.trim() && (parseFloat(ins[1].value)||0) > 0;
+    })
+  ];
+  const pct = Math.round(required.filter(Boolean).length / required.length * 100);
+  const fill = document.getElementById('completionFill');
+  if(fill) fill.style.width = pct + '%';
 }
 
 /* === EMP SEARCH === */
+function highlight(text, q){
+  if(!q) return text;
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+  return text.replace(re, '<mark>$1</mark>');
+}
 function setupEmpSearch(){
   const input = document.getElementById('empSearch');
   const dd = document.getElementById('empDropdown');
+  let debounce = null;
   input.addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => doSearch(), 80);
+  });
+  function doSearch(){
     const q = input.value.trim().toLowerCase();
-    if(!q){ dd.classList.remove('open'); return; }
+    dropdownActiveIdx = -1;
+    if(q.length < 2){ dd.classList.remove('open'); return; }
     const matches = EMPLOYEES.filter(e =>
       e.last.toLowerCase().includes(q) ||
       e.first.toLowerCase().includes(q) ||
-      (e.middle && e.middle.toLowerCase().includes(q))
-    ).slice(0,20);
-    if(!matches.length){ dd.innerHTML = '<div class="dropitem" style="color:#94a3b8">No employee found</div>'; dd.classList.add('open'); return; }
-    dd.innerHTML = matches.map(e =>
-      '<div class="dropitem" data-id="'+e.id+'">' +
-        '<div><div class="nm">'+e.last+', '+e.first+(e.middle?' '+e.middle:'')+'</div><div class="dp">'+e.dept+' &mdash; '+e.loc+'</div></div>' +
-        '<div class="ps">'+e.pos+'</div>' +
+      (e.middle && e.middle.toLowerCase().includes(q)) ||
+      (e.pos && e.pos.toLowerCase().includes(q)) ||
+      (e.dept && e.dept.toLowerCase().includes(q))
+    ).slice(0, 25);
+    if(!matches.length){
+      dd.innerHTML = '<div class="dropitem" style="color:#94a3b8">No employee found for "' + q + '"</div>';
+      dd.classList.add('open');
+      return;
+    }
+    dd.innerHTML = matches.map((e,i) =>
+      '<div class="dropitem" data-id="'+e.id+'" data-idx="'+i+'">' +
+        '<div><div class="nm">'+ highlight(e.last+', '+e.first+(e.middle?' '+e.middle:''), q) +'</div>' +
+        '<div class="dp">'+ e.dept +' &mdash; '+ e.loc +'</div></div>' +
+        '<div class="ps">'+ highlight(e.pos, q) +'</div>' +
       '</div>'
     ).join('');
     dd.classList.add('open');
     dd.querySelectorAll('.dropitem[data-id]').forEach(it => {
       it.onclick = () => selectEmployee(parseInt(it.dataset.id));
+      it.onmouseenter = () => {
+        dd.querySelectorAll('.dropitem.active').forEach(x=>x.classList.remove('active'));
+        it.classList.add('active');
+        dropdownActiveIdx = parseInt(it.dataset.idx);
+      };
     });
+  }
+  input.addEventListener('keydown', e => {
+    const items = dd.querySelectorAll('.dropitem[data-id]');
+    if(!items.length || !dd.classList.contains('open')) return;
+    if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      dropdownActiveIdx = Math.min(dropdownActiveIdx + 1, items.length - 1);
+      items.forEach(x => x.classList.remove('active'));
+      items[dropdownActiveIdx].classList.add('active');
+      items[dropdownActiveIdx].scrollIntoView({block:'nearest'});
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      dropdownActiveIdx = Math.max(dropdownActiveIdx - 1, 0);
+      items.forEach(x => x.classList.remove('active'));
+      items[dropdownActiveIdx].classList.add('active');
+      items[dropdownActiveIdx].scrollIntoView({block:'nearest'});
+    } else if(e.key === 'Enter' && dropdownActiveIdx >= 0){
+      e.preventDefault();
+      selectEmployee(parseInt(items[dropdownActiveIdx].dataset.id));
+    } else if(e.key === 'Escape'){
+      dd.classList.remove('open');
+    }
   });
-  input.addEventListener('focus', () => { if(input.value.trim()) dd.classList.add('open'); });
+  input.addEventListener('focus', () => { if(input.value.trim().length >= 2) dd.classList.add('open'); });
   document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) dd.classList.remove('open'); });
 }
 
@@ -793,13 +1066,21 @@ function selectEmployee(id){
   if(!emp) return;
   state.requestor = emp;
   document.getElementById('empSearch').value = emp.last+', '+emp.first+(emp.middle?' '+emp.middle:'');
+  document.getElementById('empId').value   = emp.id;
   document.getElementById('empDept').value = emp.dept;
-  document.getElementById('empLoc').value = emp.loc;
-  document.getElementById('empPos').value = emp.pos;
+  document.getElementById('empLoc').value  = emp.loc;
+  document.getElementById('empPos').value  = emp.pos;
+  // Auto-fill email if not already typed
+  const emailEl = document.getElementById('empEmail');
+  if(!emailEl.value) emailEl.value = emailOf(emp);
+  if(emp.phone) document.getElementById('empPhone').value = emp.phone;
   document.getElementById('empDropdown').classList.remove('open');
+  dropdownActiveIdx = -1;
   state.supervisor = findSupervisor(emp);
   state.supervisorSource = 'auto';
   updateSupervisorCard();
+  updateCompletion();
+  scheduleAutosave();
 }
 
 function updateSupervisorCard(){
@@ -811,6 +1092,7 @@ function updateSupervisorCard(){
     document.getElementById('supName').textContent = 'No supervisor found';
     document.getElementById('supPos').textContent = '';
     document.getElementById('supLoc').textContent = '';
+    document.getElementById('supEmail').textContent = '';
     return;
   }
   if(sup.topOfChain){
@@ -818,6 +1100,7 @@ function updateSupervisorCard(){
     document.getElementById('supName').textContent = 'Top of organizational hierarchy';
     document.getElementById('supPos').textContent = 'No further approval needed';
     document.getElementById('supLoc').textContent = '';
+    document.getElementById('supEmail').textContent = '';
     return;
   }
   card.classList.add('found');
@@ -827,6 +1110,7 @@ function updateSupervisorCard(){
   if(sup.crossDept) locTxt += ' (cross-department)';
   else if(sup.crossLoc) locTxt += ' (cross-location)';
   document.getElementById('supLoc').textContent = locTxt;
+  document.getElementById('supEmail').textContent = '✉ ' + emailOf(sup);
 }
 
 /* === SUPERVISOR OVERRIDE === */
@@ -927,11 +1211,13 @@ function recalc(){
     tr.querySelector('.total-cell').textContent = 'PHP ' + total.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     subtotal += total;
   });
-  const vat = subtotal * 0.12;
+  const vat = subtotal * CONFIG.VAT_RATE;
   const grand = subtotal + vat;
-  document.getElementById('subtotal').textContent = 'PHP ' + subtotal.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('vat').textContent = 'PHP ' + vat.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('grandTotal').textContent = 'PHP ' + grand.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fmt = n => 'PHP ' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('subtotal').textContent = fmt(subtotal);
+  document.getElementById('vat').textContent = fmt(vat);
+  document.getElementById('grandTotal').textContent = fmt(grand);
+  updateCompletion && updateCompletion();
 }
 
 /* === STATUS & ACTIONS === */
@@ -942,17 +1228,36 @@ function setStatus(s){
 }
 
 function validate(){
-  if(!state.requestor){ toast('Please select an employee first','error'); return false; }
-  if(!document.getElementById('dateReq').value){ toast('Date Requested is required','error'); return false; }
-  if(!document.getElementById('dateNeeded').value){ toast('Date Needed is required','error'); return false; }
-  if(!document.getElementById('category').value){ toast('Category is required','error'); return false; }
-  if(!document.getElementById('purpose').value.trim()){ toast('Please provide a justification','error'); return false; }
+  // Clear previous invalid markers
+  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  let firstInvalid = null;
+  const fail = (id, msg) => {
+    const el = document.getElementById(id);
+    if(el){ el.classList.add('invalid'); if(!firstInvalid) firstInvalid = el; }
+    toast(msg,'error');
+    return false;
+  };
+  if(!state.requestor) return fail('empSearch','Please select an employee first');
+  if(!document.getElementById('dateReq').value) return fail('dateReq','Date Requested is required');
+  if(!document.getElementById('dateNeeded').value) return fail('dateNeeded','Date Needed is required');
+  // Date sanity: needed >= requested
+  if(document.getElementById('dateNeeded').value < document.getElementById('dateReq').value){
+    return fail('dateNeeded','Date Needed cannot be before Date Requested');
+  }
+  if(!document.getElementById('category').value) return fail('category','Category is required');
+  if(!document.getElementById('purpose').value.trim()) return fail('purpose','Please provide a justification');
+  // Email format check (if provided)
+  const email = document.getElementById('empEmail').value.trim();
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    return fail('empEmail','Email format is invalid');
+  }
   const validItems = [...document.querySelectorAll('#itemsBody tr')].filter(tr => {
     const desc = tr.querySelectorAll('input')[0].value.trim();
     const qty = parseFloat(tr.querySelectorAll('input')[1].value) || 0;
     return desc && qty > 0;
   });
   if(!validItems.length){ toast('Please add at least one item with description and quantity','error'); return false; }
+  if(firstInvalid) firstInvalid.focus();
   return true;
 }
 
@@ -960,7 +1265,78 @@ function submitPR(){
   if(!validate()) return;
   setStatus('Pending');
   const supName = state.supervisor && !state.supervisor.topOfChain ? state.supervisor.last+', '+state.supervisor.first : 'supervisor';
-  toast('Submitted to ' + supName + ' for approval','success');
+  const data = collectData();
+  // Post to backend if available
+  if(CONFIG.API_BASE_URL){
+    fetch(CONFIG.API_BASE_URL + '/pr/submit', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    }).then(async r => {
+      if(r.ok){
+        const resp = await r.json().catch(()=>({}));
+        toast('Submitted to ' + supName + (resp.pr_no ? ' (' + resp.pr_no + ')' : '') + ' for approval','success');
+      } else {
+        toast('Submitted locally — server returned ' + r.status,'info');
+      }
+    }).catch(() => toast('Submitted locally (server offline)','info'));
+  } else {
+    toast('Submitted to ' + supName + ' for approval','success');
+  }
+  localStorage.removeItem(CONFIG.STORAGE_KEY);
+}
+
+function emailSupervisor(){
+  if(!state.requestor){ toast('Select an employee first','error'); return; }
+  if(!state.supervisor || state.supervisor.topOfChain){ toast('No supervisor to email','error'); return; }
+  if(!validate()) return;
+  const supEmail = emailOf(state.supervisor);
+  const prNo = document.getElementById('prNo').textContent;
+  const total = document.getElementById('grandTotal').textContent;
+  const subject = '[' + prNo + '] Purchase Request — ' + (state.requestor.last+', '+state.requestor.first);
+  const items = [...document.querySelectorAll('#itemsBody tr')].map((tr,i) => {
+    const ins = tr.querySelectorAll('input');
+    return (i+1)+'. '+ins[0].value+' — '+ins[1].value+' '+ins[2].value+' @ PHP '+(parseFloat(ins[3].value)||0).toFixed(2);
+  }).join('%0D%0A');
+  const body =
+    'Hi ' + state.supervisor.first + ',%0D%0A%0D%0A' +
+    'Please review and approve the following Purchase Request:%0D%0A%0D%0A' +
+    'PR No: ' + prNo + '%0D%0A' +
+    'Requestor: ' + state.requestor.first + ' ' + state.requestor.last + ' (' + state.requestor.dept + ')%0D%0A' +
+    'Category: ' + document.getElementById('category').value + '%0D%0A' +
+    'Priority: ' + document.getElementById('priority').value + '%0D%0A' +
+    'Date Needed: ' + document.getElementById('dateNeeded').value + '%0D%0A' +
+    'Cost Center: ' + (document.getElementById('costCenter').value || 'N/A') + '%0D%0A%0D%0A' +
+    'Justification:%0D%0A' + document.getElementById('purpose').value + '%0D%0A%0D%0A' +
+    'Items:%0D%0A' + items + '%0D%0A%0D%0A' +
+    'Grand Total: ' + total + '%0D%0A%0D%0A' +
+    'Thanks,%0D%0A' + state.requestor.first;
+  window.location.href = 'mailto:' + supEmail + '?cc=' + document.getElementById('empEmail').value +
+    '&subject=' + encodeURIComponent(subject) + '&body=' + body;
+}
+
+function exportCSV(){
+  const data = collectData();
+  if(!data.items.length){ toast('No items to export','error'); return; }
+  const headers = ['PR No','Status','Date Requested','Date Needed','Priority','Category','Cost Center','Requestor','Department','Location','Position','Supervisor','Item #','Description','Qty','UoM','Unit Price','Total','Remarks'];
+  const rows = data.items.map((it,i) => [
+    data.pr_no, data.status, data.date_requested, data.date_needed, data.priority, data.category, data.cost_center,
+    (data.requestor ? data.requestor.first + ' ' + data.requestor.last : ''),
+    (data.requestor && data.requestor.dept) || '',
+    (data.requestor && data.requestor.loc) || '',
+    (data.requestor && data.requestor.pos) || '',
+    (data.supervisor && !data.supervisor.topOfChain ? data.supervisor.first + ' ' + data.supervisor.last : ''),
+    i+1, it.description, it.quantity, it.uom, it.unit_price, it.total, it.remarks
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(v => {
+    const s = (v===null||v===undefined)?'':String(v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = data.pr_no + '.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV downloaded','success');
 }
 
 function approvePR(){
@@ -993,7 +1369,8 @@ function resetApproval(){
 function clearForm(){
   if(!confirm('Clear the entire form? This cannot be undone.')) return;
   document.getElementById('empSearch').value = '';
-  ['empDept','empLoc','empPos','dateNeeded','costCenter','supplier','purpose','supRemarks'].forEach(id => document.getElementById(id).value = '');
+  ['empId','empDept','empLoc','empPos','empEmail','empPhone','dateNeeded','costCenter','supplier','purpose','supRemarks']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('category').value = '';
   document.getElementById('priority').value = 'Normal';
   document.getElementById('itemsBody').innerHTML = '';
@@ -1002,16 +1379,63 @@ function clearForm(){
   updateSupervisorCard();
   recalc();
   setStatus('Draft');
-  const today = new Date();
-  const yy=String(today.getFullYear()).slice(2), mm=String(today.getMonth()+1).padStart(2,'0'), dd=String(today.getDate()).padStart(2,'0');
-  document.getElementById('prNo').textContent = 'PR-' + yy+mm+dd + '-' + String(Math.floor(Math.random()*9999)).padStart(4,'0');
-  document.getElementById('dateReq').value = today.toISOString().slice(0,10);
+  generatePRNumber();
+  document.getElementById('dateReq').value = new Date().toISOString().slice(0,10);
+  localStorage.removeItem(CONFIG.STORAGE_KEY);
+  updateCompletion();
   toast('Form cleared','info');
 }
 
 function saveDraft(){
-  console.log('DRAFT SAVED:', collectData());
-  toast('Draft saved (check console for payload)','success');
+  if(!state.requestor){ toast('Select an employee before saving','error'); return; }
+  const data = collectData();
+  localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(data));
+  console.log('DRAFT SAVED:', data);
+  toast('Draft saved locally','success');
+  // Also POST to backend if available
+  if(CONFIG.API_BASE_URL){
+    fetch(CONFIG.API_BASE_URL + '/pr/draft', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    }).then(r => r.ok && toast('Draft also synced to server','success'))
+      .catch(()=>{});
+  }
+}
+function loadDraft(){
+  const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+  if(!raw){ toast('No saved draft found','info'); return; }
+  try {
+    const d = JSON.parse(raw);
+    if(d.requestor) selectEmployee(d.requestor.id);
+    document.getElementById('empEmail').value = d.requestor_email || (d.requestor ? emailOf(d.requestor) : '');
+    document.getElementById('empPhone').value = d.requestor_phone || '';
+    document.getElementById('dateReq').value = d.date_requested || '';
+    document.getElementById('dateNeeded').value = d.date_needed || '';
+    document.getElementById('priority').value = d.priority || 'Normal';
+    document.getElementById('category').value = d.category || '';
+    document.getElementById('costCenter').value = d.cost_center || '';
+    document.getElementById('supplier').value = d.preferred_supplier || '';
+    document.getElementById('purpose').value = d.justification || '';
+    document.getElementById('supRemarks').value = d.supervisor_remarks || '';
+    // Restore items
+    document.getElementById('itemsBody').innerHTML = '';
+    (d.items||[]).forEach(it => {
+      addItemRow();
+      const tr = document.querySelector('#itemsBody tr:last-child');
+      const ins = tr.querySelectorAll('input');
+      ins[0].value = it.description || '';
+      ins[1].value = it.quantity || '';
+      ins[2].value = it.uom || '';
+      ins[3].value = it.unit_price || '';
+      ins[4].value = it.remarks || '';
+    });
+    if(!d.items || !d.items.length) addItemRow();
+    recalc(); updateCompletion();
+    toast('Draft restored','success');
+  } catch(e){
+    console.error(e); toast('Draft was corrupted, cleared.','error');
+    localStorage.removeItem(CONFIG.STORAGE_KEY);
+  }
 }
 
 function exportJSON(){
@@ -1047,7 +1471,10 @@ function collectData(){
     preferred_supplier: document.getElementById('supplier').value,
     justification: document.getElementById('purpose').value,
     requestor: state.requestor,
+    requestor_email: document.getElementById('empEmail').value,
+    requestor_phone: document.getElementById('empPhone').value,
     supervisor: state.supervisor,
+    supervisor_email: state.supervisor ? emailOf(state.supervisor) : '',
     supervisor_source: state.supervisorSource,
     supervisor_remarks: document.getElementById('supRemarks').value,
     items: items,
