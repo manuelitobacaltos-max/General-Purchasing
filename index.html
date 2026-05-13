@@ -158,44 +158,57 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
   <div class="card">
     <h2><span class="num">2</span>Request Details</h2>
     <div class="row three">
+      <div class="field"><label class="required">Request Type</label>
+        <select id="requestType" onchange="onRequestTypeChange()">
+          <option value="Materials">Materials / Goods</option>
+          <option value="Service">Service</option>
+          <option value="Mixed">Mixed (Materials + Service)</option>
+        </select>
+      </div>
       <div class="field"><label class="required">Date Requested</label><input type="date" id="dateReq"></div>
       <div class="field"><label class="required">Date Needed</label><input type="date" id="dateNeeded"></div>
       <div class="field"><label class="required">Priority</label>
         <select id="priority"><option value="Normal">Normal</option><option value="Urgent">Urgent</option><option value="Critical">Critical</option></select>
       </div>
       <div class="field"><label class="required">Category</label>
-        <select id="category">
+        <select id="category"></select>
+      </div>
+      <div class="field" id="serviceTypeField" style="display:none"><label>Service Type</label>
+        <select id="serviceType">
           <option value="">-- Select --</option>
-          <option>Office Supplies</option>
-          <option>Spare Parts</option>
-          <option>Maintenance Supplies</option>
-          <option>IT Equipment</option>
-          <option>Safety Equipment</option>
-          <option>Cleaning &amp; Sanitation</option>
-          <option>Marketing Materials</option>
-          <option>Tools &amp; Hardware</option>
-          <option>Production Materials</option>
-          <option>Other</option>
+          <option>One-time Service</option>
+          <option>Recurring / Monthly</option>
+          <option>Annual Contract</option>
+          <option>Project-based</option>
+          <option>Maintenance Agreement</option>
+          <option>Consulting / Professional Fee</option>
         </select>
       </div>
       <div class="field"><label>Charge To (Cost Center / Project)</label><input type="text" id="costCenter" placeholder="e.g. CORPFN02 / Project Name"></div>
-      <div class="field"><label>Preferred Supplier (optional)</label><input type="text" id="supplier" placeholder="Supplier name if known"></div>
+      <div class="field"><label id="supplierLabel">Preferred Supplier (optional)</label><input type="text" id="supplier" placeholder="Supplier name if known"></div>
+      <div class="field" id="serviceDurationField" style="display:none"><label>Service Duration</label><input type="text" id="serviceDuration" placeholder="e.g. 6 months, 1 year, 40 hours"></div>
+      <div class="field" id="serviceLocationField" style="display:none"><label>Service Location / Site</label><input type="text" id="serviceLocation" placeholder="Where will the service be rendered?"></div>
       <div class="field" style="grid-column:1/-1"><label class="required">Justification / Purpose</label>
-        <textarea id="purpose" placeholder="Why is this needed? Where will it be used?"></textarea>
+        <textarea id="purpose" placeholder="Why is this needed? Where will it be used / performed?"></textarea>
+      </div>
+      <div class="field" style="grid-column:1/-1" id="serviceScopeField" style="display:none">
+        <label>Scope of Work / Deliverables</label>
+        <textarea id="serviceScope" placeholder="Describe deliverables, milestones, acceptance criteria..."></textarea>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <h2><span class="num">3</span>Requested Items</h2>
+    <h2><span class="num">3</span><span id="itemsHeaderText">Requested Items</span></h2>
     <table class="items">
       <thead>
         <tr>
           <th style="width:36px" class="c">#</th>
-          <th style="width:32%">Item Description</th>
-          <th style="width:80px" class="r">Qty</th>
-          <th style="width:90px">UoM</th>
-          <th style="width:110px" class="r">Unit Price (PHP)</th>
+          <th style="width:30%"><span id="descHeader">Item Description</span></th>
+          <th style="width:120px" id="lineTypeHeader" style="display:none">Type</th>
+          <th style="width:80px" class="r" id="qtyHeader">Qty</th>
+          <th style="width:90px" id="uomHeader">UoM</th>
+          <th style="width:110px" class="r" id="priceHeader">Unit Price (PHP)</th>
           <th class="r">Total (PHP)</th>
           <th style="width:120px">Remarks</th>
           <th style="width:36px"></th>
@@ -203,7 +216,7 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
       </thead>
       <tbody id="itemsBody"></tbody>
     </table>
-    <button class="add-row-btn" onclick="addItemRow()">+ Add Item Row</button>
+    <button class="add-row-btn" onclick="addItemRow()" id="addRowBtn">+ Add Item Row</button>
     <div class="totals-row">
       <div class="totals-box">
         <div class="lbl">Subtotal:</div><div class="val" id="subtotal">PHP 0.00</div>
@@ -294,7 +307,58 @@ const CONFIG = {
   AUTOSAVE_INTERVAL_MS: 30000,               // auto-save draft every 30s
   VAT_RATE: 0.12,
   PR_PREFIX: "PR",
-  STORAGE_KEY: "pr_form_draft_v2"
+  STORAGE_KEY: "pr_form_draft_v3"
+};
+
+/* Categories by request type */
+const CATEGORIES = {
+  Materials: [
+    "Office Supplies",
+    "Spare Parts",
+    "Maintenance Supplies",
+    "IT Equipment",
+    "Safety Equipment",
+    "Cleaning & Sanitation",
+    "Marketing Materials",
+    "Tools & Hardware",
+    "Production Materials",
+    "Raw Materials",
+    "Packaging Materials",
+    "Other (Materials)"
+  ],
+  Service: [
+    "IT Services / Software Subscription",
+    "Repair & Maintenance Service",
+    "Cleaning / Janitorial Service",
+    "Security Services",
+    "Transport / Logistics Service",
+    "Professional / Consulting Fee",
+    "Training & Development",
+    "Marketing / Advertising Service",
+    "Catering / Events",
+    "Construction / Civil Works",
+    "Calibration / Testing",
+    "Pest Control",
+    "Manpower / Outsourced Labor",
+    "Utilities / Rent",
+    "Other (Service)"
+  ],
+  Mixed: [
+    "Project Procurement (Goods + Service)",
+    "Installation Package",
+    "Equipment + Maintenance",
+    "Software + Implementation",
+    "Other (Mixed)"
+  ]
+};
+
+/* Line-item type options when in Service or Mixed mode */
+const LINE_TYPES = ["Material", "Service / Labor", "Software / License", "Maintenance", "Travel / Per Diem", "Other"];
+
+/* UoM presets */
+const UOM_BY_TYPE = {
+  Materials: ["pcs","pack","box","ream","kg","gal","liter","meter","roll","set","unit"],
+  Service:   ["hour","day","week","month","year","lump sum","visit","trip","session","license","seat"]
 };
 
 /* === EXPLICIT SUPERVISOR OVERRIDES =================================
@@ -856,6 +920,9 @@ async function init(){
   setupKeyboardShortcuts();
   attachAutoSave();
   setupCompletionTracking();
+  // Initial population based on default request type (Materials)
+  populateCategories();
+  onRequestTypeChange();
   document.getElementById('empCount').textContent = EMPLOYEES.length + ' employees loaded';
   // Restore draft if present
   if(localStorage.getItem(CONFIG.STORAGE_KEY)){
@@ -1169,19 +1236,123 @@ function setupSupOverrideSearch(){
   document.addEventListener('click', e => { if(!e.target.closest('#supOverrideWrap')) dd.classList.remove('open'); });
 }
 
+/* === REQUEST TYPE HANDLING === */
+function getRequestType(){ return document.getElementById('requestType').value || 'Materials'; }
+
+function populateCategories(){
+  const type = getRequestType();
+  const sel = document.getElementById('category');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">-- Select --</option>' +
+    (CATEGORIES[type]||[]).map(c => '<option>'+c+'</option>').join('');
+  // try to preserve previous selection if still valid
+  if([...sel.options].some(o => o.value === prev)) sel.value = prev;
+}
+
+function onRequestTypeChange(){
+  const type = getRequestType();
+  // Show/hide service-specific fields
+  const showService = (type === 'Service' || type === 'Mixed');
+  document.getElementById('serviceTypeField').style.display     = showService ? '' : 'none';
+  document.getElementById('serviceDurationField').style.display = showService ? '' : 'none';
+  document.getElementById('serviceLocationField').style.display = showService ? '' : 'none';
+  const scopeField = document.getElementById('serviceScopeField');
+  if(scopeField) scopeField.style.display = showService ? '' : 'none';
+
+  // Header text
+  const header = document.getElementById('itemsHeaderText');
+  if(header) header.textContent =
+    type === 'Service' ? 'Requested Services' :
+    type === 'Mixed'   ? 'Requested Items / Services' :
+                         'Requested Items';
+
+  // Description header and placeholders
+  const descH = document.getElementById('descHeader');
+  if(descH) descH.textContent =
+    type === 'Service' ? 'Service Description' :
+    type === 'Mixed'   ? 'Description' :
+                         'Item Description';
+
+  // Show/hide line-Type column for Service or Mixed
+  const ltH = document.getElementById('lineTypeHeader');
+  if(ltH) ltH.style.display = showService ? '' : 'none';
+
+  // Qty header label
+  const qtyH = document.getElementById('qtyHeader');
+  if(qtyH) qtyH.textContent = type === 'Service' ? 'Units' : 'Qty';
+
+  // Price header label
+  const priceH = document.getElementById('priceHeader');
+  if(priceH) priceH.textContent = type === 'Service' ? 'Rate (PHP)' : 'Unit Price (PHP)';
+
+  // Supplier label
+  const supL = document.getElementById('supplierLabel');
+  if(supL) supL.textContent = type === 'Service' ? 'Preferred Service Provider' : (type === 'Mixed' ? 'Preferred Supplier / Provider' : 'Preferred Supplier (optional)');
+
+  populateCategories();
+
+  // Refresh each existing row to apply new placeholders / line-type column
+  refreshItemRows();
+}
+
+function refreshItemRows(){
+  const type = getRequestType();
+  const showService = (type === 'Service' || type === 'Mixed');
+  document.querySelectorAll('#itemsBody tr').forEach(tr => {
+    // remove the existing type-cell if any
+    const oldTypeCell = tr.querySelector('td[data-col="type"]');
+    if(oldTypeCell) oldTypeCell.remove();
+    if(showService){
+      const typeCell = document.createElement('td');
+      typeCell.setAttribute('data-col','type');
+      // preserve prior selection if reading from input dataset
+      const prev = tr.dataset.lineType || (type === 'Service' ? 'Service / Labor' : 'Material');
+      typeCell.innerHTML = '<select class="line-type-select" style="width:100%;padding:6px 4px;border:1px solid transparent;background:transparent;font-size:11px;border-radius:4px;font-family:DM Sans">' +
+        LINE_TYPES.map(t => '<option'+(t===prev?' selected':'')+'>'+t+'</option>').join('') +
+        '</select>';
+      typeCell.querySelector('select').onchange = function(){ tr.dataset.lineType = this.value; };
+      // insert as second cell (after #)
+      tr.insertBefore(typeCell, tr.children[2]);
+    }
+    // update placeholders
+    const inputs = tr.querySelectorAll('input');
+    if(inputs[0]) inputs[0].placeholder =
+      type === 'Service' ? 'e.g. SAP Annual Maintenance' :
+      type === 'Mixed'   ? 'e.g. Mixer machine / Mixer installation' :
+                           'e.g. Bondpaper A4 substance 20';
+    if(inputs[1]) inputs[1].placeholder = '0';
+    if(inputs[2]) inputs[2].placeholder = type === 'Service' ? 'hour / day / month' : 'pcs / pack / ream';
+    if(inputs[3]) inputs[3].placeholder = '0.00';
+  });
+}
+
 /* === ITEM ROWS === */
 let itemCounter = 0;
 function addItemRow(){
   itemCounter++;
   const id = itemCounter;
+  const type = getRequestType();
+  const showService = (type === 'Service' || type === 'Mixed');
   const tbody = document.getElementById('itemsBody');
   const tr = document.createElement('tr');
   tr.dataset.id = id;
+  tr.dataset.lineType = (type === 'Service' ? 'Service / Labor' : 'Material');
+  const lineTypeCell = showService
+    ? '<td data-col="type"><select class="line-type-select" style="width:100%;padding:6px 4px;border:1px solid transparent;background:transparent;font-size:11px;border-radius:4px;font-family:DM Sans" onchange="this.closest(\'tr\').dataset.lineType=this.value">' +
+        LINE_TYPES.map(t => '<option'+(t === tr.dataset.lineType ? ' selected' : '')+'>'+t+'</option>').join('') +
+      '</select></td>'
+    : '';
+  const descPH =
+    type === 'Service' ? 'e.g. SAP Annual Maintenance' :
+    type === 'Mixed'   ? 'e.g. Mixer machine / Mixer installation' :
+                         'e.g. Bondpaper A4 substance 20';
+  const uomPH = type === 'Service' ? 'hour / day / month' : 'pcs / pack / ream';
   tr.innerHTML =
     '<td class="c" style="font-weight:600;color:#475569">'+(tbody.children.length+1)+'</td>' +
-    '<td><input type="text" placeholder="e.g. Bondpaper A4 substance 20" oninput="recalc()"></td>' +
+    '<td><input type="text" placeholder="'+descPH+'" oninput="recalc()"></td>' +
+    lineTypeCell +
     '<td><input type="number" class="num" min="0" step="0.01" placeholder="0" oninput="recalc()"></td>' +
-    '<td><input type="text" placeholder="pcs / pack / ream"></td>' +
+    '<td><input type="text" placeholder="'+uomPH+'"></td>' +
     '<td><input type="number" class="num" min="0" step="0.01" placeholder="0.00" oninput="recalc()"></td>' +
     '<td class="total-cell">PHP 0.00</td>' +
     '<td><input type="text" placeholder="Optional"></td>' +
@@ -1317,15 +1488,15 @@ function emailSupervisor(){
 function exportCSV(){
   const data = collectData();
   if(!data.items.length){ toast('No items to export','error'); return; }
-  const headers = ['PR No','Status','Date Requested','Date Needed','Priority','Category','Cost Center','Requestor','Department','Location','Position','Supervisor','Item #','Description','Qty','UoM','Unit Price','Total','Remarks'];
+  const headers = ['PR No','Status','Request Type','Date Requested','Date Needed','Priority','Category','Service Type','Cost Center','Requestor','Department','Location','Position','Supervisor','Item #','Line Type','Description','Qty','UoM','Unit Price','Total','Remarks'];
   const rows = data.items.map((it,i) => [
-    data.pr_no, data.status, data.date_requested, data.date_needed, data.priority, data.category, data.cost_center,
+    data.pr_no, data.status, data.request_type || 'Materials', data.date_requested, data.date_needed, data.priority, data.category, data.service_type || '', data.cost_center,
     (data.requestor ? data.requestor.first + ' ' + data.requestor.last : ''),
     (data.requestor && data.requestor.dept) || '',
     (data.requestor && data.requestor.loc) || '',
     (data.requestor && data.requestor.pos) || '',
     (data.supervisor && !data.supervisor.topOfChain ? data.supervisor.first + ' ' + data.supervisor.last : ''),
-    i+1, it.description, it.quantity, it.uom, it.unit_price, it.total, it.remarks
+    i+1, it.line_type || 'Material', it.description, it.quantity, it.uom, it.unit_price, it.total, it.remarks
   ]);
   const csv = [headers, ...rows].map(r => r.map(v => {
     const s = (v===null||v===undefined)?'':String(v);
@@ -1369,8 +1540,11 @@ function resetApproval(){
 function clearForm(){
   if(!confirm('Clear the entire form? This cannot be undone.')) return;
   document.getElementById('empSearch').value = '';
-  ['empId','empDept','empLoc','empPos','empEmail','empPhone','dateNeeded','costCenter','supplier','purpose','supRemarks']
+  ['empId','empDept','empLoc','empPos','empEmail','empPhone','dateNeeded','costCenter','supplier','purpose','supRemarks',
+   'serviceType','serviceDuration','serviceLocation','serviceScope']
     .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('requestType').value = 'Materials';
+  onRequestTypeChange();
   document.getElementById('category').value = '';
   document.getElementById('priority').value = 'Normal';
   document.getElementById('itemsBody').innerHTML = '';
@@ -1412,7 +1586,13 @@ function loadDraft(){
     document.getElementById('dateReq').value = d.date_requested || '';
     document.getElementById('dateNeeded').value = d.date_needed || '';
     document.getElementById('priority').value = d.priority || 'Normal';
+    document.getElementById('requestType').value = d.request_type || 'Materials';
+    onRequestTypeChange();
     document.getElementById('category').value = d.category || '';
+    if(document.getElementById('serviceType'))     document.getElementById('serviceType').value     = d.service_type || '';
+    if(document.getElementById('serviceDuration')) document.getElementById('serviceDuration').value = d.service_duration || '';
+    if(document.getElementById('serviceLocation')) document.getElementById('serviceLocation').value = d.service_location || '';
+    if(document.getElementById('serviceScope'))    document.getElementById('serviceScope').value    = d.service_scope || '';
     document.getElementById('costCenter').value = d.cost_center || '';
     document.getElementById('supplier').value = d.preferred_supplier || '';
     document.getElementById('purpose').value = d.justification || '';
@@ -1428,6 +1608,11 @@ function loadDraft(){
       ins[2].value = it.uom || '';
       ins[3].value = it.unit_price || '';
       ins[4].value = it.remarks || '';
+      if(it.line_type){
+        tr.dataset.lineType = it.line_type;
+        const sel = tr.querySelector('.line-type-select');
+        if(sel) sel.value = it.line_type;
+      }
     });
     if(!d.items || !d.items.length) addItemRow();
     recalc(); updateCompletion();
@@ -1453,11 +1638,12 @@ function collectData(){
     const inputs = tr.querySelectorAll('input');
     return {
       description: inputs[0].value.trim(),
-      quantity: parseFloat(inputs[1].value) || 0,
-      uom: inputs[2].value.trim(),
-      unit_price: parseFloat(inputs[3].value) || 0,
-      total: (parseFloat(inputs[1].value)||0) * (parseFloat(inputs[3].value)||0),
-      remarks: inputs[4].value.trim()
+      line_type:   tr.dataset.lineType || 'Material',
+      quantity:    parseFloat(inputs[1].value) || 0,
+      uom:         inputs[2].value.trim(),
+      unit_price:  parseFloat(inputs[3].value) || 0,
+      total:       (parseFloat(inputs[1].value)||0) * (parseFloat(inputs[3].value)||0),
+      remarks:     inputs[4].value.trim()
     };
   }).filter(i => i.description);
   return {
@@ -1465,8 +1651,13 @@ function collectData(){
     status: state.status,
     date_requested: document.getElementById('dateReq').value,
     date_needed: document.getElementById('dateNeeded').value,
+    request_type: document.getElementById('requestType').value,
     priority: document.getElementById('priority').value,
     category: document.getElementById('category').value,
+    service_type: document.getElementById('serviceType') ? document.getElementById('serviceType').value : '',
+    service_duration: document.getElementById('serviceDuration') ? document.getElementById('serviceDuration').value : '',
+    service_location: document.getElementById('serviceLocation') ? document.getElementById('serviceLocation').value : '',
+    service_scope:    document.getElementById('serviceScope')    ? document.getElementById('serviceScope').value    : '',
     cost_center: document.getElementById('costCenter').value,
     preferred_supplier: document.getElementById('supplier').value,
     justification: document.getElementById('purpose').value,
