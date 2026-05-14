@@ -260,6 +260,47 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
     </div>
   </div>
 
+  <div class="card" id="card5">
+    <h2><span class="num">5</span>Final Status &amp; SAP Hand-off</h2>
+    <div class="row">
+      <div class="field">
+        <label>Final Status</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="text" id="finalStatus" readonly placeholder="Pending" style="flex:1">
+          <span class="status-badge draft" id="finalStatusBadge" style="white-space:nowrap"><span class="dot"></span><span id="finalStatusBadgeText">Pending</span></span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Approved / Rejected By</label>
+        <input type="text" id="approvedBy" readonly placeholder="---">
+      </div>
+      <div class="field">
+        <label>Date Processed</label>
+        <input type="text" id="dateProcessed" readonly placeholder="---">
+      </div>
+      <div class="field">
+        <label>SAP PR Reference</label>
+        <input type="text" id="sapRef" placeholder="Enter SAP PR No. after posting (e.g. 10001234)">
+      </div>
+      <div class="field">
+        <label>PO Number</label>
+        <input type="text" id="poNumber" placeholder="Enter PO No. once issued (e.g. 4500005678)">
+      </div>
+      <div class="field">
+        <label>Buyer / Handler</label>
+        <input type="text" id="buyer" placeholder="Purchasing officer who picked this up">
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Final Remarks</label>
+        <textarea id="finalRemarks" readonly placeholder="System will auto-fill once approved/rejected"></textarea>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Audit Trail</label>
+        <textarea id="auditTrail" readonly placeholder="Lifecycle events will appear here" style="font-family:'JetBrains Mono',monospace;font-size:11px;min-height:80px"></textarea>
+      </div>
+    </div>
+  </div>
+
   <div class="footer-actions">
     <button class="btn" onclick="clearForm()">Clear Form</button>
     <button class="btn" onclick="loadDraft()">Load Draft</button>
@@ -305,7 +346,7 @@ const CONFIG = {
   AUTOSAVE_INTERVAL_MS: 30000,               // auto-save draft every 30s
   VAT_RATE: 0.12,
   PR_PREFIX: "PR",
-  STORAGE_KEY: "pr_form_draft_v3"
+  STORAGE_KEY: "pr_form_draft_v4"
 };
 
 /* Categories by request type */
@@ -1394,6 +1435,38 @@ function setStatus(s){
   state.status = s;
   document.getElementById('prStatus').className = 'status-badge ' + s.toLowerCase();
   document.getElementById('statusText').textContent = s;
+  // Mirror to Final Status badge too
+  const fb = document.getElementById('finalStatusBadge');
+  const ft = document.getElementById('finalStatusBadgeText');
+  if(fb){ fb.className = 'status-badge ' + s.toLowerCase(); }
+  if(ft){ ft.textContent = s; }
+  const fs = document.getElementById('finalStatus');
+  if(fs) fs.value = s;
+}
+
+/* === AUDIT TRAIL === */
+function pushAudit(action, actor, notes){
+  const ta = document.getElementById('auditTrail');
+  if(!ta) return;
+  const ts = new Date().toLocaleString('en-PH',{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+  const line = '[' + ts + '] ' + action.toUpperCase() + (actor ? ' by ' + actor : '') + (notes ? ' — ' + notes : '');
+  ta.value = (ta.value ? ta.value + '\n' : '') + line;
+}
+
+function fillFinalStatus(status, actor, remarks){
+  const now = new Date();
+  document.getElementById('finalStatus').value     = status;
+  document.getElementById('approvedBy').value      = actor || '---';
+  document.getElementById('dateProcessed').value   = now.toLocaleString('en-PH',{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+  if(remarks){
+    document.getElementById('finalRemarks').value = remarks;
+  } else {
+    document.getElementById('finalRemarks').value = status === 'Approved'
+      ? 'Approved. Forwarded to Purchasing for SAP posting.'
+      : status === 'Rejected'
+        ? 'Rejected. Returned to requestor for revision.'
+        : '';
+  }
 }
 
 function validate(){
@@ -1434,6 +1507,7 @@ function submitPR(){
   if(!validate()) return;
   setStatus('Pending');
   const supName = state.supervisor && !state.supervisor.topOfChain ? state.supervisor.last+', '+state.supervisor.first : 'supervisor';
+  pushAudit('submitted', state.requestor ? (state.requestor.first+' '+state.requestor.last) : 'requestor', 'Forwarded to ' + supName);
   const data = collectData();
   // Post to backend if available
   if(CONFIG.API_BASE_URL){
@@ -1486,9 +1560,10 @@ function emailSupervisor(){
 function exportCSV(){
   const data = collectData();
   if(!data.items.length){ toast('No items to export','error'); return; }
-  const headers = ['PR No','Status','Request Type','Date Requested','Date Needed','Priority','Category','Service Type','Cost Center','Requestor','Department','Location','Position','Supervisor','Item #','Line Type','Description','Qty','UoM','Unit Price','Total','Remarks'];
+  const headers = ['PR No','Status','Final Status','Approved By','Date Processed','SAP Ref','PO Number','Buyer','Request Type','Date Requested','Date Needed','Priority','Category','Service Type','Cost Center','Requestor','Department','Location','Position','Supervisor','Item #','Line Type','Description','Qty','UoM','Unit Price','Total','Remarks'];
   const rows = data.items.map((it,i) => [
-    data.pr_no, data.status, data.request_type || 'Materials', data.date_requested, data.date_needed, data.priority, data.category, data.service_type || '', data.cost_center,
+    data.pr_no, data.status, data.final_status || '', data.approved_by || '', data.date_processed || '', data.sap_reference || '', data.po_number || '', data.buyer || '',
+    data.request_type || 'Materials', data.date_requested, data.date_needed, data.priority, data.category, data.service_type || '', data.cost_center,
     (data.requestor ? data.requestor.first + ' ' + data.requestor.last : ''),
     (data.requestor && data.requestor.dept) || '',
     (data.requestor && data.requestor.loc) || '',
@@ -1512,6 +1587,11 @@ function approvePR(){
   if(state.status === 'Draft'){ toast('Submit the PR first before approving','info'); return; }
   if(state.status === 'Approved'){ toast('Already approved','info'); return; }
   setStatus('Approved');
+  const sup = state.supervisor;
+  const actor = (sup && !sup.topOfChain) ? (sup.first + ' ' + sup.last) : 'System';
+  const supRemarks = document.getElementById('supRemarks').value.trim();
+  fillFinalStatus('Approved', actor, supRemarks ? ('Approved with note: ' + supRemarks) : null);
+  pushAudit('approved', actor, supRemarks || '');
   toast('Purchase Request approved','success');
 }
 
@@ -1525,6 +1605,10 @@ function confirmReject(){
   if(!r){ toast('Please provide a rejection reason','error'); return; }
   document.getElementById('supRemarks').value = (document.getElementById('supRemarks').value + '\n[REJECTED] ' + r).trim();
   setStatus('Rejected');
+  const sup = state.supervisor;
+  const actor = (sup && !sup.topOfChain) ? (sup.first + ' ' + sup.last) : 'System';
+  fillFinalStatus('Rejected', actor, 'Rejected: ' + r);
+  pushAudit('rejected', actor, r);
   closeRejectModal();
   toast('Purchase Request rejected and returned to requestor','error');
 }
@@ -1532,6 +1616,10 @@ function confirmReject(){
 function resetApproval(){
   setStatus('Draft');
   document.getElementById('supRemarks').value = '';
+  ['finalStatus','approvedBy','dateProcessed','finalRemarks'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  pushAudit('reset', 'System', 'Approval cleared, returned to draft');
   toast('Approval reset to Draft','info');
 }
 
@@ -1539,7 +1627,8 @@ function clearForm(){
   if(!confirm('Clear the entire form? This cannot be undone.')) return;
   document.getElementById('empSearch').value = '';
   ['empId','empDept','empLoc','empPos','empEmail','empPhone','dateNeeded','costCenter','supplier','purpose','supRemarks',
-   'serviceType','serviceDuration','serviceLocation','serviceScope']
+   'serviceType','serviceDuration','serviceLocation','serviceScope',
+   'finalStatus','approvedBy','dateProcessed','sapRef','poNumber','buyer','finalRemarks','auditTrail']
     .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('requestType').value = 'Materials';
   onRequestTypeChange();
@@ -1595,6 +1684,14 @@ function loadDraft(){
     document.getElementById('supplier').value = d.preferred_supplier || '';
     document.getElementById('purpose').value = d.justification || '';
     document.getElementById('supRemarks').value = d.supervisor_remarks || '';
+    document.getElementById('finalStatus').value    = d.final_status    || '';
+    document.getElementById('approvedBy').value     = d.approved_by     || '';
+    document.getElementById('dateProcessed').value  = d.date_processed  || '';
+    document.getElementById('sapRef').value         = d.sap_reference   || '';
+    document.getElementById('poNumber').value       = d.po_number       || '';
+    document.getElementById('buyer').value          = d.buyer           || '';
+    document.getElementById('finalRemarks').value   = d.final_remarks   || '';
+    document.getElementById('auditTrail').value     = d.audit_trail     || '';
     // Restore items
     document.getElementById('itemsBody').innerHTML = '';
     (d.items||[]).forEach(it => {
@@ -1666,6 +1763,14 @@ function collectData(){
     supervisor_email: state.supervisor ? emailOf(state.supervisor) : '',
     supervisor_source: state.supervisorSource,
     supervisor_remarks: document.getElementById('supRemarks').value,
+    final_status:   document.getElementById('finalStatus').value,
+    approved_by:    document.getElementById('approvedBy').value,
+    date_processed: document.getElementById('dateProcessed').value,
+    sap_reference:  document.getElementById('sapRef').value,
+    po_number:      document.getElementById('poNumber').value,
+    buyer:          document.getElementById('buyer').value,
+    final_remarks:  document.getElementById('finalRemarks').value,
+    audit_trail:    document.getElementById('auditTrail').value,
     items: items,
     subtotal: document.getElementById('subtotal').textContent,
     vat: document.getElementById('vat').textContent,
