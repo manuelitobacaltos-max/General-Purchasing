@@ -90,6 +90,39 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
 .modal textarea{width:100%;font-size:12px;font-family:'DM Sans';padding:10px;border:1px solid var(--border);border-radius:8px;resize:vertical;min-height:70px}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 @media print{body{background:#fff}.app{max-width:100%;padding:0}.footer-actions,.add-row-btn,.approval-actions,.dropdown,table.items .del-btn,#changeSupBtn,#supOverrideWrap{display:none !important}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}table.items td input{border:none !important;background:transparent !important}}
+.email-flow{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border:1px solid #f59e0b;border-radius:10px;padding:14px;margin:14px 0;display:flex;gap:12px;align-items:flex-start}
+.email-flow .icon{width:32px;height:32px;border-radius:50%;background:#f59e0b;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.email-flow .body-text{flex:1;font-size:12px;color:var(--text)}
+.email-flow .body-text strong{color:#92400e;display:block;font-size:13px;margin-bottom:3px}
+.email-flow .body-text a{color:var(--accent);text-decoration:none;font-weight:600}
+.email-flow .body-text a:hover{text-decoration:underline}
+.email-history{margin-top:10px;padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)}
+.email-history .lbl{font-size:10px;text-transform:uppercase;font-weight:700;color:var(--text2);letter-spacing:.05em;margin-bottom:6px}
+.email-history .entry{font-size:11px;padding:4px 0;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;gap:8px}
+.email-history .entry:last-child{border-bottom:none}
+.email-history .entry .who{font-weight:600;color:var(--text)}
+.email-history .entry .when{font-family:'JetBrains Mono';color:var(--text3);font-size:10px}
+.dropzone{border:2px dashed var(--border);border-radius:10px;padding:24px 16px;text-align:center;cursor:pointer;background:var(--surface2);transition:all .2s}
+.dropzone:hover,.dropzone.drag-over{border-color:var(--accent);background:rgba(29,78,216,.04)}
+.dropzone .dz-icon{width:38px;height:38px;margin:0 auto 8px;color:var(--accent);opacity:.7}
+.dropzone .dz-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.dropzone .dz-hint{font-size:11px;color:var(--text2)}
+.dropzone input[type="file"]{display:none}
+.attach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.attach-card{position:relative;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#fff;aspect-ratio:1;display:flex;flex-direction:column}
+.attach-card .thumb{flex:1;min-height:0;background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#f1f5f9;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:24px;font-family:'JetBrains Mono'}
+.attach-card .meta{padding:5px 7px;font-size:9px;background:#fff;border-top:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.attach-card .meta .nm{font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis}
+.attach-card .meta .sz{color:var(--text3);font-family:'JetBrains Mono'}
+.attach-card .remove{position:absolute;top:4px;right:4px;background:rgba(220,38,38,.92);color:#fff;border:none;width:22px;height:22px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.attach-card .remove:hover{background:#b91c1c}
+.attach-card .view-btn{position:absolute;top:4px;left:4px;background:rgba(29,78,216,.92);color:#fff;border:none;width:22px;height:22px;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.attach-card .view-btn:hover{background:#1e40af}
+.sap-card{background:linear-gradient(135deg,#dbeafe 0%,#bfdbfe 100%);border:1px solid #3b82f6;border-radius:10px;padding:14px;margin-bottom:14px}
+.sap-card.posted{background:linear-gradient(135deg,#d1fae5 0%,#a7f3d0 100%);border-color:#059669}
+.sap-card .label{font-size:10px;text-transform:uppercase;font-weight:700;color:#1e40af;letter-spacing:.05em}
+.sap-card.posted .label{color:#065f46}
+.sap-card .val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:var(--text);margin-top:3px}
 @media (max-width:720px){.row,.row.three{grid-template-columns:1fr}.header{flex-direction:column;gap:8px;text-align:center}.header .right{text-align:center}.app{padding:10px}.card{padding:14px}table.items{font-size:11px;display:block;overflow-x:auto;white-space:nowrap}.footer-actions{flex-direction:column-reverse}.footer-actions .btn{width:100%;justify-content:center}}
 .dropitem.active{background:rgba(29,78,216,.10);border-left:3px solid var(--accent)}
 .dropitem mark{background:#fef08a;color:var(--text);padding:0 2px;border-radius:2px}
@@ -206,8 +239,8 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
           <th style="width:120px" id="lineTypeHeader" style="display:none">Type</th>
           <th style="width:80px" class="r" id="qtyHeader">Qty</th>
           <th style="width:90px" id="uomHeader">UoM</th>
-          <th style="width:110px" class="r" id="priceHeader">Unit Price (PHP)</th>
-          <th class="r">Total (PHP)</th>
+          <th style="width:110px" class="r price-col" id="priceHeader">Unit Price (PHP)</th>
+          <th class="r price-col">Total (PHP)</th>
           <th style="width:120px">Remarks</th>
           <th style="width:36px"></th>
         </tr>
@@ -215,7 +248,7 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
       <tbody id="itemsBody"></tbody>
     </table>
     <button class="add-row-btn" onclick="addItemRow()" id="addRowBtn">+ Add Item Row</button>
-    <div class="totals-row">
+    <div class="totals-row price-only">
       <div class="totals-box">
         <div class="lbl">Subtotal:</div><div class="val" id="subtotal">PHP 0.00</div>
         <div class="lbl">VAT (12%):</div><div class="val" id="vat">PHP 0.00</div>
@@ -225,7 +258,19 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
   </div>
 
   <div class="card">
-    <h2><span class="num">4</span>Supervisor Approval</h2>
+    <h2><span class="num">4</span>Attachments &amp; Supporting Documents</h2>
+    <div class="dropzone" id="dropzone" onclick="document.getElementById('attachFile').click()">
+      <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div class="dz-title">Drop images, quotes, or specs here, or click to browse</div>
+      <div class="dz-hint">Supports JPG, PNG, GIF, WebP, PDF. Max 5 MB each, up to 10 files.</div>
+      <input type="file" id="attachFile" multiple accept="image/*,application/pdf">
+    </div>
+    <div class="attach-grid" id="attachGrid"></div>
+    <div class="help-text" id="attachInfo" style="margin-top:8px">No attachments yet.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">5</span>Supervisor Approval</h2>
     <div class="supervisor-card" id="supCard">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
         <div style="flex:1;min-width:0">
@@ -257,11 +302,20 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
       <button class="btn success" onclick="approvePR()">Approve</button>
       <button class="btn outline-danger" onclick="openRejectModal()">Reject &amp; Return</button>
       <button class="btn" onclick="resetApproval()">Reset Approval</button>
+      <button class="btn" onclick="emailPurchasing()">&#9993; Email Purchasing</button>
     </div>
+    <div class="email-flow">
+      <div class="icon">&#9993;</div>
+      <div class="body-text">
+        <strong>Email Workflow</strong>
+        On <b>Submit</b>, an email composer opens with the supervisor pre-filled (<span id="supEmailHint" style="font-family:JetBrains Mono">—</span>). On <b>Approve</b>, a composer opens with <a href="mailto:rachel@vienovo.ph"><b>rachel@vienovo.ph</b></a> pre-filled. You can send via your default mail app, Outlook Web, Gmail Web, or download the .eml file (with attachments).
+      </div>
+    </div>
+    <div class="email-history" id="emailHistory" style="display:none"></div>
   </div>
 
-  <div class="card" id="card5">
-    <h2><span class="num">5</span>Final Status &amp; SAP Hand-off</h2>
+  <div class="card" id="card6">
+    <h2><span class="num">6</span>Final Status &amp; SAP Hand-off</h2>
     <div class="row">
       <div class="field">
         <label>Final Status</label>
@@ -298,6 +352,21 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
         <label>Audit Trail</label>
         <textarea id="auditTrail" readonly placeholder="Lifecycle events will appear here" style="font-family:'JetBrains Mono',monospace;font-size:11px;min-height:80px"></textarea>
       </div>
+      <div class="field" style="grid-column:1/-1">
+        <div class="sap-card price-only" id="sapCard">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+            <div>
+              <div class="label">SAP Posting</div>
+              <div class="val" id="sapStatusVal">Not yet posted</div>
+              <div class="help-text" id="sapHint" style="margin-top:4px">Approval needed before posting to SAP.</div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn primary" id="postSAPBtn" onclick="postToSAP()" disabled>Post to SAP</button>
+              <button class="btn" onclick="previewSAPPayload()">Preview Payload</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -307,11 +376,55 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
     <button class="btn" onclick="saveDraft()">Save Draft</button>
     <button class="btn" onclick="exportJSON()">Export JSON</button>
     <button class="btn" onclick="exportCSV()">Export CSV</button>
-    <button class="btn" onclick="emailSupervisor()">Email Supervisor</button>
+    <button class="btn" onclick="emailSupervisor()">&#9993; Email Supervisor</button>
+    <button class="btn" onclick="emailPurchasing()">&#9993; Email Purchasing</button>
     <button class="btn" onclick="window.print()">Print / PDF</button>
     <button class="btn primary" onclick="submitPR()">Submit for Approval</button>
   </div>
   <div class="draft-saved-indicator" id="draftIndicator">&#10003; Draft auto-saved</div>
+</div>
+
+<div class="modal-bg" id="sapPreviewModal">
+  <div class="modal" style="max-width:680px">
+    <h3>SAP BAPI_REQUISITION_CREATE Payload Preview</h3>
+    <p>Below is the JSON payload that will be sent to <code>/api/pr/post-sap</code>. Review carefully before posting.</p>
+    <textarea id="sapPayloadText" readonly style="min-height:300px;font-family:'JetBrains Mono',monospace;font-size:11px"></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeSAPPreview()">Close</button>
+      <button class="btn primary" onclick="copySAPPayload()">Copy JSON</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="emailModal">
+  <div class="modal" style="max-width:720px">
+    <h3 id="emailModalTitle">Send Email</h3>
+    <p id="emailModalSubtitle" style="margin-bottom:6px">Choose how to send this email:</p>
+    <div style="display:grid;grid-template-columns:90px 1fr;gap:6px 10px;font-size:12px;align-items:center;margin-bottom:10px">
+      <label style="color:var(--text2);font-weight:600">To:</label>
+      <input type="text" id="emailModalTo" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono';font-size:11px">
+      <label style="color:var(--text2);font-weight:600">Cc:</label>
+      <input type="text" id="emailModalCc" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono';font-size:11px">
+      <label style="color:var(--text2);font-weight:600">Subject:</label>
+      <input type="text" id="emailModalSubject" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px">
+    </div>
+    <label style="font-size:10px;color:var(--text2);text-transform:uppercase;font-weight:700">Body</label>
+    <textarea id="emailModalBody" style="width:100%;min-height:200px;font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:6px;margin-top:3px"></textarea>
+    <div id="emailModalAttachInfo" style="font-size:11px;color:var(--text2);margin-top:6px"></div>
+
+    <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:10px 12px;margin-top:12px;font-size:11px;color:#92400e">
+      <strong>Quick send options:</strong> Pick whichever mail client you use. The email content is already prepared below.
+    </div>
+
+    <div class="modal-actions" style="flex-wrap:wrap;gap:6px;margin-top:12px">
+      <button class="btn" onclick="closeEmailModal()">Close</button>
+      <button class="btn" onclick="copyEmailToClipboard()">&#128203; Copy Body</button>
+      <button class="btn" onclick="downloadEML()">&#128190; Download .eml</button>
+      <button class="btn" onclick="openMailto()">&#9993; Default Mail App</button>
+      <button class="btn" onclick="openGmailCompose()" style="background:#ea4335;color:#fff;border-color:#ea4335">&#9993; Gmail Web</button>
+      <button class="btn primary" onclick="openOutlookCompose()">&#9993; Outlook Web</button>
+    </div>
+  </div>
 </div>
 
 <div class="modal-bg" id="rejectModal">
@@ -346,7 +459,12 @@ const CONFIG = {
   AUTOSAVE_INTERVAL_MS: 30000,               // auto-save draft every 30s
   VAT_RATE: 0.12,
   PR_PREFIX: "PR",
-  STORAGE_KEY: "pr_form_draft_v4"
+  STORAGE_KEY: "pr_form_draft_v8",
+  // ----- Email workflow -----
+  PURCHASING_EMAIL: "rachel@vienovo.ph",     // gets the PR after supervisor approval
+  AUTO_EMAIL_ON_SUBMIT:  true,               // open mailto:supervisor on submit
+  AUTO_EMAIL_ON_APPROVE: true,               // open mailto:purchasing on approve
+  EMAIL_VIEW_URL: ""                         // e.g. "https://pr.vienovo.ph/view/" - prepended to PR number to make clickable links
 };
 
 /* Categories by request type */
@@ -929,9 +1047,11 @@ function findSupervisor(emp){
 }
 
 /* === STATE === */
-let state = {requestor:null, supervisor:null, supervisorSource:'auto', status:'Draft'};
+let state = {requestor:null, supervisor:null, supervisorSource:'auto', status:'Draft', sapPosted:false, sapPostingDetails:null, emailsSent:[]};
 let dropdownActiveIdx = -1;
 let autosaveTimer = null;
+let ATTACHMENTS = [];  // [{id, name, size, type, dataUrl}]
+const ATTACH_LIMITS = { maxFiles: 10, maxBytes: 5 * 1024 * 1024 };
 
 /* === EMAIL HELPER === */
 function emailOf(emp){
@@ -962,6 +1082,7 @@ async function init(){
   // Initial population based on default request type (Materials)
   populateCategories();
   onRequestTypeChange();
+  setupAttachments();
   document.getElementById('empCount').textContent = EMPLOYEES.length + ' employees loaded';
   // Restore draft if present
   if(localStorage.getItem(CONFIG.STORAGE_KEY)){
@@ -1217,6 +1338,8 @@ function updateSupervisorCard(){
   else if(sup.crossLoc) locTxt += ' (cross-location)';
   document.getElementById('supLoc').textContent = locTxt;
   document.getElementById('supEmail').textContent = '✉ ' + emailOf(sup);
+  const hint = document.getElementById('supEmailHint');
+  if(hint) hint.textContent = emailOf(sup);
 }
 
 /* === SUPERVISOR OVERRIDE === */
@@ -1392,8 +1515,8 @@ function addItemRow(){
     lineTypeCell +
     '<td><input type="number" class="num" min="0" step="0.01" placeholder="0" oninput="recalc()"></td>' +
     '<td><input type="text" placeholder="'+uomPH+'"></td>' +
-    '<td><input type="number" class="num" min="0" step="0.01" placeholder="0.00" oninput="recalc()"></td>' +
-    '<td class="total-cell">PHP 0.00</td>' +
+    '<td class="price-col"><input type="number" class="num" min="0" step="0.01" placeholder="0.00" oninput="recalc()"></td>' +
+    '<td class="total-cell price-col">PHP 0.00</td>' +
     '<td><input type="text" placeholder="Optional"></td>' +
     '<td><button class="del-btn" onclick="deleteRow('+id+')" title="Remove">&times;</button></td>';
   tbody.appendChild(tr);
@@ -1525,36 +1648,270 @@ function submitPR(){
   } else {
     toast('Submitted to ' + supName + ' for approval','success');
   }
+  // Auto-email supervisor
+  if(CONFIG.AUTO_EMAIL_ON_SUBMIT && state.supervisor && !state.supervisor.topOfChain){
+    setTimeout(() => {
+      const subject = '[' + document.getElementById('prNo').textContent + '] Purchase Request for Approval — ' +
+                      (state.requestor.last+', '+state.requestor.first);
+      sendEmailNotification('supervisor', emailOf(state.supervisor),
+        document.getElementById('empEmail').value, subject);
+    }, 400);
+  }
   localStorage.removeItem(CONFIG.STORAGE_KEY);
+}
+
+function buildEmailBody(audience){
+  /* audience: 'supervisor' | 'purchasing' */
+  const prNo  = document.getElementById('prNo').textContent;
+  const total = document.getElementById('grandTotal').textContent;
+  const items = [...document.querySelectorAll('#itemsBody tr')].map((tr,i) => {
+    const ins = tr.querySelectorAll('input');
+    const desc = ins[0].value.trim();
+    if(!desc) return null;
+    const qty  = ins[1].value;
+    const uom  = ins[2].value;
+    const pr   = parseFloat(ins[3].value)||0;
+    const lt   = (parseFloat(ins[1].value)||0) * pr;
+    return (i+1)+'. '+desc+' — '+qty+' '+uom+' @ PHP '+pr.toFixed(2)+' = PHP '+lt.toFixed(2);
+  }).filter(Boolean).join('\r\n');
+  const link = CONFIG.EMAIL_VIEW_URL ? (CONFIG.EMAIL_VIEW_URL + prNo) : '';
+  const greeting = audience === 'supervisor'
+    ? 'Hi ' + (state.supervisor && state.supervisor.first ? state.supervisor.first : 'Sir/Maam')
+    : 'Hi Rachel';
+  const intro = audience === 'supervisor'
+    ? 'Please review and approve the following Purchase Request:'
+    : 'The following Purchase Request has been APPROVED and is forwarded to Purchasing for processing:';
+  return greeting + ',\r\n\r\n' + intro + '\r\n\r\n' +
+    'PR No:        ' + prNo + '\r\n' +
+    'Status:       ' + state.status + '\r\n' +
+    'Request Type: ' + (document.getElementById('requestType').value || 'Materials') + '\r\n' +
+    'Category:     ' + document.getElementById('category').value + '\r\n' +
+    'Priority:     ' + document.getElementById('priority').value + '\r\n' +
+    'Date Needed:  ' + document.getElementById('dateNeeded').value + '\r\n' +
+    'Cost Center:  ' + (document.getElementById('costCenter').value || 'N/A') + '\r\n' +
+    'Supplier:     ' + (document.getElementById('supplier').value || 'N/A') + '\r\n\r\n' +
+    'Requestor:    ' + (state.requestor ? state.requestor.first + ' ' + state.requestor.last : '') +
+                  ' — ' + (state.requestor ? state.requestor.dept + ', ' + state.requestor.loc : '') + '\r\n' +
+    'Approver:     ' + (state.supervisor && !state.supervisor.topOfChain ? state.supervisor.first + ' ' + state.supervisor.last : 'N/A') + '\r\n' +
+    (audience === 'purchasing'
+        ? 'Approved by:  ' + (document.getElementById('approvedBy').value || 'N/A') + '\r\n' +
+          'Approved on:  ' + (document.getElementById('dateProcessed').value || 'N/A') + '\r\n'
+        : '') +
+    '\r\nJustification:\r\n' + document.getElementById('purpose').value + '\r\n\r\n' +
+    'Items:\r\n' + items + '\r\n\r\n' +
+    'Grand Total:  ' + total + '\r\n\r\n' +
+    (ATTACHMENTS.length ? 'Attachments:  ' + ATTACHMENTS.length + ' file(s)\r\n' : '') +
+    (link ? 'View PR online: ' + link + '\r\n\r\n' : '\r\n') +
+    (audience === 'supervisor'
+        ? 'Please open the form, review the details, and click Approve or Reject.\r\n\r\nThanks,\r\n' +
+          (state.requestor ? state.requestor.first : '')
+        : 'Please proceed with sourcing, quotation comparison, and SAP posting.\r\n\r\nThanks,\r\nVienovo Approval System');
+}
+
+function logEmailSent(to, audience){
+  state.emailsSent = state.emailsSent || [];
+  state.emailsSent.push({ to:to, audience:audience, sent_at: new Date().toISOString() });
+  renderEmailHistory();
+}
+
+function renderEmailHistory(){
+  const el = document.getElementById('emailHistory');
+  if(!el) return;
+  if(!state.emailsSent || !state.emailsSent.length){ el.style.display='none'; return; }
+  el.style.display='block';
+  el.innerHTML = '<div class="lbl">Email Notifications Sent</div>' +
+    state.emailsSent.map(e =>
+      '<div class="entry"><div><span class="who">→ '+e.to+'</span> ('+e.audience+')</div>' +
+      '<div class="when">'+new Date(e.sent_at).toLocaleString('en-PH')+'</div></div>'
+    ).join('');
+}
+
+/* Email modal state */
+let _emailModalContext = { audience:'', to:'', cc:'', subject:'', body:'' };
+
+async function sendEmailNotification(audience, toEmail, ccEmail, subject){
+  const body = buildEmailBody(audience);
+  _emailModalContext = { audience: audience, to: toEmail, cc: ccEmail || '', subject: subject, body: body };
+
+  // 1) Try backend SMTP if configured
+  if(CONFIG.API_BASE_URL){
+    try {
+      const res = await fetch(CONFIG.API_BASE_URL + '/email/send', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          to: toEmail, cc: ccEmail, subject: subject, body: body,
+          attachments: ATTACHMENTS.map(a => ({ name:a.name, type:a.type, dataUrl:a.dataUrl })),
+          pr_no: document.getElementById('prNo').textContent,
+          audience: audience
+        })
+      });
+      if(res.ok){
+        logEmailSent(toEmail, audience);
+        pushAudit('email_sent_' + audience, 'System', 'to ' + toEmail);
+        toast('Email sent automatically to ' + toEmail,'success');
+        return true;
+      }
+    } catch(e){ console.warn('Backend email failed:', e.message); }
+  }
+
+  // 2) Open modal with multiple send options
+  openEmailModal(audience, toEmail, ccEmail, subject, body);
+  return true;
+}
+
+function openEmailModal(audience, to, cc, subject, body){
+  const titleMap = {
+    supervisor: 'Send to Supervisor for Approval',
+    purchasing: 'Send to Purchasing (rachel@vienovo.ph)',
+    other:      'Send Email'
+  };
+  document.getElementById('emailModalTitle').textContent = titleMap[audience] || titleMap.other;
+  document.getElementById('emailModalTo').value      = to || '';
+  document.getElementById('emailModalCc').value      = cc || '';
+  document.getElementById('emailModalSubject').value = subject || '';
+  document.getElementById('emailModalBody').value    = body || '';
+  document.getElementById('emailModalAttachInfo').textContent =
+    ATTACHMENTS.length
+      ? '📎 ' + ATTACHMENTS.length + ' attachment(s) — Outlook Web & Gmail Web need you to attach files manually after the compose window opens. Default Mail App and .eml include them automatically.'
+      : 'No attachments.';
+  _emailModalContext = { audience, to, cc, subject, body };
+  document.getElementById('emailModal').classList.add('open');
+}
+function closeEmailModal(){
+  document.getElementById('emailModal').classList.remove('open');
+}
+
+function _getCurrentEmailData(){
+  return {
+    audience: _emailModalContext.audience,
+    to:       document.getElementById('emailModalTo').value.trim(),
+    cc:       document.getElementById('emailModalCc').value.trim(),
+    subject:  document.getElementById('emailModalSubject').value.trim(),
+    body:     document.getElementById('emailModalBody').value
+  };
+}
+
+function openMailto(){
+  const d = _getCurrentEmailData();
+  const u = 'mailto:' + encodeURIComponent(d.to) +
+            '?cc=' + encodeURIComponent(d.cc) +
+            '&subject=' + encodeURIComponent(d.subject) +
+            '&body=' + encodeURIComponent(d.body);
+  // Use a real anchor in a new tab so the form doesn\'t navigate away
+  const a = document.createElement('a');
+  a.href = u; a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+  _logAndAudit(d, 'mailto');
+}
+
+function openGmailCompose(){
+  const d = _getCurrentEmailData();
+  const u = 'https://mail.google.com/mail/?view=cm&fs=1' +
+            '&to=' + encodeURIComponent(d.to) +
+            '&cc=' + encodeURIComponent(d.cc) +
+            '&su=' + encodeURIComponent(d.subject) +
+            '&body=' + encodeURIComponent(d.body);
+  window.open(u, '_blank', 'noopener');
+  _logAndAudit(d, 'gmail-web');
+}
+
+function openOutlookCompose(){
+  const d = _getCurrentEmailData();
+  // Office 365 / Outlook on the web deep link
+  const u = 'https://outlook.office.com/mail/deeplink/compose?' +
+            'to=' + encodeURIComponent(d.to) +
+            '&cc=' + encodeURIComponent(d.cc) +
+            '&subject=' + encodeURIComponent(d.subject) +
+            '&body=' + encodeURIComponent(d.body);
+  window.open(u, '_blank', 'noopener');
+  _logAndAudit(d, 'outlook-web');
+}
+
+function copyEmailToClipboard(){
+  const d = _getCurrentEmailData();
+  const text =
+    'To: ' + d.to + '\nCc: ' + d.cc + '\nSubject: ' + d.subject + '\n\n' + d.body;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(
+      () => toast('Email content copied. Paste into any mail client.','success'),
+      () => toast('Could not access clipboard.','error')
+    );
+  } else {
+    const ta = document.getElementById('emailModalBody');
+    ta.select(); document.execCommand('copy');
+    toast('Email body copied.','success');
+  }
+  _logAndAudit(d, 'clipboard');
+}
+
+function downloadEML(){
+  const d = _getCurrentEmailData();
+  const boundary = '----=_PR_' + Date.now();
+  // Build a simple multipart .eml
+  const lines = [
+    'From: PR System <pr-system@' + CONFIG.COMPANY_DOMAIN + '>',
+    'To: ' + d.to,
+    d.cc ? 'Cc: ' + d.cc : null,
+    'Subject: ' + d.subject,
+    'MIME-Version: 1.0',
+    'Content-Type: multipart/mixed; boundary="' + boundary + '"',
+    '',
+    '--' + boundary,
+    'Content-Type: text/plain; charset=utf-8',
+    'Content-Transfer-Encoding: 8bit',
+    '',
+    d.body,
+    ''
+  ].filter(Boolean);
+  // Attach files
+  for(const a of ATTACHMENTS){
+    const m = (a.dataUrl||'').match(/^data:([^;]+);base64,(.+)$/);
+    if(!m) continue;
+    lines.push('--' + boundary);
+    lines.push('Content-Type: ' + m[1] + '; name="' + a.name + '"');
+    lines.push('Content-Transfer-Encoding: base64');
+    lines.push('Content-Disposition: attachment; filename="' + a.name + '"');
+    lines.push('');
+    // Wrap base64 at 76 chars per RFC
+    const b64 = m[2];
+    for(let i=0;i<b64.length;i+=76) lines.push(b64.substring(i, i+76));
+    lines.push('');
+  }
+  lines.push('--' + boundary + '--');
+  const emlBlob = new Blob([lines.join('\r\n')], { type:'message/rfc822' });
+  const url = URL.createObjectURL(emlBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (document.getElementById('prNo').textContent || 'pr') + '_' + d.audience + '.eml';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  toast('.eml file downloaded. Drag into Outlook/Thunderbird to send.','success');
+  _logAndAudit(d, 'eml-download');
+}
+
+function _logAndAudit(d, method){
+  logEmailSent(d.to, d.audience);
+  pushAudit('email_' + method + '_' + d.audience, 'System', 'to ' + d.to);
 }
 
 function emailSupervisor(){
   if(!state.requestor){ toast('Select an employee first','error'); return; }
   if(!state.supervisor || state.supervisor.topOfChain){ toast('No supervisor to email','error'); return; }
   if(!validate()) return;
-  const supEmail = emailOf(state.supervisor);
-  const prNo = document.getElementById('prNo').textContent;
-  const total = document.getElementById('grandTotal').textContent;
-  const subject = '[' + prNo + '] Purchase Request — ' + (state.requestor.last+', '+state.requestor.first);
-  const items = [...document.querySelectorAll('#itemsBody tr')].map((tr,i) => {
-    const ins = tr.querySelectorAll('input');
-    return (i+1)+'. '+ins[0].value+' — '+ins[1].value+' '+ins[2].value+' @ PHP '+(parseFloat(ins[3].value)||0).toFixed(2);
-  }).join('%0D%0A');
-  const body =
-    'Hi ' + state.supervisor.first + ',%0D%0A%0D%0A' +
-    'Please review and approve the following Purchase Request:%0D%0A%0D%0A' +
-    'PR No: ' + prNo + '%0D%0A' +
-    'Requestor: ' + state.requestor.first + ' ' + state.requestor.last + ' (' + state.requestor.dept + ')%0D%0A' +
-    'Category: ' + document.getElementById('category').value + '%0D%0A' +
-    'Priority: ' + document.getElementById('priority').value + '%0D%0A' +
-    'Date Needed: ' + document.getElementById('dateNeeded').value + '%0D%0A' +
-    'Cost Center: ' + (document.getElementById('costCenter').value || 'N/A') + '%0D%0A%0D%0A' +
-    'Justification:%0D%0A' + document.getElementById('purpose').value + '%0D%0A%0D%0A' +
-    'Items:%0D%0A' + items + '%0D%0A%0D%0A' +
-    'Grand Total: ' + total + '%0D%0A%0D%0A' +
-    'Thanks,%0D%0A' + state.requestor.first;
-  window.location.href = 'mailto:' + supEmail + '?cc=' + document.getElementById('empEmail').value +
-    '&subject=' + encodeURIComponent(subject) + '&body=' + body;
+  const subject = '[' + document.getElementById('prNo').textContent + '] Purchase Request for Approval — ' +
+                  (state.requestor.last+', '+state.requestor.first);
+  sendEmailNotification('supervisor', emailOf(state.supervisor), document.getElementById('empEmail').value, subject);
+}
+
+function emailPurchasing(){
+  if(state.status !== 'Approved'){
+    if(!confirm('PR is not yet Approved. Email Purchasing anyway?')) return;
+  }
+  const subject = '[' + document.getElementById('prNo').textContent + '] APPROVED Purchase Request — Ready for Procurement';
+  const ccList = [document.getElementById('empEmail').value];
+  if(state.supervisor && !state.supervisor.topOfChain) ccList.push(emailOf(state.supervisor));
+  sendEmailNotification('purchasing', CONFIG.PURCHASING_EMAIL, ccList.filter(Boolean).join(','), subject);
 }
 
 function exportCSV(){
@@ -1586,13 +1943,31 @@ function exportCSV(){
 function approvePR(){
   if(state.status === 'Draft'){ toast('Submit the PR first before approving','info'); return; }
   if(state.status === 'Approved'){ toast('Already approved','info'); return; }
+  const hasPrices = [...document.querySelectorAll('#itemsBody tr')].some(tr => {
+    const ins = tr.querySelectorAll('input');
+    return (parseFloat(ins[3].value) || 0) > 0;
+  });
+  if(!hasPrices){
+    if(!confirm('No unit prices have been entered. Approve anyway?')) return;
+  }
   setStatus('Approved');
   const sup = state.supervisor;
   const actor = (sup && !sup.topOfChain) ? (sup.first + ' ' + sup.last) : 'System';
   const supRemarks = document.getElementById('supRemarks').value.trim();
   fillFinalStatus('Approved', actor, supRemarks ? ('Approved with note: ' + supRemarks) : null);
   pushAudit('approved', actor, supRemarks || '');
-  toast('Purchase Request approved','success');
+  setSAPPostingState(false);   // Enable Post-to-SAP button
+  toast('Purchase Request approved. Notifying Purchasing...','success');
+  // Auto-email Purchasing
+  if(CONFIG.AUTO_EMAIL_ON_APPROVE){
+    setTimeout(() => {
+      const subject = '[' + document.getElementById('prNo').textContent + '] APPROVED Purchase Request — Ready for Procurement';
+      const ccList = [document.getElementById('empEmail').value];
+      if(state.supervisor && !state.supervisor.topOfChain) ccList.push(emailOf(state.supervisor));
+      sendEmailNotification('purchasing', CONFIG.PURCHASING_EMAIL,
+        ccList.filter(Boolean).join(','), subject);
+    }, 400);
+  }
 }
 
 function openRejectModal(){
@@ -1619,6 +1994,7 @@ function resetApproval(){
   ['finalStatus','approvedBy','dateProcessed','finalRemarks'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value = '';
   });
+  setSAPPostingState(false);
   pushAudit('reset', 'System', 'Approval cleared, returned to draft');
   toast('Approval reset to Draft','info');
 }
@@ -1636,7 +2012,11 @@ function clearForm(){
   document.getElementById('priority').value = 'Normal';
   document.getElementById('itemsBody').innerHTML = '';
   addItemRow();
-  state = {requestor:null, supervisor:null, supervisorSource:'auto', status:'Draft'};
+  state = {requestor:null, supervisor:null, supervisorSource:'auto', status:'Draft', sapPosted:false, sapPostingDetails:null, emailsSent:[]};
+  ATTACHMENTS = [];
+  renderAttachments();
+  setSAPPostingState(false);
+  renderEmailHistory();
   updateSupervisorCard();
   recalc();
   setStatus('Draft');
@@ -1692,6 +2072,11 @@ function loadDraft(){
     document.getElementById('buyer').value          = d.buyer           || '';
     document.getElementById('finalRemarks').value   = d.final_remarks   || '';
     document.getElementById('auditTrail').value     = d.audit_trail     || '';
+    ATTACHMENTS = Array.isArray(d.attachments) ? d.attachments : [];
+    renderAttachments();
+    if(d.sap_posted) setSAPPostingState(true, d.sap_posting); else setSAPPostingState(false);
+    state.emailsSent = Array.isArray(d.emails_sent) ? d.emails_sent : [];
+    renderEmailHistory();
     // Restore items
     document.getElementById('itemsBody').innerHTML = '';
     (d.items||[]).forEach(it => {
@@ -1771,6 +2156,11 @@ function collectData(){
     buyer:          document.getElementById('buyer').value,
     final_remarks:  document.getElementById('finalRemarks').value,
     audit_trail:    document.getElementById('auditTrail').value,
+    emails_sent:    state.emailsSent || [],
+    purchasing_email: CONFIG.PURCHASING_EMAIL,
+    sap_posted:     state.sapPosted,
+    sap_posting:    state.sapPostingDetails,
+    attachments:    ATTACHMENTS.map(a => ({ id:a.id, name:a.name, type:a.type, size:a.size, dataUrl:a.dataUrl })),
     items: items,
     subtotal: document.getElementById('subtotal').textContent,
     vat: document.getElementById('vat').textContent,
@@ -1787,6 +2177,241 @@ function toast(msg, type){
   document.body.appendChild(t);
   setTimeout(() => { t.style.opacity = '0'; t.style.transition='opacity .3s'; }, 2500);
   setTimeout(() => t.remove(), 2900);
+}
+
+
+/* === ATTACHMENTS === */
+function setupAttachments(){
+  const dz = document.getElementById('dropzone');
+  const inp = document.getElementById('attachFile');
+  if(!dz || !inp) return;
+  inp.addEventListener('change', e => handleFiles(e.target.files));
+  ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag-over'); }));
+  ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag-over'); }));
+  dz.addEventListener('drop', e => { handleFiles(e.dataTransfer.files); });
+}
+
+function handleFiles(fileList){
+  const files = Array.from(fileList || []);
+  for(const f of files){
+    if(ATTACHMENTS.length >= ATTACH_LIMITS.maxFiles){
+      toast('Max ' + ATTACH_LIMITS.maxFiles + ' files reached','error'); break;
+    }
+    if(f.size > ATTACH_LIMITS.maxBytes){
+      toast(f.name + ' exceeds ' + (ATTACH_LIMITS.maxBytes/1024/1024) + ' MB','error'); continue;
+    }
+    if(!/^(image\/|application\/pdf)/.test(f.type)){
+      toast(f.name + ' is not an image or PDF','error'); continue;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      ATTACHMENTS.push({
+        id: 'att_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+        name: f.name,
+        size: f.size,
+        type: f.type,
+        dataUrl: e.target.result
+      });
+      renderAttachments();
+      scheduleAutosave();
+    };
+    reader.readAsDataURL(f);
+  }
+  document.getElementById('attachFile').value = '';
+}
+
+function renderAttachments(){
+  const grid = document.getElementById('attachGrid');
+  const info = document.getElementById('attachInfo');
+  if(!grid) return;
+  grid.innerHTML = ATTACHMENTS.map(a => {
+    const isImg = a.type.startsWith('image/');
+    const thumb = isImg
+      ? '<div class="thumb" style="background-image:url('+a.dataUrl+')"></div>'
+      : '<div class="thumb">PDF</div>';
+    const sizeKB = (a.size/1024).toFixed(1);
+    return '<div class="attach-card" data-id="'+a.id+'">' +
+      thumb +
+      '<button class="view-btn" onclick="viewAttachment(\''+a.id+'\')" title="Open">&#128065;</button>' +
+      '<button class="remove" onclick="removeAttachment(\''+a.id+'\')" title="Remove">&times;</button>' +
+      '<div class="meta"><div class="nm" title="'+a.name+'">'+a.name+'</div><div class="sz">'+sizeKB+' KB</div></div>' +
+    '</div>';
+  }).join('');
+  const totalKB = (ATTACHMENTS.reduce((s,a)=>s+a.size,0)/1024).toFixed(1);
+  info.textContent = ATTACHMENTS.length
+    ? ATTACHMENTS.length + ' file(s), ' + totalKB + ' KB total'
+    : 'No attachments yet.';
+  updateCompletion && updateCompletion();
+}
+
+function viewAttachment(id){
+  const a = ATTACHMENTS.find(x => x.id === id);
+  if(!a) return;
+  const w = window.open('', '_blank');
+  if(a.type.startsWith('image/')){
+    w.document.write('<title>'+a.name+'</title><body style="margin:0;background:#0f172a;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="'+a.dataUrl+'" style="max-width:100%;max-height:100vh"></body>');
+  } else {
+    w.document.write('<title>'+a.name+'</title><body style="margin:0"><iframe src="'+a.dataUrl+'" style="width:100%;height:100vh;border:none"></iframe></body>');
+  }
+}
+
+function removeAttachment(id){
+  ATTACHMENTS = ATTACHMENTS.filter(a => a.id !== id);
+  renderAttachments();
+  scheduleAutosave();
+}
+
+/* === SAP POSTING ============================================
+   Maps the form data into a BAPI_REQUISITION_CREATE-shaped payload
+   and POSTs to /api/pr/post-sap. The backend handles the actual
+   SAP RFC / OData call.
+================================================================ */
+function buildSAPPayload(){
+  const data = collectData();
+  // Map UoM to SAP-compliant 3-char codes (extend as needed)
+  const uomMap = {
+    'pcs':'EA','piece':'EA','each':'EA','pc':'EA',
+    'pack':'PAC','box':'BX','ream':'REA','kg':'KG',
+    'gal':'GAL','liter':'L','l':'L','meter':'M','m':'M',
+    'roll':'ROL','set':'SET','unit':'EA',
+    'hour':'HR','hr':'HR','day':'DAY','week':'WK','month':'MON',
+    'year':'YR','lump sum':'LE','visit':'EA','trip':'EA',
+    'session':'EA','license':'EA','seat':'EA'
+  };
+  // Account Assignment Cat: K = Cost Center (most common for non-stock)
+  // P = Project, A = Asset, etc.
+  const items = data.items.map((it, i) => ({
+    PREQ_ITEM:    String((i+1)*10).padStart(5,'0'),
+    DOC_TYPE:     'NB',                          // Standard PR
+    SHORT_TEXT:   it.description.substring(0, 40),
+    QUANTITY:     it.quantity,
+    UNIT:         uomMap[(it.uom||'').toLowerCase()] || (it.uom||'EA').toUpperCase().substring(0,3),
+    DELIV_DATE:   data.date_needed,
+    PREQ_PRICE:   it.unit_price,
+    PRICE_UNIT:   1,
+    PLANT:        (data.requestor && {makati:'1000','HOREB Cebu':'2000','BULACAN':'3000','BUKIDNON PLANT':'4000','CEBU':'2000','VPI Isabela':'3500'}[data.requestor.loc]) || '1000',
+    PUR_GROUP:    '001',
+    ACCTASSCAT:   it.line_type === 'Service / Labor' ? 'U' : 'K',
+    ITEM_CAT:     it.line_type === 'Service / Labor' ? 'D' : '0',
+    MATL_GROUP:   (data.category||'').substring(0,9),
+    LONG_TEXT:    (it.remarks || '') + (data.justification ? '\n' + data.justification : '')
+  }));
+  const accountAssignments = items.map((it, i) => ({
+    PREQ_ITEM:     it.PREQ_ITEM,
+    SERIAL_NO:     '01',
+    COSTCENTER:    data.cost_center || '',
+    G_L_ACCT:      '',   // fill from material group mapping in SAP
+    BUS_AREA:      ''
+  }));
+  return {
+    HEADER: {
+      DOC_TYPE:           'NB',
+      CREATED_BY:         data.requestor ? data.requestor.first + ' ' + data.requestor.last : '',
+      REQUISITIONER:      data.requestor ? String(data.requestor.id) : '',
+      PR_REFERENCE:       data.pr_no,
+      EXTERNAL_PRNUM:     data.pr_no
+    },
+    REQUISITION_ITEMS: items,
+    ACCOUNT_ASSIGNMENT: accountAssignments,
+    SERVICES: items.filter(it => it.ACCTASSCAT === 'U').map((it,i) => ({
+      PCKG_NO:    String(i+1),
+      LINE_NO:    String(i+1),
+      SUBPCKG_NO: '0',
+      EXT_LINE:   String(it.PREQ_ITEM),
+      SERVICE:    '',
+      SHORT_TEXT: it.SHORT_TEXT,
+      QUANTITY:   it.QUANTITY,
+      BASE_UOM:   it.UNIT,
+      GR_PRICE:   it.PREQ_PRICE
+    })),
+    ATTACHMENTS: ATTACHMENTS.map(a => ({
+      name: a.name, type: a.type, size: a.size, dataUrl: a.dataUrl
+    })),
+    METADATA: {
+      request_type:   data.request_type,
+      category:       data.category,
+      service_type:   data.service_type,
+      requestor_dept: data.requestor && data.requestor.dept,
+      requestor_loc:  data.requestor && data.requestor.loc,
+      supervisor:     data.supervisor && (data.supervisor.first + ' ' + data.supervisor.last),
+      approved_at:    data.date_processed,
+      grand_total:    data.grand_total
+    }
+  };
+}
+
+function previewSAPPayload(){
+  const payload = buildSAPPayload();
+  document.getElementById('sapPayloadText').value = JSON.stringify(payload, null, 2);
+  document.getElementById('sapPreviewModal').classList.add('open');
+}
+function closeSAPPreview(){ document.getElementById('sapPreviewModal').classList.remove('open'); }
+function copySAPPayload(){
+  const ta = document.getElementById('sapPayloadText');
+  ta.select();
+  document.execCommand('copy');
+  toast('SAP payload copied to clipboard','success');
+}
+
+function setSAPPostingState(posted, details){
+  state.sapPosted = posted;
+  state.sapPostingDetails = details || null;
+  const card = document.getElementById('sapCard');
+  const val  = document.getElementById('sapStatusVal');
+  const hint = document.getElementById('sapHint');
+  if(posted){
+    card.classList.add('posted');
+    val.textContent = 'Posted: ' + (details && details.sap_pr_number ? details.sap_pr_number : 'success');
+    hint.textContent = details && details.posted_at ? 'Posted at ' + details.posted_at : 'Posting confirmed';
+    if(details && details.sap_pr_number) document.getElementById('sapRef').value = details.sap_pr_number;
+    if(details && details.po_number)     document.getElementById('poNumber').value = details.po_number;
+    document.getElementById('postSAPBtn').disabled = true;
+    document.getElementById('postSAPBtn').textContent = 'Posted ✓';
+  } else {
+    card.classList.remove('posted');
+    val.textContent = 'Not yet posted';
+    hint.textContent = state.status === 'Approved' ? 'Ready to post to SAP.' : 'Approval needed before posting to SAP.';
+    document.getElementById('postSAPBtn').disabled = state.status !== 'Approved';
+    document.getElementById('postSAPBtn').textContent = 'Post to SAP';
+  }
+}
+
+async function postToSAP(){
+  if(state.status !== 'Approved'){ toast('PR must be Approved before posting to SAP','error'); return; }
+  if(state.sapPosted){ toast('Already posted to SAP','info'); return; }
+  if(!confirm('Post this Purchase Request to SAP now? This action cannot be undone from this form.')) return;
+
+  const payload = buildSAPPayload();
+  pushAudit('post_to_sap_initiated', 'System', 'PR=' + payload.HEADER.EXTERNAL_PRNUM);
+
+  if(!CONFIG.API_BASE_URL){
+    // Offline mode: just save payload locally and mark as "queued"
+    const sapRef = 'LOCAL-' + Date.now();
+    setSAPPostingState(true, { sap_pr_number: sapRef, posted_at: new Date().toLocaleString('en-PH'), offline:true });
+    pushAudit('posted_to_sap_offline', 'System', 'No backend; payload saved as ' + sapRef);
+    toast('Backend offline. Payload queued locally (' + sapRef + ').','info');
+    return;
+  }
+
+  try {
+    document.getElementById('postSAPBtn').disabled = true;
+    document.getElementById('postSAPBtn').textContent = 'Posting...';
+    const res = await fetch(CONFIG.API_BASE_URL + '/pr/post-sap', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status + ' - ' + (await res.text()));
+    const json = await res.json();
+    setSAPPostingState(true, json);
+    pushAudit('posted_to_sap', 'System', 'SAP=' + (json.sap_pr_number||'') + ', PO=' + (json.po_number||''));
+    toast('Successfully posted to SAP: ' + json.sap_pr_number, 'success');
+  } catch(e){
+    document.getElementById('postSAPBtn').disabled = false;
+    document.getElementById('postSAPBtn').textContent = 'Post to SAP';
+    pushAudit('post_to_sap_failed', 'System', e.message);
+    toast('SAP posting failed: ' + e.message, 'error');
+  }
 }
 
 init();
