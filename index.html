@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,6 +104,20 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
 .email-history .entry:last-child{border-bottom:none}
 .email-history .entry .who{font-weight:600;color:var(--text)}
 .email-history .entry .when{font-family:'JetBrains Mono';color:var(--text3);font-size:10px}
+.monitoring-banner{background:linear-gradient(135deg,#e0e7ff 0%,#c7d2fe 100%);border:1px solid #6366f1;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;font-size:12px;color:#3730a3}
+.monitoring-banner .badge{background:#6366f1;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.tracking-section{padding:14px;border:1px solid var(--border);border-radius:10px;margin-bottom:12px;background:var(--surface2)}
+.tracking-section h3{font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.04em}
+.tracking-section h3 .sub-num{width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.status-pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.status-pill{padding:4px 10px;border-radius:12px;background:#fff;border:1px solid var(--border);font-size:10px;font-weight:600;color:var(--text2);cursor:default}
+.status-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.status-pill.q-draft.active   {background:#94a3b8;border-color:#94a3b8;color:#fff}
+.status-pill.q-submitted.active{background:#d97706;border-color:#d97706;color:#fff}
+.status-pill.q-approved.active{background:#059669;border-color:#059669;color:#fff}
+.status-pill.d-booked.active   {background:#3b82f6;border-color:#3b82f6;color:#fff}
+.status-pill.d-transit.active  {background:#d97706;border-color:#d97706;color:#fff}
+.status-pill.d-arrived.active  {background:#059669;border-color:#059669;color:#fff}
 .dropzone{border:2px dashed var(--border);border-radius:10px;padding:24px 16px;text-align:center;cursor:pointer;background:var(--surface2);transition:all .2s}
 .dropzone:hover,.dropzone.drag-over{border-color:var(--accent);background:rgba(29,78,216,.04)}
 .dropzone .dz-icon{width:38px;height:38px;margin:0 auto 8px;color:var(--accent);opacity:.7}
@@ -370,6 +386,86 @@ table.items .del-btn:hover{color:var(--danger);background:rgba(220,38,38,.08)}
     </div>
   </div>
 
+  <div class="card" id="card7">
+    <h2><span class="num">7</span>Quotation &amp; Delivery Tracking</h2>
+    <div class="monitoring-banner">
+      <span class="badge">Monitoring Only</span>
+      <span>This section is <b>not linked to SAP</b> &mdash; it is for internal tracking and visibility purposes only. Fill these out manually as the PR progresses through sourcing and receiving.</span>
+    </div>
+
+    <div class="tracking-section">
+      <h3><span class="sub-num">1</span>Quotation Status</h3>
+      <div class="row three">
+        <div class="field">
+          <label>Quotation Workflow Status</label>
+          <select id="quoteStatus" onchange="updateQuoteStatusPill()">
+            <option value="">-- Select --</option>
+            <option value="Draft">Draft / Awaiting Quotes</option>
+            <option value="Submitted">Submitted</option>
+            <option value="Approved">Approved</option>
+          </select>
+          <div class="status-pill-row">
+            <span class="status-pill q-draft"     id="qPillDraft">Draft / Awaiting Quotes</span>
+            <span class="status-pill q-submitted" id="qPillSubmitted">Submitted</span>
+            <span class="status-pill q-approved"  id="qPillApproved">Approved</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Quote Reference #</label>
+          <input type="text" id="quoteRef" placeholder="Type quote / RFQ reference no.">
+        </div>
+        <div class="field">
+          <label>Quote Validity</label>
+          <input type="date" id="quoteValidity">
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Selected Supplier / Vendor</label>
+          <input type="text" id="quoteSupplier" placeholder="Vendor name awarded after quotation comparison">
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Quotation Notes</label>
+          <textarea id="quoteNotes" placeholder="Quotations received, comparison summary, why this vendor was chosen, etc."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="tracking-section">
+      <h3><span class="sub-num">2</span>Delivery &amp; Receiving Status</h3>
+      <div class="row three">
+        <div class="field">
+          <label>Current Delivery Status</label>
+          <select id="deliveryStatus" onchange="updateDeliveryStatusPill()">
+            <option value="">-- Select --</option>
+            <option value="Booked">Booked</option>
+            <option value="In Transit">In Transit</option>
+            <option value="Arrived">Arrived</option>
+          </select>
+          <div class="status-pill-row">
+            <span class="status-pill d-booked"  id="dPillBooked">Booked</span>
+            <span class="status-pill d-transit" id="dPillTransit">In Transit</span>
+            <span class="status-pill d-arrived" id="dPillArrived">Arrived</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Expected Delivery Date</label>
+          <input type="date" id="expectedDelivery">
+        </div>
+        <div class="field">
+          <label>Actual Delivery Date</label>
+          <input type="date" id="actualDelivery">
+        </div>
+        <div class="field">
+          <label>Tracking / Waybill #</label>
+          <input type="text" id="trackingNo" placeholder="Courier tracking or waybill number">
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Delivery / Receiving Notes</label>
+          <textarea id="deliveryNotes" placeholder="Receiving notes, partial deliveries, damage reports, etc."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="footer-actions">
     <button class="btn" onclick="clearForm()">Clear Form</button>
     <button class="btn" onclick="loadDraft()">Load Draft</button>
@@ -459,7 +555,7 @@ const CONFIG = {
   AUTOSAVE_INTERVAL_MS: 30000,               // auto-save draft every 30s
   VAT_RATE: 0.12,
   PR_PREFIX: "PR",
-  STORAGE_KEY: "pr_form_draft_v8",
+  STORAGE_KEY: "pr_form_draft_v9",
   // ----- Email workflow -----
   PURCHASING_EMAIL: "rachel@vienovo.ph",     // gets the PR after supervisor approval
   AUTO_EMAIL_ON_SUBMIT:  true,               // open mailto:supervisor on submit
@@ -1576,6 +1672,23 @@ function pushAudit(action, actor, notes){
   ta.value = (ta.value ? ta.value + '\n' : '') + line;
 }
 
+/* === MONITORING TRACKING (Card 7) === */
+function updateQuoteStatusPill(){
+  const v = (document.getElementById('quoteStatus').value || '').toLowerCase();
+  document.getElementById('qPillDraft').classList.toggle('active',     v === 'draft');
+  document.getElementById('qPillSubmitted').classList.toggle('active', v === 'submitted');
+  document.getElementById('qPillApproved').classList.toggle('active',  v === 'approved');
+  scheduleAutosave();
+}
+function updateDeliveryStatusPill(){
+  const v = (document.getElementById('deliveryStatus').value || '').toLowerCase();
+  document.getElementById('dPillBooked').classList.toggle('active',  v === 'booked');
+  document.getElementById('dPillTransit').classList.toggle('active', v === 'in transit');
+  document.getElementById('dPillArrived').classList.toggle('active', v === 'arrived');
+  scheduleAutosave();
+}
+
+
 function fillFinalStatus(status, actor, remarks){
   const now = new Date();
   document.getElementById('finalStatus').value     = status;
@@ -2004,8 +2117,12 @@ function clearForm(){
   document.getElementById('empSearch').value = '';
   ['empId','empDept','empLoc','empPos','empEmail','empPhone','dateNeeded','costCenter','supplier','purpose','supRemarks',
    'serviceType','serviceDuration','serviceLocation','serviceScope',
-   'finalStatus','approvedBy','dateProcessed','sapRef','poNumber','buyer','finalRemarks','auditTrail']
+   'finalStatus','approvedBy','dateProcessed','sapRef','poNumber','buyer','finalRemarks','auditTrail',
+   'quoteStatus','quoteRef','quoteValidity','quoteSupplier','quoteNotes',
+   'deliveryStatus','expectedDelivery','actualDelivery','trackingNo','deliveryNotes']
     .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  updateQuoteStatusPill();
+  updateDeliveryStatusPill();
   document.getElementById('requestType').value = 'Materials';
   onRequestTypeChange();
   document.getElementById('category').value = '';
@@ -2077,6 +2194,19 @@ function loadDraft(){
     if(d.sap_posted) setSAPPostingState(true, d.sap_posting); else setSAPPostingState(false);
     state.emailsSent = Array.isArray(d.emails_sent) ? d.emails_sent : [];
     renderEmailHistory();
+    // Monitoring-only fields
+    if(document.getElementById('quoteStatus')) document.getElementById('quoteStatus').value = d.quote_status || '';
+    if(document.getElementById('quoteRef'))    document.getElementById('quoteRef').value    = d.quote_reference || '';
+    if(document.getElementById('quoteValidity')) document.getElementById('quoteValidity').value = d.quote_validity || '';
+    if(document.getElementById('quoteSupplier')) document.getElementById('quoteSupplier').value = d.quote_supplier || '';
+    if(document.getElementById('quoteNotes'))  document.getElementById('quoteNotes').value  = d.quote_notes || '';
+    if(document.getElementById('deliveryStatus')) document.getElementById('deliveryStatus').value = d.delivery_status || '';
+    if(document.getElementById('expectedDelivery')) document.getElementById('expectedDelivery').value = d.expected_delivery || '';
+    if(document.getElementById('actualDelivery')) document.getElementById('actualDelivery').value = d.actual_delivery || '';
+    if(document.getElementById('trackingNo'))   document.getElementById('trackingNo').value   = d.tracking_no || '';
+    if(document.getElementById('deliveryNotes')) document.getElementById('deliveryNotes').value = d.delivery_notes || '';
+    updateQuoteStatusPill();
+    updateDeliveryStatusPill();
     // Restore items
     document.getElementById('itemsBody').innerHTML = '';
     (d.items||[]).forEach(it => {
@@ -2160,6 +2290,17 @@ function collectData(){
     purchasing_email: CONFIG.PURCHASING_EMAIL,
     sap_posted:     state.sapPosted,
     sap_posting:    state.sapPostingDetails,
+    // Monitoring-only (not linked to SAP)
+    quote_status:        document.getElementById('quoteStatus').value,
+    quote_reference:     document.getElementById('quoteRef').value,
+    quote_validity:      document.getElementById('quoteValidity').value,
+    quote_supplier:      document.getElementById('quoteSupplier').value,
+    quote_notes:         document.getElementById('quoteNotes').value,
+    delivery_status:     document.getElementById('deliveryStatus').value,
+    expected_delivery:   document.getElementById('expectedDelivery').value,
+    actual_delivery:     document.getElementById('actualDelivery').value,
+    tracking_no:         document.getElementById('trackingNo').value,
+    delivery_notes:      document.getElementById('deliveryNotes').value,
     attachments:    ATTACHMENTS.map(a => ({ id:a.id, name:a.name, type:a.type, size:a.size, dataUrl:a.dataUrl })),
     items: items,
     subtotal: document.getElementById('subtotal').textContent,
