@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Purchasing Management System</title>
+<title>Vienovo – Purchase Request System</title>
 <style>
 :root{--bg:#f4f6f9;--card:#fff;--text:#1e293b;--muted:#64748b;--primary:#2563eb;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--border:#e2e8f0;--r:8px}
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
@@ -11,12 +11,8 @@ body{background:var(--bg);color:var(--text);font-size:14px}
 #auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#1e3a8a}
 .auth-card{background:var(--card);border-radius:12px;padding:2.5rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .auth-card h2{font-size:1.3rem;margin-bottom:.25rem}
-.auth-card p{color:var(--muted);font-size:.8rem;margin-bottom:1.5rem}
-.demo-box{background:#f8fafc;border-radius:var(--r);padding:.75rem;margin-top:1rem;font-size:.72rem;color:var(--muted);line-height:1.8}
-.demo-box b{color:var(--text)}
 #app{display:none}
 header{background:var(--card);border-bottom:1px solid var(--border);padding:0 1rem;display:flex;align-items:center;gap:.75rem;height:52px;position:sticky;top:0;z-index:50}
-header h1{font-size:.9rem;font-weight:700;color:var(--primary);white-space:nowrap}
 nav{display:flex;gap:.15rem;overflow-x:auto;flex:1;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
 nav button{padding:.35rem .7rem;border:none;background:none;border-radius:6px;cursor:pointer;font-size:.77rem;white-space:nowrap;color:var(--muted);transition:background .15s}
@@ -41,7 +37,6 @@ main{max-width:1280px;margin:0 auto;padding:1.25rem 1rem}
 label{display:block;font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.03em}
 input,select,textarea{width:100%;padding:.45rem .65rem;border:1px solid var(--border);border-radius:var(--r);font-size:.85rem;background:var(--card);color:var(--text);line-height:1.4}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-input.err,select.err{border-color:var(--danger)}
 input[readonly]{background:#f8fafc;color:var(--muted);cursor:default}
 .btn{display:inline-flex;align-items:center;gap:.35rem;padding:.45rem .9rem;border:none;border-radius:var(--r);cursor:pointer;font-size:.82rem;font-weight:600;transition:opacity .15s,background .15s;white-space:nowrap}
 .sm{padding:.28rem .55rem;font-size:.74rem}
@@ -76,6 +71,8 @@ tr:hover td{background:#fafafa}
 .b-atr{background:#fef3c7;color:#92400e}
 .b-ont{background:#d1fae5;color:#065f46}
 .b-iss{background:#e0f2fe;color:#0369a1}
+.b-pen{background:#f1f5f9;color:#475569}
+.b-awd{background:#d1fae5;color:#065f46}
 .alert{padding:.65rem .9rem;border-radius:var(--r);margin-bottom:.75rem;font-size:.82rem;border-left:3px solid}
 .ald{background:#fee2e2;border-color:var(--danger);color:#7f1d1d}
 .alw{background:#fef3c7;border-color:var(--warning);color:#78350f}
@@ -102,39 +99,36 @@ tr:hover td{background:#fafafa}
 .step.done{background:#d1fae5;color:#065f46}
 .step.cur{background:#dbeafe;color:#1e40af;font-weight:700}
 .step.rej{background:#fee2e2;color:#991b1b}
-.bar-wrap{height:6px;background:#f1f5f9;border-radius:3px;margin-top:.25rem}
-.bar{height:6px;background:var(--primary);border-radius:3px}
 .sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
-@media(max-width:640px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.fr{grid-template-columns:1fr}header h1{display:none}}
+@media(max-width:640px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.fr{grid-template-columns:1fr}}
 @media print{header,.btn,#toasts,nav{display:none!important}}
 </style>
 </head>
 <body>
 
-<!-- AUTH -->
+<!-- ── AUTH ── -->
 <div id="auth-screen">
   <div class="auth-card">
-    <div style="text-align:center;margin-bottom:1.5rem;padding:1.5rem 1.25rem;background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);border-radius:10px">
+    <div style="text-align:center;margin-bottom:1.25rem;padding:1.25rem;background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:10px">
       <img src="https://vienovo.ph/wp-content/uploads/2019/01/Logo_Vienovo-Feed-for-Life-White-04-600x270.png"
-           alt="Vienovo" style="max-width:260px;width:100%">
+           alt="Vienovo" style="max-width:240px;width:100%">
     </div>
-    <h2 style="text-align:center;font-size:1.1rem;margin-bottom:.2rem">Purchase Request System</h2>
+    <h2 style="text-align:center;margin-bottom:.25rem">Purchase Request System</h2>
     <p style="text-align:center;color:var(--muted);font-size:.8rem;margin-bottom:1.25rem">Select your name to continue</p>
-    <div id="auth-err" class="alert ald" style="display:none">❌ Not recognized. Please select a valid Vienovo employee.</div>
+    <div id="auth-err" class="alert ald" style="display:none">Not recognized. Please select a valid employee.</div>
     <div class="fg">
       <label>Your Name</label>
-      <select id="l-name" style="font-size:.88rem;padding:.55rem .65rem">
-        <option value="">— Select Employee —</option>
-      </select>
+      <select id="l-name" style="font-size:.88rem;padding:.55rem .65rem"></select>
     </div>
     <button class="btn bp" style="width:100%;margin-top:.75rem;padding:.6rem" onclick="Auth.login()">Sign In →</button>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ── APP ── -->
 <div id="app">
   <header>
-    <a href="#" onclick="Router.go('dashboard');return false" style="display:flex;align-items:center;flex-shrink:0;background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:7px;padding:.28rem .75rem">
+    <a href="#" onclick="Router.go('dashboard');return false"
+       style="display:flex;align-items:center;flex-shrink:0;background:linear-gradient(135deg,#1e3a8a,#2563eb);border-radius:7px;padding:.28rem .75rem">
       <img src="https://vienovo.ph/wp-content/uploads/2019/01/Logo_Vienovo-Feed-for-Life-White-04-600x270.png"
            alt="Vienovo PMS" style="height:28px;width:auto">
     </a>
@@ -157,7 +151,7 @@ tr:hover td{background:#fafafa}
   </main>
 </div>
 
-<!-- MODAL -->
+<!-- ── MODAL ── -->
 <div id="modal-bg" onclick="if(event.target===this)closeModal()">
   <div class="modal-box" id="modal-box">
     <div class="mh">
@@ -171,22 +165,18 @@ tr:hover td{background:#fafafa}
 
 <script>
 'use strict';
-/* ── SEED DATA ─────────────────────────────────────────── */
+
+/* ── SEED DATA ── */
 const USERS=[
-  /* ── System Admins (full access) ──────────────────────────── */
   {id:'u1',name:'Rachel',role:'admin',dept:'ADMIN',loc:'ALL'},
   {id:'u2',name:'Manuelito Bacaltos',role:'admin',dept:'ADMIN',loc:'ALL'},
-  /* ── Operations / Buyers ──────────────────────────────────── */
   {id:'u3',name:'Jerone Silvestre',role:'employee',dept:'OPERATIONS',loc:'AC'},
   {id:'u4',name:'Jessa Madredano',role:'employee',dept:'OPERATIONS',loc:'BUKID'},
   {id:'u5',name:'Sheynly Rosales',role:'employee',dept:'OPERATIONS',loc:'ARGAO'},
   {id:'u6',name:'Rejean Alamo',role:'employee',dept:'OPERATIONS',loc:'ALAE'},
   {id:'u7',name:'HOREB SHARED',role:'employee',dept:'OPERATIONS',loc:'HOREB'},
-  /* ── Supervisors ──────────────────────────────────────────── */
   {id:'u8',name:'Operations Supervisor',role:'supervisor',dept:'OPERATIONS',loc:'ALL'},
-  /* ── Finance ──────────────────────────────────────────────── */
   {id:'u9',name:'Finance Approver',role:'finance',dept:'FINANCE',loc:'ALL'},
-  /* ── Requestors ───────────────────────────────────────────── */
   {id:'u10',name:'Maintenance Planner – Bukidnon',role:'employee',dept:'MAINTENANCE',loc:'BUKID'},
   {id:'u11',name:'Production Coor – Horeb',role:'employee',dept:'PRODUCTION',loc:'HOREB'},
   {id:'u12',name:'Production Coor – Argao',role:'employee',dept:'PRODUCTION',loc:'ARGAO'},
@@ -195,31 +185,30 @@ const USERS=[
   {id:'u15',name:'Rico Icoy',role:'employee',dept:'MAINTENANCE',loc:'ARGAO'},
   {id:'u16',name:'Keith Fajardo',role:'employee',dept:'PRODUCTION',loc:'BUKID'},
   {id:'u17',name:'HR Officer',role:'employee',dept:'HR',loc:'MAKATI'},
-  /* ── Warehouse ────────────────────────────────────────────── */
   {id:'u18',name:'Warehouse Account',role:'employee',dept:'WAREHOUSE',loc:'BUKID'},
 ];
 const SEED_VENDORS=[
   'BEARING CENTER & MACHINERY, INC','KING GOLDEN TALE TECH INDUSTRIAL OPC',
   'CGP MECHANICS ELECTRICAL AND INDUSTRIAL SUPPLIES TRADING','ZYIOZHU INDUSTRIAL SUPPLY',
   'VALU-SERVE COMMERCIAL INCORPORATED','FBMC PNEUMATICS TRADING','GDSM MARKETING',
-  "ORO SOLID HARDWARE, INC.",'AVP ELECTRICAL AND INDUSTRIAL SUPPLIES TRADING',
-  '3J GOLDEN DRAGON INDUSTRIAL MACHINERY CORPORATION',"CIMECH SYSTEMS INDUSTRIES, INC",
+  'ORO SOLID HARDWARE, INC.','AVP ELECTRICAL AND INDUSTRIAL SUPPLIES TRADING',
+  '3J GOLDEN DRAGON INDUSTRIAL MACHINERY CORPORATION','CIMECH SYSTEMS INDUSTRIES, INC',
   'FRISCO FOUNDRY AND MACHINERY CORP.','ENERBILT ENGINEERING WORKS AND SUPPLIES',
   'GOLDTOWN INDUSTRIAL SALES CORPORATION','MIDSOUTH - CEBU SEWING MACHINE SALES CENTER',
   'UNIFIRE INDUSTRIAL ENTERPRISES','BRAVSKI TRADING','LCG MARKETING PHILIPPINES CORPORATION',
-  "AERO-SEAL INDUSTRIAL TECHNOLOGIES, INC.",'JMS PRIME SOLUTIONS INC.','C CH TRADING',
+  'AERO-SEAL INDUSTRIAL TECHNOLOGIES, INC.','JMS PRIME SOLUTIONS INC.','C CH TRADING',
   'RBER INDUSTRIAL AND TRADING CORP.','UBI YARN MANUFACTURING CORPORATION',
   'LUBRI-CHEM PHILIPPINES DISTRIBUTOR, INC.','UNITED BEARING INDUSTRIAL CORPORATION',
   'AIRTAC ENTERPRISES PHILIPPINES CO. LTD. CORP.','SHURFIT INCORPORATED','MCKUPLER INC',
   'GREATPHIL ENTERPRISES INC.','UP MARKETING','MACKUN HARDWARE','XIMXINCHAI ENGINEERING SERVICES',
-  "R. DAN AND CO., INC.",'MACKUN HARDWARE','GOLDTOWN INDUSTRIAL SALES CORPORATION',
+  'R. DAN AND CO., INC.',
 ];
 const LOCS=['AC','ALAE','ARGAO','BUKID','HOREB','ISABELA','MAKATI'];
 const DEPTS=['OPERATIONS','PRODUCTION','MAINTENANCE','WAREHOUSE','HR','FINANCE','ADMIN'];
 const UOMS=['PIECE','SET','BOX','LITER','GALLON','METER','KG','BAG','ROLL','PAIR','LOT'];
 const FIN_THRESHOLD=50000;
 
-/* ── INDEXED DB ─────────────────────────────────────────── */
+/* ── INDEXED DB ── */
 const DB=(()=>{
   let _db=null;
   const open=()=>new Promise((ok,err)=>{
@@ -248,7 +237,7 @@ const DB=(()=>{
   return{open,all,get,put,del,seed};
 })();
 
-/* ── UTILS ──────────────────────────────────────────────── */
+/* ── UTILS ── */
 let _pc=1000,_oc=1000,_gc=1000;
 const uid=()=>'id'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const nextPR=()=>'PR-'+String(++_pc).padStart(4,'0');
@@ -268,9 +257,8 @@ function toast(msg,type='s'){
   d.className='toast t'+(type==='s'?'s':type==='e'?'e':'w2');
   d.textContent=msg;
   document.getElementById('toasts').appendChild(d);
-  setTimeout(()=>d.remove(),3000);
+  setTimeout(()=>d.remove(),3200);
 }
-
 function openModal(title,html,wide=false){
   document.getElementById('modal-title').textContent=title;
   document.getElementById('modal-body').innerHTML=html;
@@ -282,7 +270,7 @@ function closeModal(){document.getElementById('modal-bg').classList.remove('open
 function sBadge(s){
   const map={DRAFT:'b-drf',SUBMITTED:'b-sub','SUPERVISOR REVIEW':'b-sur','FINANCE REVIEW':'b-fin',
     APPROVED:'b-apr',REJECTED:'b-rej','PO CREATED':'b-poc',PARTIAL:'b-par',
-    RECEIVED:'b-rec','SAP POSTED':'b-sap',ISSUED:'b-iss'};
+    RECEIVED:'b-rec','SAP POSTED':'b-sap',ISSUED:'b-iss',PENDING:'b-pen',AWARDED:'b-awd'};
   return`<span class="b ${map[s]||'b-drf'}">${esc(s)}</span>`;
 }
 function delBadge(actual,target){
@@ -292,7 +280,6 @@ function delBadge(actual,target){
   if(d<=3)return`<span class="b b-atr">AT RISK +${d}d</span>`;
   return`<span class="b b-ont">ON TRACK</span>`;
 }
-
 function _csv(rows,fn){
   if(!rows.length){toast('No data','w');return;}
   const h=Object.keys(rows[0]),sep=',';
@@ -306,7 +293,7 @@ function _csv(rows,fn){
   toast('Exported ✓','s');
 }
 
-/* ── AUTH ───────────────────────────────────────────────── */
+/* ── AUTH ── */
 const Auth=(()=>{
   let cur=null;
   const login=()=>{
@@ -319,7 +306,7 @@ const Auth=(()=>{
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('hdr-av').textContent=u.name[0].toUpperCase();
-    document.getElementById('hdr-name').textContent=u.name+' · '+u.role;
+    document.getElementById('hdr-name').textContent=u.name+' · '+u.role.toUpperCase();
     buildNav();
     Router.go('dashboard');
   };
@@ -333,9 +320,12 @@ const Auth=(()=>{
   const user=()=>cur;
   return{login,logout,can,user};
 })();
-/* Populate employee name select from USERS array */
+
+/* Populate login select */
 (()=>{
   const sel=document.getElementById('l-name');
+  const opt=document.createElement('option');
+  opt.value='';opt.textContent='— Select Employee —';sel.appendChild(opt);
   USERS.forEach(u=>{
     const o=document.createElement('option');
     o.value=u.id;
@@ -345,7 +335,7 @@ const Auth=(()=>{
 })();
 document.getElementById('l-name').addEventListener('keydown',e=>{if(e.key==='Enter')Auth.login();});
 
-/* ── ROUTER ─────────────────────────────────────────────── */
+/* ── ROUTER ── */
 const Router=(()=>{
   const VIEWS=['dashboard','pr','canvass','po','grpo','approval','reports','vendors'];
   const go=async v=>{
@@ -388,25 +378,22 @@ function buildNav(){
   });
 }
 
-/* ── DASHBOARD ──────────────────────────────────────────── */
+/* ── DASHBOARD ── */
 const Dashboard=(()=>{
   const render=async()=>{
     const[prs,pos,grpos]=await Promise.all([DB.all('prs'),DB.all('pos'),DB.all('grpos')]);
     const u=Auth.user();
-    const mine=u.role==='requestor'?prs.filter(p=>p.requestedById===u.id):prs;
+    const mine=u.role==='employee'?prs.filter(p=>p.requestedById===u.id):prs;
     const pending=mine.filter(p=>['SUBMITTED','SUPERVISOR REVIEW','FINANCE REVIEW'].includes(p.status)).length;
     const approved=mine.filter(p=>p.status==='APPROVED').length;
     const overdue=mine.filter(p=>p.dateNeeded&&new Date(p.dateNeeded)<new Date()&&
       ['SUBMITTED','SUPERVISOR REVIEW','FINANCE REVIEW','APPROVED','PO CREATED'].includes(p.status)).length;
     const totalSpend=grpos.reduce((s,g)=>s+subtotal(g.items),0);
-
     const urgent=mine.filter(p=>{
       if(!p.dateNeeded||['DRAFT','REJECTED','SAP POSTED','RECEIVED'].includes(p.status))return false;
       return daysApart(today(),p.dateNeeded)<=3;
     }).slice(0,5);
-
     const recent=[...mine].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,10);
-
     document.getElementById('v-dashboard').innerHTML=`
       <div class="ph"><h2>Dashboard</h2>
         <span style="font-size:.75rem;color:var(--muted)">${esc(u.name)} · ${u.role.toUpperCase()} · ${esc(u.loc)}</span>
@@ -416,8 +403,8 @@ const Dashboard=(()=>{
         <div class="kpi kw"><p>Pending</p><h3>${pending}</h3></div>
         <div class="kpi ks"><p>Approved</p><h3>${approved}</h3></div>
         <div class="kpi kd"><p>Overdue</p><h3>${overdue}</h3></div>
-        <div class="kpi"><p>Active POs</p><h3>${pos.length}</h3></div>
-        <div class="kpi ks"><p>Total Spend</p><h3 style="font-size:.95rem;margin-top:.15rem">${fmtM(totalSpend)}</h3></div>
+        <div class="kpi"><p>Active POs</p><h3>${pos.filter(p=>p.status==='ISSUED'||p.status==='PARTIAL').length}</h3></div>
+        <div class="kpi ks"><p>Total Spend</p><h3 style="font-size:.9rem;margin-top:.2rem">${fmtM(totalSpend)}</h3></div>
       </div>
       ${urgent.length?`<div class="card" style="border-left:4px solid var(--danger)">
         <h3 style="color:var(--danger)">⚠️ Urgent — Needed within 3 days (${urgent.length})</h3>
@@ -431,7 +418,7 @@ const Dashboard=(()=>{
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
           <h3 style="margin:0">Recent Purchase Requests</h3>
-          ${Auth.can(['admin','employee','supervisor','finance'])?`<button class="btn bp sm" onclick="PR.openForm()">+ New PR</button>`:''}
+          <button class="btn bp sm" onclick="PR.openForm()">+ New PR</button>
         </div>
         <div class="tw"><table><thead><tr>
           <th>PR No</th><th>Requestor</th><th>Location</th><th>Dept</th>
@@ -453,21 +440,19 @@ const Dashboard=(()=>{
   return{render};
 })();
 
-/* ── PR MODULE ──────────────────────────────────────────── */
+/* ── PR MODULE ── */
 const PR=(()=>{
   let _eid=null;
 
-  /* ---- list ---- */
   const renderList=async()=>{
     const u=Auth.user();
     let prs=await DB.all('prs');
-    if(u.role==='requestor')prs=prs.filter(p=>p.requestedById===u.id);
+    if(u.role==='employee')prs=prs.filter(p=>p.requestedById===u.id);
     prs.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-    const canCreate=Auth.can(['admin','employee','supervisor','finance']);
     document.getElementById('v-pr').innerHTML=`
       <div class="ph"><h2>Purchase Requests</h2>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-          ${canCreate?`<button class="btn bp" onclick="PR.openForm()">+ New PR</button>`:''}
+          <button class="btn bp" onclick="PR.openForm()">+ New PR</button>
           <button class="btn bg sm" onclick="PR.exportCSV()">⬇ Export CSV</button>
         </div>
       </div>
@@ -488,18 +473,17 @@ const PR=(()=>{
           <th>PR No</th><th>Requested By</th><th>Location</th><th>Dept</th>
           <th>Items</th><th>Total</th><th>Date Needed</th><th>Status</th><th>Lead Time</th><th>Actions</th>
         </tr></thead><tbody id="pr-tbody">
-        ${prs.length?prs.map(p=>prRow(p)).join(''):`<tr><td colspan="10" class="tc" style="color:var(--muted);padding:2rem">
-          No PRs found. ${canCreate?`<a href="#" onclick="PR.openForm();return false">Create one.</a>`:''}
+        ${prs.length?prs.map(p=>_prRow(p)).join(''):`<tr><td colspan="10" class="tc" style="color:var(--muted);padding:2rem">
+          No PRs found. <a href="#" onclick="PR.openForm();return false">Create one.</a>
         </td></tr>`}
         </tbody></table></div>
       </div>`;
   };
 
-  const prRow=p=>{
+  const _prRow=p=>{
     const sub=subtotal(p.items);
     const act=p.grpoDate&&p.dateRequested?daysApart(p.dateRequested,p.grpoDate):null;
     const isDraft=p.status==='DRAFT';
-    const u=Auth.user();
     const canAct=Auth.can(['admin','employee','supervisor','finance']);
     return`<tr>
       <td><a href="#" onclick="PR.openDetail('${p.id}');return false" style="color:var(--primary);font-weight:700">${esc(p.prNo)}</a></td>
@@ -509,8 +493,9 @@ const PR=(()=>{
       <td>${fmtD(p.dateNeeded)}</td>
       <td>${sBadge(p.status)}</td>
       <td>${delBadge(act,p.targetLeadTime)}</td>
-      <td style="white-space:nowrap;display:flex;gap:.3rem">
-        ${isDraft&&canAct?`<button class="btn bg sm" onclick="PR.openForm('${p.id}')">Edit</button>
+      <td style="white-space:nowrap;display:flex;gap:.25rem">
+        ${isDraft&&canAct?`
+          <button class="btn bg sm" onclick="PR.openForm('${p.id}')">Edit</button>
           <button class="btn bp sm" onclick="PR.submit('${p.id}')">Submit</button>
           <button class="btn bd sm" onclick="PR.del('${p.id}')">Del</button>`:''}
         ${!isDraft?`<button class="btn bg sm" onclick="PR.openDetail('${p.id}')">View</button>`:''}
@@ -528,21 +513,18 @@ const PR=(()=>{
     });
   };
 
-  /* ---- form ---- */
   const openForm=async(eid=null)=>{
     _eid=eid;
     const u=Auth.user();
     const pr=eid?await DB.get('prs',eid):null;
     const items=(pr?.items)||[{id:uid(),modelSpec:'',description:'',qty:1,uom:'PIECE',unitCost:0}];
-    const reqUsers=USERS;
     const defUser=pr?pr.requestedBy:u.name;
-
     openModal(eid?`Edit ${pr.prNo}`:'New Purchase Request',`
-      <div id="dup-warn" class="dup-warn">⚠️ Possible duplicate — similar item code already in an open PR.</div>
+      <div id="dup-warn" class="dup-warn">⚠️ Possible duplicate — similar spec code found in an open PR.</div>
       <div class="fr">
         <div class="fg"><label>Requested By *</label>
           <select id="f-req" onchange="PR._onReqChange()">
-            ${reqUsers.map(x=>`<option value="${esc(x.id)}" data-name="${esc(x.name)}" data-loc="${esc(x.loc)}" data-dept="${esc(x.dept)}" ${x.name===defUser?'selected':''}>${esc(x.name)}</option>`).join('')}
+            ${USERS.map(x=>`<option value="${esc(x.id)}" data-name="${esc(x.name)}" data-loc="${esc(x.loc)}" data-dept="${esc(x.dept)}" ${x.name===defUser?'selected':''}>${esc(x.name)}</option>`).join('')}
           </select></div>
         <div class="fg"><label>Location *</label>
           <select id="f-loc">${LOCS.map(l=>`<option ${(pr?.location||u.loc)===l?'selected':''}>${l}</option>`).join('')}</select></div>
@@ -563,8 +545,8 @@ const PR=(()=>{
       </div>
       <div class="tw">
         <table class="itbl"><thead><tr>
-          <th>#</th><th>Model / Spec Code *</th><th>Description</th><th>Qty</th>
-          <th>UoM</th><th>Unit Cost (₱)</th><th>Total</th><th></th>
+          <th>#</th><th>Model / Spec Code *</th><th>Description</th>
+          <th>Qty</th><th>UoM</th><th>Unit Cost (₱)</th><th>Total</th><th></th>
         </tr></thead>
         <tbody id="items-body">${items.map((it,i)=>_itemRow(it,i)).join('')}</tbody>
         <tfoot>
@@ -606,7 +588,7 @@ const PR=(()=>{
     document.querySelectorAll('#items-body tr').forEach(tr=>{
       const ins=tr.querySelectorAll('input');
       if(ins.length<4)return;
-      const q=+ins[2]?.value||0, c=+ins[3]?.value||0, t=q*c;
+      const q=+ins[2]?.value||0,c=+ins[3]?.value||0,t=q*c;
       sub+=t;
       tr.querySelector('.tot-cell').textContent=fmtM(t);
     });
@@ -661,7 +643,7 @@ const PR=(()=>{
         description:ins[1]?.value.trim()||'',
         qty:+ins[2]?.value||0,
         uom:sel?.value||'PIECE',
-        unitCost:+ins[4]?.value||0,
+        unitCost:+ins[3]?.value||0,
         poQty:0,grpoQty:0,
       });
     });
@@ -703,8 +685,8 @@ const PR=(()=>{
     if(status==='SUBMITTED'&&pr.status==='DRAFT'){
       pr.status='SUPERVISOR REVIEW';
       pr.audit.push({action:'Submitted',by:u.name,at:new Date().toLocaleString(),note:'Forwarded for supervisor approval'});
-    } else if(status==='DRAFT'&&pr.status==='DRAFT'){
-      if(!pr.audit.length)pr.audit.push({action:'Draft saved',by:u.name,at:new Date().toLocaleString(),note:''});
+    } else if(!pr.audit.length){
+      pr.audit.push({action:'Draft saved',by:u.name,at:new Date().toLocaleString(),note:''});
     }
     await DB.put('prs',pr);
     closeModal();
@@ -732,7 +714,6 @@ const PR=(()=>{
     await renderList();
   };
 
-  /* ---- detail modal ---- */
   const openDetail=async id=>{
     const pr=await DB.get('prs',id);
     if(!pr)return;
@@ -751,10 +732,16 @@ const PR=(()=>{
       'Goods Received':['RECEIVED','SAP POSTED'].includes(pr.status),
       'SAP Posted':pr.status==='SAP POSTED',
     };
-    const curMap={'PR Created':pr.status==='SUPERVISOR REVIEW','Supervisor OK':pr.status==='SUPERVISOR REVIEW'||pr.status==='FINANCE REVIEW','Finance OK':pr.status==='FINANCE REVIEW','PO Issued':pr.status==='APPROVED','Goods Received':pr.status==='PO CREATED'||pr.status==='PARTIAL','SAP Posted':pr.status==='RECEIVED'};
+    const curMap={
+      'PR Created':pr.status==='SUPERVISOR REVIEW',
+      'Supervisor OK':pr.status==='SUPERVISOR REVIEW'||pr.status==='FINANCE REVIEW',
+      'Finance OK':pr.status==='FINANCE REVIEW',
+      'PO Issued':pr.status==='APPROVED',
+      'Goods Received':pr.status==='PO CREATED'||pr.status==='PARTIAL',
+      'SAP Posted':pr.status==='RECEIVED',
+    };
     const stepsHtml=`<div class="steps">${allSteps.map(s=>`
       <div class="step ${pr.status==='REJECTED'?'rej':doneMap[s]?'done':curMap[s]?'cur':''}">${s}</div>`).join('')}</div>`;
-
     const u=Auth.user();
     const actions=[];
     if(pr.status==='DRAFT'&&Auth.can(['admin','employee','supervisor','finance'])){
@@ -768,7 +755,6 @@ const PR=(()=>{
     if(pr.status==='SAP POSTED'){
       actions.push(`<span class="b b-sap">SAP Ref: ${esc(pr.sapRef||'—')}</span>`);
     }
-
     openModal(`${pr.prNo}`,`
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.75rem;font-size:.8rem;color:var(--muted)">
         <span>📍 ${esc(pr.location)}</span><span>🏢 ${esc(pr.department)}</span>
@@ -790,6 +776,7 @@ const PR=(()=>{
       </tr>`).join('')}</tbody>
       <tfoot><tr class="sum-row"><td colspan="8" class="tr">Total</td><td class="tr tot-cell">${fmtM(sub)}</td></tr></tfoot>
       </table></div>
+      ${pr.justification?`<div style="background:#f8fafc;border-radius:var(--r);padding:.6rem .8rem;margin:.75rem 0;font-size:.8rem"><b>Justification:</b> ${esc(pr.justification)}</div>`:''}
       ${prC.length?`<hr class="sep"><h3 style="font-size:.85rem;margin-bottom:.5rem">Canvass Quotes</h3>
         <div class="tw"><table><thead><tr><th>Supplier</th><th>Amount</th><th>Delivery</th><th>Notes</th><th>Status</th></tr></thead>
         <tbody>${prC.map(c=>`<tr><td>${esc(c.supplier)}</td><td class="tr">${fmtM(c.amount)}</td>
@@ -797,7 +784,7 @@ const PR=(()=>{
         </tbody></table></div>`:''}
       <hr class="sep"><h3 style="font-size:.85rem;margin-bottom:.5rem">Audit Trail</h3>
       <div class="alog">${(pr.audit||[]).length?
-        [...(pr.audit)].reverse().map(a=>`<div class="ae"><b>${esc(a.action)}</b> by ${esc(a.by)} <span style="color:var(--muted)">@ ${a.at}</span>${a.note?` — ${esc(a.note)}`:''}</div>`).join(''):
+        [...(pr.audit)].reverse().map(a=>`<div class="ae"><b>${esc(a.action)}</b> by ${esc(a.by)} <span style="color:var(--muted)">@ ${a.at}</span>${a.note?' — '+esc(a.note):''}</div>`).join(''):
         '<div class="ae" style="color:var(--muted)">No audit entries.</div>'}
       </div>
       ${actions.length?`<div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap">${actions.join('')}</div>`:''}`,true);
@@ -822,13 +809,13 @@ const PR=(()=>{
          _recalc,_addRow,_onReqChange,_checkDup,_save};
 })();
 
-/* ── CANVASS ────────────────────────────────────────────── */
+/* ── CANVASS ── */
 const Canvass=(()=>{
   const render=async()=>{
-    const[prs,cs,vendors]=await Promise.all([DB.all('prs'),DB.all('canvass'),DB.all('vendors')]);
+    const[prs,cs]=await Promise.all([DB.all('prs'),DB.all('canvass')]);
     document.getElementById('v-canvass').innerHTML=`
       <div class="ph"><h2>Canvass / Quotations</h2>
-        ${Auth.can(['admin'])?`<button class="btn bp" onclick="Canvass.openAdd()">+ Add Quote</button>`:''}
+        <button class="btn bp" onclick="Canvass.openAdd()">+ Add Quote</button>
       </div>
       <div class="card"><div class="tw"><table><thead><tr>
         <th>PR No</th><th>Location</th><th>Supplier</th><th>Amount</th>
@@ -841,8 +828,8 @@ const Canvass=(()=>{
           <td>${esc(pr?.location||'')}</td><td>${esc(c.supplier)}</td>
           <td class="tr">${fmtM(c.amount)}</td><td class="tc">${c.days||'—'}d</td>
           <td>${esc(c.notes||'')}</td><td>${sBadge(c.status||'PENDING')}</td>
-          <td>${c.status!=='AWARDED'&&Auth.can(['admin'])?
-            `<button class="btn bs sm" onclick="Canvass.award('${c.id}')">Award</button>`:''}
+          <td>${c.status!=='AWARDED'?
+            `<button class="btn bs sm" onclick="Canvass.award('${c.id}')">Award</button>`:'—'}
           </td>
         </tr>`;
       }).join(''):`<tr><td colspan="8" class="tc" style="color:var(--muted);padding:1.5rem">No canvass entries yet.</td></tr>`}
@@ -915,31 +902,34 @@ const Canvass=(()=>{
   return{render,openAdd,save,award};
 })();
 
-/* ── PO MODULE ──────────────────────────────────────────── */
+/* ── PO MODULE ── */
 const PO=(()=>{
   const renderList=async()=>{
     const[pos,prs]=await Promise.all([DB.all('pos'),DB.all('prs')]);
     pos.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     document.getElementById('v-po').innerHTML=`
-      <div class="ph"><h2>Purchase Orders</h2></div>
+      <div class="ph"><h2>Purchase Orders</h2>
+        <button class="btn bg sm" onclick="PO.exportCSV()">⬇ Export CSV</button>
+      </div>
       <div class="card"><div class="tw"><table><thead><tr>
         <th>PO No</th><th>PR No</th><th>Vendor</th><th>Buyer</th>
-        <th>Date Ordered</th><th>Expected Delivery</th><th>Total</th><th>Status</th><th>Actions</th>
+        <th>Date Ordered</th><th>Exp. Delivery</th><th>Total</th><th>Status</th><th>Actions</th>
       </tr></thead><tbody>
       ${pos.length?pos.map(po=>{
         const pr=prs.find(p=>p.id===po.prId);
         const sub=subtotal(po.items);
         return`<tr>
-          <td><b>${esc(po.poNo)}</b></td>
+          <td><a href="#" onclick="PO.openDetail('${po.id}');return false" style="color:var(--primary);font-weight:700">${esc(po.poNo)}</a></td>
           <td>${pr?`<a href="#" onclick="PR.openDetail('${pr.id}');return false" style="color:var(--primary)">${esc(pr.prNo)}</a>`:'—'}</td>
-          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(po.vendor)}</td>
-          <td>${esc(po.buyer)}</td>
-          <td>${fmtD(po.dateOrdered)}</td><td>${fmtD(po.expectedDelivery)}</td>
+          <td style="font-size:.78rem">${esc(po.vendor)}</td>
+          <td>${esc(po.buyer||'')}</td>
+          <td>${fmtD(po.dateOrdered)}</td>
+          <td>${fmtD(po.expectedDelivery)}</td>
           <td class="tr">${fmtM(sub)}</td>
-          <td>${sBadge(po.status)}</td>
-          <td style="display:flex;gap:.3rem;white-space:nowrap">
+          <td>${sBadge(po.status||'ISSUED')}</td>
+          <td style="white-space:nowrap">
             <button class="btn bg sm" onclick="PO.openDetail('${po.id}')">View</button>
-            ${po.status==='ISSUED'&&Auth.can(['admin'])?
+            ${(po.status==='ISSUED'||po.status==='PARTIAL')?
               `<button class="btn bs sm" onclick="GRPO.openCreate('${po.id}')">Receive</button>`:''}
           </td>
         </tr>`;
@@ -947,214 +937,232 @@ const PO=(()=>{
       </tbody></table></div></div>`;
   };
 
-  const openCreate=async prId=>{
-    const pr=await DB.get('prs',prId);
+  const openCreate=async(prId)=>{
+    const[pr,vendors]=await Promise.all([DB.get('prs',prId),DB.all('vendors')]);
     if(!pr)return;
-    const vendors=await DB.all('vendors');
     const u=Auth.user();
-    const buyers=USERS.filter(x=>['buyer','admin'].includes(x.role));
-    const itemsHtml=(pr.items||[]).map(it=>`
-      <tr data-spec="${esc(it.modelSpec)}" data-uom="${esc(it.uom)}" data-iid="${it.id}">
-        <td><b>${esc(it.modelSpec)}</b></td><td>${esc(it.description||'')}</td>
-        <td><input type="number" value="${it.qty}" min="1" oninput="PO._recalc()" style="width:68px"></td>
-        <td>${it.uom}</td>
-        <td><input type="number" value="${it.unitCost}" min="0" step="0.01" oninput="PO._recalc()" style="width:100px"></td>
-        <td class="tot-cell">—</td>
-      </tr>`).join('');
-
-    closeModal();
-    setTimeout(()=>{
-      openModal(`Create PO — ${pr.prNo}`,`
-        <div class="alert ali">📝 PR: <b>${esc(pr.prNo)}</b> · ${esc(pr.requestedBy)} · ${esc(pr.location)}</div>
-        <div class="fr">
-          <div class="fg"><label>Vendor *</label>
-            <select id="po-ven">
-              <option value="">— Select —</option>
-              ${vendors.map(v=>`<option>${esc(v.name)}</option>`).join('')}
-            </select></div>
-          <div class="fg"><label>Buyer</label>
-            <select id="po-buyer">${buyers.map(b=>`<option ${b.name===u.name?'selected':''}>${esc(b.name)}</option>`).join('')}</select>
-          </div>
+    openModal(`Create PO — ${pr.prNo}`,`
+      <div class="alert ali">
+        <b>${esc(pr.prNo)}</b> · ${esc(pr.location)} · ${esc(pr.requestedBy)} · Needed: ${fmtD(pr.dateNeeded)}
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Vendor *</label>
+          <select id="po-ven">
+            <option value="">— Select Vendor —</option>
+            ${vendors.map(v=>`<option>${esc(v.name)}</option>`).join('')}
+          </select></div>
+        <div class="fg"><label>Buyer</label>
+          <input type="text" id="po-buyer" value="${esc(u.name)}"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Date Ordered</label><input type="date" id="po-dord" value="${today()}"></div>
+        <div class="fg"><label>Expected Delivery</label><input type="date" id="po-ddel" value="${pr.dateNeeded||''}"></div>
+        <div class="fg"><label>Payment Terms</label>
+          <select id="po-terms"><option>30 days</option><option>60 days</option><option>COD</option><option>Advance</option></select>
         </div>
-        <div class="fr">
-          <div class="fg"><label>Date Ordered</label><input type="date" id="po-dord" value="${today()}"></div>
-          <div class="fg"><label>Expected Delivery *</label><input type="date" id="po-dexp"></div>
-          <div class="fg"><label>Payment Terms</label><input type="text" id="po-terms" placeholder="Net 30, COD…"></div>
-        </div>
-        <div class="fg"><label>Remarks</label><textarea id="po-rem" rows="2"></textarea></div>
-        <div class="tw" style="margin-top:.75rem"><table class="itbl"><thead><tr>
-          <th>Spec</th><th>Description</th><th>Qty</th><th>UoM</th><th>Unit Cost (₱)</th><th>Total</th>
-        </tr></thead>
-        <tbody id="po-items">${itemsHtml}</tbody>
-        <tfoot><tr class="sum-row"><td colspan="5" class="tr">Total</td><td class="tot-cell" id="po-gt">—</td></tr></tfoot>
-        </table></div>
-        <div style="display:flex;gap:.5rem;margin-top:1rem">
-          <button class="btn bp" onclick="PO.save('${prId}')">📋 Create PO</button>
-          <button class="btn bg" onclick="closeModal()">Cancel</button>
-        </div>`,true);
-      PO._recalc();
-    },60);
+      </div>
+      <div class="fg"><label>Remarks</label><textarea id="po-rem" rows="2"></textarea></div>
+      <hr class="sep">
+      <label style="font-size:.8rem;font-weight:700;margin-bottom:.5rem;display:block">Items</label>
+      <div class="tw"><table class="itbl"><thead><tr>
+        <th>#</th><th>Spec Code</th><th>Description</th><th>Qty</th><th>UoM</th>
+        <th>Unit Cost (₱)</th><th>Total</th>
+      </tr></thead><tbody id="po-items">
+        ${(pr.items||[]).map((it,i)=>`<tr data-iid="${it.id}">
+          <td>${i+1}</td>
+          <td><b>${esc(it.modelSpec)}</b></td>
+          <td style="font-size:.78rem">${esc(it.description||'')}</td>
+          <td><input type="number" value="${it.qty}" min="1" oninput="PO._recalc()" style="width:68px"></td>
+          <td>${esc(it.uom)}</td>
+          <td><input type="number" value="${it.unitCost||0}" min="0" step="0.01" oninput="PO._recalc()" style="width:100px"></td>
+          <td class="tot-cell">${fmtM(it.qty*(it.unitCost||0))}</td>
+        </tr>`).join('')}
+      </tbody>
+      <tfoot>
+        <tr><td colspan="6" class="tr" style="font-size:.78rem;color:var(--muted)">Subtotal</td><td class="tot-cell" id="po-sub">—</td></tr>
+        <tr><td colspan="6" class="tr" style="font-size:.78rem;color:var(--muted)">VAT (12%)</td><td class="tot-cell" id="po-vat">—</td></tr>
+        <tr class="sum-row"><td colspan="6" class="tr">Grand Total</td><td class="tot-cell" id="po-gt" style="color:var(--primary)">—</td></tr>
+      </tfoot></table></div>
+      <div style="display:flex;gap:.5rem;margin-top:1rem">
+        <button class="btn bp" onclick="PO._save('${prId}')">📋 Issue PO</button>
+        <button class="btn bg" onclick="closeModal()">Cancel</button>
+      </div>`,true);
+    PO._recalc();
   };
 
   const _recalc=()=>{
     let sub=0;
     document.querySelectorAll('#po-items tr').forEach(tr=>{
-      const ins=tr.querySelectorAll('input');
+      const ins=tr.querySelectorAll('input[type=number]');
       if(ins.length<2)return;
       const t=(+ins[0]?.value||0)*(+ins[1]?.value||0);
       sub+=t;
-      tr.querySelector('.tot-cell').textContent=fmtM(t);
+      const tc=tr.querySelector('.tot-cell');
+      if(tc)tc.textContent=fmtM(t);
     });
-    const g=document.getElementById('po-gt');
-    if(g)g.textContent=fmtM(sub);
+    const vat=sub*.12;
+    const g=id=>document.getElementById(id);
+    if(g('po-sub'))g('po-sub').textContent=fmtM(sub);
+    if(g('po-vat'))g('po-vat').textContent=fmtM(vat);
+    if(g('po-gt'))g('po-gt').textContent=fmtM(sub+vat);
   };
 
-  const save=async prId=>{
-    const ven=document.getElementById('po-ven')?.value;
-    const dexp=document.getElementById('po-dexp')?.value;
-    if(!ven){toast('Select a vendor.','e');return;}
-    if(!dexp){toast('Expected delivery date required.','e');return;}
-    const u=Auth.user();
+  const _save=async(prId)=>{
+    const vendor=document.getElementById('po-ven')?.value;
+    if(!vendor){toast('Select a vendor.','e');return;}
     const pr=await DB.get('prs',prId);
+    if(!pr)return;
+    const u=Auth.user();
     const items=[];
-    document.querySelectorAll('#po-items tr').forEach(tr=>{
-      const ins=tr.querySelectorAll('input');
-      if(ins.length<2)return;
-      items.push({
-        id:uid(),
-        modelSpec:tr.dataset.spec||'',
-        uom:tr.dataset.uom||'PIECE',
-        qty:+ins[0]?.value||0,
-        unitCost:+ins[1]?.value||0,
-        grpoQty:0,
-      });
+    document.querySelectorAll('#po-items tr').forEach((tr,i)=>{
+      const ins=tr.querySelectorAll('input[type=number]');
+      const src=pr.items[i];
+      if(!src||ins.length<2)return;
+      items.push({...src,qty:+ins[0]?.value||src.qty,unitCost:+ins[1]?.value||src.unitCost});
     });
-    const poNo=nextPO();
     const po={
-      id:uid(),poNo,prId,
-      vendor:ven,
+      id:uid(),poNo:nextPO(),prId,vendor,
       buyer:document.getElementById('po-buyer')?.value||u.name,
       dateOrdered:document.getElementById('po-dord')?.value||today(),
-      expectedDelivery:dexp,
-      paymentTerms:document.getElementById('po-terms')?.value||'',
+      expectedDelivery:document.getElementById('po-ddel')?.value||'',
+      paymentTerms:document.getElementById('po-terms')?.value||'30 days',
       remarks:document.getElementById('po-rem')?.value||'',
       items,status:'ISSUED',
-      audit:[{action:'PO Created',by:u.name,at:new Date().toLocaleString(),note:`For ${pr?.prNo}`}],
-      createdAt:now(),
+      audit:[{action:'PO Issued',by:u.name,at:new Date().toLocaleString(),note:`Vendor: ${vendor}`}],
+      createdAt:now(),updatedAt:now(),
     };
     await DB.put('pos',po);
-    if(pr){
-      pr.status='PO CREATED';
-      pr.audit=pr.audit||[];
-      pr.audit.push({action:'PO Created',by:u.name,at:new Date().toLocaleString(),note:`${poNo} to ${ven}`});
-      (pr.items||[]).forEach(it=>{
-        const pi=items.find(i=>i.modelSpec===it.modelSpec);
-        if(pi)it.poQty=pi.qty;
-      });
-      pr.updatedAt=now();
-      await DB.put('prs',pr);
-    }
-    closeModal();toast(`${poNo} created!`,'s');await renderList();
+    pr.status='PO CREATED';
+    pr.audit=pr.audit||[];
+    pr.audit.push({action:'PO Created',by:u.name,at:new Date().toLocaleString(),note:`${po.poNo} → ${vendor}`});
+    items.forEach(it=>{const prit=pr.items.find(x=>x.id===it.id);if(prit)prit.poQty=it.qty;});
+    pr.updatedAt=now();
+    await DB.put('prs',pr);
+    closeModal();
+    toast(`${po.poNo} issued!`,'s');
+    await renderList();
   };
 
   const openDetail=async id=>{
     const po=await DB.get('pos',id);
     if(!po)return;
-    openModal(`${po.poNo}`,`
+    const prs=await DB.all('prs');
+    const pr=prs.find(p=>p.id===po.prId);
+    const sub=subtotal(po.items);
+    openModal(po.poNo,`
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.75rem;font-size:.8rem;color:var(--muted)">
-        <span>🏭 ${esc(po.vendor)}</span><span>👤 ${esc(po.buyer)}</span>
-        <span>📅 Ordered: ${fmtD(po.dateOrdered)}</span><span>🚚 Expected: ${fmtD(po.expectedDelivery)}</span>
-        ${po.paymentTerms?`<span>💳 ${esc(po.paymentTerms)}</span>`:''}
+        <span>🏭 ${esc(po.vendor)}</span>
+        <span>👤 ${esc(po.buyer)}</span>
+        <span>📅 Ordered: ${fmtD(po.dateOrdered)}</span>
+        <span>🚚 Exp: ${fmtD(po.expectedDelivery)}</span>
+        <span>💳 ${esc(po.paymentTerms)}</span>
         <span style="margin-left:auto">${sBadge(po.status)}</span>
       </div>
+      ${pr?`<div class="alert ali">📝 PR: <b>${esc(pr.prNo)}</b> · ${esc(pr.location)} · ${esc(pr.requestedBy)}</div>`:''}
+      ${po.remarks?`<div class="alert alw">📋 ${esc(po.remarks)}</div>`:''}
       <div class="tw"><table><thead><tr>
-        <th>#</th><th>Spec</th><th>Qty</th><th>GRPO Qty</th><th>UoM</th><th>Unit Cost</th><th>Total</th>
-      </tr></thead><tbody>${(po.items||[]).map((it,i)=>`<tr>
-        <td>${i+1}</td><td><b>${esc(it.modelSpec)}</b></td><td>${it.qty}</td>
-        <td>${it.grpoQty||0}</td><td>${it.uom}</td>
-        <td class="tr">${fmtM(it.unitCost)}</td><td class="tr tot-cell">${fmtM(it.qty*it.unitCost)}</td>
-      </tr>`).join('')}</tbody>
-      <tfoot><tr class="sum-row"><td colspan="6" class="tr">Total</td><td class="tr tot-cell">${fmtM(subtotal(po.items))}</td></tr></tfoot>
-      </table></div>
-      ${po.status==='ISSUED'&&Auth.can(['admin'])?
-        `<div style="margin-top:1rem"><button class="btn bs" onclick="closeModal();GRPO.openCreate('${po.id}')">📦 Receive Goods</button></div>`:''}`,true);
+        <th>#</th><th>Spec Code</th><th>Description</th><th>Qty</th><th>UoM</th>
+        <th>Unit Cost</th><th>Total</th>
+      </tr></thead><tbody>
+      ${(po.items||[]).map((it,i)=>`<tr>
+        <td>${i+1}</td><td><b>${esc(it.modelSpec)}</b></td><td>${esc(it.description||'')}</td>
+        <td>${it.qty}</td><td>${esc(it.uom)}</td>
+        <td class="tr">${fmtM(it.unitCost)}</td>
+        <td class="tr tot-cell">${fmtM(it.qty*it.unitCost)}</td>
+      </tr>`).join('')}
+      </tbody><tfoot>
+        <tr><td colspan="6" class="tr" style="font-size:.78rem;color:var(--muted)">Subtotal</td><td class="tr">${fmtM(sub)}</td></tr>
+        <tr class="sum-row"><td colspan="6" class="tr">Grand Total (inc. VAT)</td><td class="tr">${fmtM(sub*1.12)}</td></tr>
+      </tfoot></table></div>
+      <hr class="sep"><h3 style="font-size:.85rem;margin-bottom:.5rem">Audit Trail</h3>
+      <div class="alog">${(po.audit||[]).map(a=>`<div class="ae"><b>${esc(a.action)}</b> by ${esc(a.by)} <span style="color:var(--muted)">@ ${a.at}</span>${a.note?' — '+esc(a.note):''}</div>`).join('')||'<div class="ae" style="color:var(--muted)">No entries.</div>'}</div>
+      ${(po.status==='ISSUED'||po.status==='PARTIAL')?
+        `<div style="margin-top:1rem"><button class="btn bs" onclick="closeModal();GRPO.openCreate('${id}')">📦 Receive Goods</button></div>`:''}
+    `,true);
   };
 
-  return{renderList,openCreate,save,openDetail,_recalc};
+  const exportCSV=async()=>{
+    const pos=await DB.all('pos');
+    const rows=pos.flatMap(po=>(po.items||[]).map(it=>({
+      PONo:po.poNo,Vendor:po.vendor,Buyer:po.buyer,
+      DateOrdered:po.dateOrdered,ExpectedDelivery:po.expectedDelivery,
+      PaymentTerms:po.paymentTerms,Status:po.status,
+      SpecCode:it.modelSpec,Description:it.description||'',
+      Qty:it.qty,UoM:it.uom,UnitCost:it.unitCost,LineTotal:it.qty*it.unitCost,
+    })));
+    _csv(rows,`POs_${today()}.csv`);
+  };
+
+  return{renderList,openCreate,_recalc,_save,openDetail,exportCSV};
 })();
 
-/* ── GRPO MODULE ────────────────────────────────────────── */
+/* ── GRPO MODULE ── */
 const GRPO=(()=>{
   const renderList=async()=>{
     const[grpos,pos,prs]=await Promise.all([DB.all('grpos'),DB.all('pos'),DB.all('prs')]);
     grpos.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     document.getElementById('v-grpo').innerHTML=`
-      <div class="ph"><h2>Goods Receipts (GRPO)</h2>
-        <button class="btn bg sm" onclick="GRPO.exportCSV()">⬇ Export CSV</button>
-      </div>
+      <div class="ph"><h2>Goods Receipt (GRPO)</h2></div>
       <div class="card"><div class="tw"><table><thead><tr>
-        <th>GRPO No</th><th>PO No</th><th>PR No</th><th>Vendor</th>
-        <th>Date Received</th><th>Received By</th><th>Total</th><th>Status</th><th>SAP Ref</th><th>Actions</th>
+        <th>GRPO No</th><th>PO No</th><th>PR No</th><th>Received By</th>
+        <th>Date Received</th><th>DR No.</th><th>Total</th><th>Status</th><th>Actions</th>
       </tr></thead><tbody>
-      ${grpos.length?grpos.map(g=>{
-        const po=pos.find(p=>p.id===g.poId);
-        const pr=prs.find(p=>p.id===g.prId);
+      ${grpos.length?grpos.map(gr=>{
+        const po=pos.find(p=>p.id===gr.poId);
+        const pr=prs.find(p=>p.id===gr.prId);
+        const sub=gr.items.reduce((s,it)=>s+(it.recvQty||it.qty)*(it.unitCost||0),0);
         return`<tr>
-          <td><b>${esc(g.grpoNo)}</b></td>
-          <td>${po?esc(po.poNo):'—'}</td>
+          <td><a href="#" onclick="GRPO.openDetail('${gr.id}');return false" style="color:var(--primary);font-weight:700">${esc(gr.grpoNo)}</a></td>
+          <td>${po?`<a href="#" onclick="PO.openDetail('${po.id}');return false" style="color:var(--primary)">${esc(po.poNo)}</a>`:'—'}</td>
           <td>${pr?`<a href="#" onclick="PR.openDetail('${pr.id}');return false" style="color:var(--primary)">${esc(pr.prNo)}</a>`:'—'}</td>
-          <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(po?.vendor||'')}</td>
-          <td>${fmtD(g.dateReceived)}</td><td>${esc(g.receivedBy)}</td>
-          <td class="tr">${fmtM(subtotal(g.items))}</td>
-          <td>${sBadge(g.status)}</td>
-          <td>${g.sapRef?`<span class="b b-sap">${esc(g.sapRef)}</span>`:'—'}</td>
-          <td style="display:flex;gap:.3rem">
-            <button class="btn bg sm" onclick="GRPO.openDetail('${g.id}')">View</button>
-            ${g.status!=='SAP POSTED'&&Auth.can(['admin'])?
-              `<button class="btn bs sm" onclick="GRPO.postSAP('${g.id}')">Post SAP</button>`:''}
+          <td>${esc(gr.receivedBy)}</td>
+          <td>${fmtD(gr.dateReceived)}</td>
+          <td>${esc(gr.drNo||'—')}</td>
+          <td class="tr">${fmtM(sub)}</td>
+          <td>${sBadge(gr.status||'RECEIVED')}</td>
+          <td style="white-space:nowrap">
+            <button class="btn bg sm" onclick="GRPO.openDetail('${gr.id}')">View</button>
+            ${gr.status!=='SAP POSTED'?
+              `<button class="btn bs sm" onclick="GRPO.postSAP('${gr.id}')">SAP Post</button>`:''}
           </td>
         </tr>`;
-      }).join(''):`<tr><td colspan="10" class="tc" style="color:var(--muted);padding:2rem">No GRPOs yet.</td></tr>`}
+      }).join(''):`<tr><td colspan="9" class="tc" style="color:var(--muted);padding:2rem">No GRPOs yet.</td></tr>`}
       </tbody></table></div></div>`;
   };
 
-  const openCreate=async poId=>{
+  const openCreate=async(poId)=>{
     const po=await DB.get('pos',poId);
     if(!po)return;
-    const rcvUsers=USERS.filter(u=>['warehouse','buyer','admin'].includes(u.role));
-    const u=Auth.user();
-    const itemsHtml=(po.items||[]).map((it,i)=>{
-      const remaining=Math.max(0,it.qty-(it.grpoQty||0));
-      return`<tr data-idx="${i}" data-spec="${esc(it.modelSpec)}" data-uom="${esc(it.uom)}" data-iid="${it.id}">
-        <td><b>${esc(it.modelSpec)}</b></td>
-        <td>${it.qty}</td><td>${it.grpoQty||0}</td>
-        <td><input type="number" class="grpo-qty" value="${remaining}" min="0" max="${it.qty}" step="1" oninput="GRPO._recalc()"></td>
-        <td>${it.uom}</td>
-        <td><input type="number" class="grpo-cost" value="${it.unitCost}" min="0" step="0.01" oninput="GRPO._recalc()"></td>
-        <td class="tot-cell">—</td>
-      </tr>`;
-    }).join('');
-
     openModal(`Receive Goods — ${po.poNo}`,`
-      <div class="alert ali">📋 <b>${esc(po.poNo)}</b> · ${esc(po.vendor)}</div>
+      <div class="alert ali">${esc(po.poNo)} · <b>${esc(po.vendor)}</b> · Exp: ${fmtD(po.expectedDelivery)}</div>
       <div class="fr">
-        <div class="fg"><label>Date Received *</label><input type="date" id="g-drcv" value="${today()}"></div>
-        <div class="fg"><label>Received By</label>
-          <select id="g-rcvby">${rcvUsers.map(x=>`<option ${x.name===u.name?'selected':''}>${esc(x.name)}</option>`).join('')}</select>
-        </div>
+        <div class="fg"><label>Date Received *</label><input type="date" id="gr-date" value="${today()}"></div>
+        <div class="fg"><label>Received By</label><input type="text" id="gr-by" value="${esc(Auth.user().name)}"></div>
+        <div class="fg"><label>DR / Delivery Note No.</label><input type="text" id="gr-dr" placeholder="DR-XXXX"></div>
       </div>
-      <div class="fr">
-        <div class="fg"><label>Delivery Note / Ref</label><input type="text" id="g-ref" placeholder="e.g. DN-12345"></div>
-        <div class="fg"><label>Remarks</label><input type="text" id="g-rem" placeholder="Optional"></div>
-      </div>
-      <div class="tw" style="margin-top:.75rem"><table class="itbl"><thead><tr>
-        <th>Spec</th><th>PO Qty</th><th>Prev Recv</th><th>Qty Receiving *</th><th>UoM</th><th>Unit Cost (₱)</th><th>Total</th>
-      </tr></thead>
-      <tbody id="grpo-items">${itemsHtml}</tbody>
-      <tfoot><tr class="sum-row"><td colspan="6" class="tr">Total</td><td class="tot-cell" id="grpo-gt">—</td></tr></tfoot>
-      </table></div>
+      <div class="fg"><label>Remarks</label><textarea id="gr-rem" rows="2"></textarea></div>
+      <hr class="sep">
+      <label style="font-size:.8rem;font-weight:700;margin-bottom:.5rem;display:block">Items Received</label>
+      <div class="tw"><table class="itbl"><thead><tr>
+        <th>#</th><th>Spec Code</th><th>Description</th><th>PO Qty</th>
+        <th>Recv Qty *</th><th>UoM</th><th>Unit Cost</th><th>Total</th>
+      </tr></thead><tbody id="gr-items">
+      ${(po.items||[]).map((it,i)=>`<tr data-iid="${it.id}" data-uc="${it.unitCost||0}">
+        <td>${i+1}</td>
+        <td><b>${esc(it.modelSpec)}</b></td>
+        <td style="font-size:.78rem">${esc(it.description||'')}</td>
+        <td class="tc">${it.qty}</td>
+        <td><input type="number" value="${it.qty}" min="0" max="${it.qty}" step="1" oninput="GRPO._recalc()" style="width:75px"></td>
+        <td>${esc(it.uom)}</td>
+        <td class="tr">${fmtM(it.unitCost||0)}</td>
+        <td class="tot-cell">${fmtM(it.qty*(it.unitCost||0))}</td>
+      </tr>`).join('')}
+      </tbody>
+      <tfoot>
+        <tr class="sum-row"><td colspan="7" class="tr">Total Received</td><td class="tot-cell" id="gr-total">—</td></tr>
+      </tfoot></table></div>
       <div style="display:flex;gap:.5rem;margin-top:1rem">
-        <button class="btn bs" onclick="GRPO.save('${poId}')">📦 Confirm Receipt</button>
+        <button class="btn bs" onclick="GRPO._save('${poId}')">📦 Post GRPO</button>
         <button class="btn bg" onclick="closeModal()">Cancel</button>
       </div>`,true);
     GRPO._recalc();
@@ -1162,380 +1170,461 @@ const GRPO=(()=>{
 
   const _recalc=()=>{
     let sub=0;
-    document.querySelectorAll('#grpo-items tr').forEach(tr=>{
-      const q=+tr.querySelector('.grpo-qty')?.value||0;
-      const c=+tr.querySelector('.grpo-cost')?.value||0;
-      const t=q*c;sub+=t;
+    document.querySelectorAll('#gr-items tr').forEach(tr=>{
+      const inp=tr.querySelector('input[type=number]');
+      if(!inp)return;
+      const uc=parseFloat(tr.dataset.uc)||0;
+      const t=(+inp.value||0)*uc;
+      sub+=t;
       const tc=tr.querySelector('.tot-cell');
       if(tc)tc.textContent=fmtM(t);
     });
-    const g=document.getElementById('grpo-gt');
+    const g=document.getElementById('gr-total');
     if(g)g.textContent=fmtM(sub);
   };
 
-  const save=async poId=>{
+  const _save=async(poId)=>{
+    const dateReceived=document.getElementById('gr-date')?.value;
+    if(!dateReceived){toast('Date received is required.','e');return;}
     const po=await DB.get('pos',poId);
     if(!po)return;
-    const drcv=document.getElementById('g-drcv')?.value;
-    if(!drcv){toast('Date received required.','e');return;}
     const u=Auth.user();
+    const drNo=document.getElementById('gr-dr')?.value||'';
     const items=[];
-    document.querySelectorAll('#grpo-items tr').forEach((tr,i)=>{
-      const poIt=po.items[i];
-      if(!poIt)return;
-      const q=+tr.querySelector('.grpo-qty')?.value||0;
-      const c=+tr.querySelector('.grpo-cost')?.value||0;
-      if(q>0)items.push({id:uid(),modelSpec:tr.dataset.spec||poIt.modelSpec,uom:tr.dataset.uom||poIt.uom,qty:q,unitCost:c});
+    let totalRecv=0,totalPO=0;
+    document.querySelectorAll('#gr-items tr').forEach((tr,i)=>{
+      const inp=tr.querySelector('input[type=number]');
+      const src=po.items[i];
+      if(!src||!inp)return;
+      const recvQty=+inp.value||0;
+      items.push({...src,recvQty});
+      totalRecv+=recvQty;
+      totalPO+=src.qty;
     });
-    if(!items.length){toast('Enter at least one item quantity received.','e');return;}
-    const grpoNo=nextGR();
+    if(items.every(it=>it.recvQty===0)){toast('Enter at least one received quantity.','e');return;}
     const grpo={
-      id:uid(),grpoNo,poId,prId:po.prId,
-      dateReceived:drcv,
-      receivedBy:document.getElementById('g-rcvby')?.value||u.name,
-      deliveryRef:document.getElementById('g-ref')?.value||'',
-      remarks:document.getElementById('g-rem')?.value||'',
+      id:uid(),grpoNo:nextGR(),poId,prId:po.prId,
+      vendor:po.vendor,
+      receivedBy:document.getElementById('gr-by')?.value||u.name,
+      dateReceived,drNo,
+      remarks:document.getElementById('gr-rem')?.value||'',
       items,status:'RECEIVED',
-      audit:[{action:'GRPO Created',by:u.name,at:new Date().toLocaleString(),note:`Received from ${po.vendor}`}],
-      createdAt:now(),
+      audit:[{action:'GRPO Posted',by:u.name,at:new Date().toLocaleString(),note:`DR: ${drNo||'—'}`}],
+      createdAt:now(),updatedAt:now(),
     };
     await DB.put('grpos',grpo);
-    /* update PO grpoQty */
-    items.forEach((gi,i)=>{
-      const poi=po.items.find(it=>it.modelSpec===gi.modelSpec)||po.items[i];
-      if(poi)poi.grpoQty=(poi.grpoQty||0)+gi.qty;
-    });
-    const full=po.items.every(it=>it.grpoQty>=it.qty);
-    po.status=full?'RECEIVED':'PARTIAL';
+    const isComplete=totalRecv>=totalPO;
+    po.status=isComplete?'RECEIVED':'PARTIAL';
     po.audit=po.audit||[];
-    po.audit.push({action:'Goods Received',by:u.name,at:new Date().toLocaleString(),note:grpoNo});
+    po.audit.push({action:'Goods Received',by:u.name,at:new Date().toLocaleString(),note:`GRPO: ${grpo.grpoNo}`});
+    po.updatedAt=now();
     await DB.put('pos',po);
-    /* update PR */
-    if(po.prId){
-      const pr=await DB.get('prs',po.prId);
-      if(pr){
-        items.forEach(gi=>{
-          const prit=(pr.items||[]).find(it=>it.modelSpec===gi.modelSpec);
-          if(prit)prit.grpoQty=(prit.grpoQty||0)+gi.qty;
-        });
-        pr.status=full?'RECEIVED':'PO CREATED';
-        pr.grpoDate=drcv;
-        pr.audit=pr.audit||[];
-        pr.audit.push({action:'Goods Received',by:u.name,at:new Date().toLocaleString(),note:`${grpoNo} — ${full?'COMPLETE':'PARTIAL'}`});
-        pr.updatedAt=now();
-        await DB.put('prs',pr);
-      }
+    const pr=await DB.get('prs',po.prId);
+    if(pr){
+      pr.status=isComplete?'RECEIVED':'PARTIAL';
+      pr.grpoDate=dateReceived;
+      pr.audit=pr.audit||[];
+      pr.audit.push({action:'Goods Received',by:u.name,at:new Date().toLocaleString(),
+        note:`${grpo.grpoNo} — ${isComplete?'Complete':'Partial'}`});
+      items.forEach(it=>{const prit=pr.items.find(x=>x.id===it.id);if(prit)prit.grpoQty=(prit.grpoQty||0)+it.recvQty;});
+      pr.updatedAt=now();
+      await DB.put('prs',pr);
     }
-    closeModal();toast(`${grpoNo} recorded!`,'s');await renderList();
-  };
-
-  const postSAP=async id=>{
-    if(!confirm('Mark as posted to SAP? This cannot be undone.'))return;
-    const g=await DB.get('grpos',id);if(!g)return;
-    const u=Auth.user();
-    const sapRef='SAP-'+Date.now().toString(36).toUpperCase();
-    g.status='SAP POSTED';g.sapRef=sapRef;
-    g.audit=g.audit||[];
-    g.audit.push({action:'Posted to SAP',by:u.name,at:new Date().toLocaleString(),note:`Ref: ${sapRef}`});
-    await DB.put('grpos',g);
-    if(g.prId){
-      const pr=await DB.get('prs',g.prId);
-      if(pr){pr.status='SAP POSTED';pr.sapRef=sapRef;pr.updatedAt=now();await DB.put('prs',pr);}
-    }
-    toast(`SAP Posted. Ref: ${sapRef}`,'s');await renderList();
+    closeModal();
+    toast(`${grpo.grpoNo} posted — ${isComplete?'Complete':'Partial'} receipt!`,'s');
+    await renderList();
   };
 
   const openDetail=async id=>{
-    const g=await DB.get('grpos',id);if(!g)return;
-    const po=await DB.get('pos',g.poId);
-    openModal(`${g.grpoNo}`,`
+    const gr=await DB.get('grpos',id);
+    if(!gr)return;
+    const sub=gr.items.reduce((s,it)=>s+(it.recvQty||it.qty)*(it.unitCost||0),0);
+    openModal(gr.grpoNo,`
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.75rem;font-size:.8rem;color:var(--muted)">
-        <span>📋 ${esc(po?.poNo||'—')}</span><span>🏭 ${esc(po?.vendor||'')}</span>
-        <span>📅 ${fmtD(g.dateReceived)}</span><span>👤 ${esc(g.receivedBy)}</span>
-        ${g.deliveryRef?`<span>🔖 ${esc(g.deliveryRef)}</span>`:''}
-        ${g.sapRef?`<span class="b b-sap">SAP: ${esc(g.sapRef)}</span>`:''}
-        <span style="margin-left:auto">${sBadge(g.status)}</span>
+        <span>🏭 ${esc(gr.vendor)}</span>
+        <span>👤 Received by: ${esc(gr.receivedBy)}</span>
+        <span>📅 ${fmtD(gr.dateReceived)}</span>
+        ${gr.drNo?`<span>📄 DR: ${esc(gr.drNo)}</span>`:''}
+        <span style="margin-left:auto">${sBadge(gr.status)}</span>
       </div>
-      <div class="tw"><table><thead><tr><th>#</th><th>Spec</th><th>Qty</th><th>UoM</th><th>Unit Cost</th><th>Total</th></tr></thead>
-      <tbody>${(g.items||[]).map((it,i)=>`<tr>
-        <td>${i+1}</td><td><b>${esc(it.modelSpec)}</b></td><td>${it.qty}</td>
-        <td>${it.uom}</td><td class="tr">${fmtM(it.unitCost)}</td><td class="tr tot-cell">${fmtM(it.qty*it.unitCost)}</td>
-      </tr>`).join('')}</tbody>
-      <tfoot><tr class="sum-row"><td colspan="5" class="tr">Total</td><td class="tr tot-cell">${fmtM(subtotal(g.items))}</td></tr></tfoot>
+      ${gr.remarks?`<div class="alert alw">📋 ${esc(gr.remarks)}</div>`:''}
+      <div class="tw"><table><thead><tr>
+        <th>#</th><th>Spec Code</th><th>Description</th>
+        <th>Recv Qty</th><th>UoM</th><th>Unit Cost</th><th>Total</th>
+      </tr></thead><tbody>
+      ${gr.items.map((it,i)=>`<tr>
+        <td>${i+1}</td><td><b>${esc(it.modelSpec)}</b></td><td>${esc(it.description||'')}</td>
+        <td>${it.recvQty||it.qty}</td><td>${esc(it.uom)}</td>
+        <td class="tr">${fmtM(it.unitCost||0)}</td>
+        <td class="tr tot-cell">${fmtM((it.recvQty||it.qty)*(it.unitCost||0))}</td>
+      </tr>`).join('')}
+      </tbody><tfoot><tr class="sum-row"><td colspan="6" class="tr">Total</td><td class="tr">${fmtM(sub)}</td></tr></tfoot>
       </table></div>
-      <hr class="sep"><div class="alog">${(g.audit||[]).map(a=>`<div class="ae"><b>${esc(a.action)}</b> by ${esc(a.by)} <span style="color:var(--muted)">@ ${a.at}</span></div>`).join('')}</div>`,true);
+      <hr class="sep"><h3 style="font-size:.85rem;margin-bottom:.5rem">Audit Trail</h3>
+      <div class="alog">${(gr.audit||[]).map(a=>`<div class="ae"><b>${esc(a.action)}</b> by ${esc(a.by)} <span style="color:var(--muted)">@ ${a.at}</span>${a.note?' — '+esc(a.note):''}</div>`).join('')||'<div class="ae" style="color:var(--muted)">No entries.</div>'}</div>
+      ${gr.status!=='SAP POSTED'?
+        `<div style="margin-top:1rem;display:flex;gap:.5rem">
+          <button class="btn bs" onclick="GRPO.postSAP('${id}')">📮 Post to SAP</button>
+        </div>`:''}
+    `,true);
   };
 
-  const exportCSV=async()=>{
-    const[grpos,pos]=await Promise.all([DB.all('grpos'),DB.all('pos')]);
-    const rows=grpos.flatMap(g=>{
-      const po=pos.find(p=>p.id===g.poId);
-      return(g.items||[]).map(it=>({
-        GRPONo:g.grpoNo,Status:g.status,SAPRef:g.sapRef||'',
-        PONo:po?.poNo||'',Vendor:po?.vendor||'',
-        DateReceived:g.dateReceived,ReceivedBy:g.receivedBy,
-        DeliveryRef:g.deliveryRef||'',
-        Spec:it.modelSpec,Qty:it.qty,UoM:it.uom,
-        UnitCost:it.unitCost,Total:it.qty*it.unitCost,
-      }));
-    });
-    _csv(rows,`GRPO_${today()}.csv`);
+  const postSAP=async id=>{
+    const sapRef=prompt('Enter SAP Reference Number:');
+    if(sapRef===null)return;
+    if(!sapRef.trim()){toast('SAP reference is required.','e');return;}
+    const gr=await DB.get('grpos',id);
+    if(!gr)return;
+    const u=Auth.user();
+    gr.status='SAP POSTED';gr.sapRef=sapRef.trim();
+    gr.audit=gr.audit||[];
+    gr.audit.push({action:'SAP Posted',by:u.name,at:new Date().toLocaleString(),note:`Ref: ${sapRef.trim()}`});
+    gr.updatedAt=now();
+    await DB.put('grpos',gr);
+    const pr=await DB.get('prs',gr.prId);
+    if(pr){
+      pr.status='SAP POSTED';pr.sapRef=sapRef.trim();
+      pr.audit=pr.audit||[];
+      pr.audit.push({action:'SAP Posted',by:u.name,at:new Date().toLocaleString(),note:`Ref: ${sapRef.trim()}`});
+      pr.updatedAt=now();
+      await DB.put('prs',pr);
+    }
+    closeModal();
+    toast('Posted to SAP!','s');
+    await renderList();
   };
 
-  return{renderList,openCreate,save,postSAP,openDetail,exportCSV,_recalc};
+  return{renderList,openCreate,_recalc,_save,openDetail,postSAP};
 })();
 
-/* ── APPROVAL ───────────────────────────────────────────── */
+/* ── APPROVAL MODULE ── */
 const Approval=(()=>{
   const render=async()=>{
-    const prs=await DB.all('prs');
     const u=Auth.user();
-    let queue;
-    if(u.role==='supervisor')queue=prs.filter(p=>p.status==='SUPERVISOR REVIEW');
-    else if(u.role==='finance')queue=prs.filter(p=>p.status==='FINANCE REVIEW');
-    else queue=prs.filter(p=>['SUPERVISOR REVIEW','FINANCE REVIEW'].includes(p.status));
-
-    const resolved=prs.filter(p=>['APPROVED','REJECTED'].includes(p.status))
-      .sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt)).slice(0,12);
-
-    const qRow=p=>{
-      const sub=subtotal(p.items);
-      const needsFin=sub>FIN_THRESHOLD;
-      return`<tr>
-        <td><a href="#" onclick="PR.openDetail('${p.id}');return false" style="color:var(--primary);font-weight:700">${esc(p.prNo)}</a></td>
-        <td>${esc(p.requestedBy)}</td><td>${esc(p.location)}</td><td>${esc(p.department)}</td>
-        <td class="tr">${fmtM(sub)}</td><td>${fmtD(p.dateNeeded)}</td>
-        <td>${sBadge(p.status)} ${needsFin?'<span class="b b-fin" style="font-size:.65rem">+Finance</span>':''}</td>
-        <td style="white-space:nowrap;display:flex;gap:.3rem">
-          <button class="btn bs sm" onclick="Approval.act('${p.id}','approve')">✅ Approve</button>
-          <button class="btn bd sm" onclick="Approval.act('${p.id}','reject')">❌ Reject</button>
-        </td>
-      </tr>`;
-    };
-
+    const prs=await DB.all('prs');
+    let pending=[];
+    if(u.role==='supervisor'||u.role==='admin')
+      pending=[...pending,...prs.filter(p=>p.status==='SUPERVISOR REVIEW')];
+    if(u.role==='finance'||u.role==='admin')
+      pending=[...pending,...prs.filter(p=>p.status==='FINANCE REVIEW')];
+    const seen=new Set();
+    pending=pending.filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true;});
+    pending.sort((a,b)=>new Date(a.dateNeeded||'9999')-new Date(b.dateNeeded||'9999'));
     document.getElementById('v-approval').innerHTML=`
-      <div class="ph"><h2>Approval Queue</h2></div>
-      <div class="card">
-        <h3>Pending Your Approval (${queue.length})</h3>
-        <div class="tw"><table><thead><tr>
-          <th>PR No</th><th>Requested By</th><th>Location</th><th>Dept</th>
-          <th>Total</th><th>Date Needed</th><th>Status</th><th>Actions</th>
-        </tr></thead><tbody>
-          ${queue.length?queue.map(qRow).join(''):`<tr><td colspan="8" class="tc" style="color:var(--muted);padding:2rem">No pending approvals.</td></tr>`}
-        </tbody></table></div>
+      <div class="ph"><h2>Pending Approvals</h2>
+        <span class="b b-sub">${pending.length} Pending</span>
       </div>
-      <div class="card">
-        <h3>Recently Resolved</h3>
+      ${!pending.length?`<div class="card" style="text-align:center;padding:3rem;color:var(--muted)">
+        ✅ No pending approvals — all caught up!
+      </div>`:''}
+      ${pending.map(pr=>{
+        const sub=subtotal(pr.items);
+        const needsFin=sub>FIN_THRESHOLD;
+        const isFinStage=pr.status==='FINANCE REVIEW';
+        return`<div class="card" style="border-left:4px solid ${isFinStage?'var(--warning)':'var(--primary)'}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem">
+            <div>
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;flex-wrap:wrap">
+                <a href="#" onclick="PR.openDetail('${pr.id}');return false" style="font-weight:700;color:var(--primary);font-size:.95rem">${esc(pr.prNo)}</a>
+                ${sBadge(pr.status)}
+                ${needsFin&&!isFinStage?`<span class="b b-fin">Finance Required</span>`:''}
+              </div>
+              <div style="font-size:.8rem;color:var(--muted);display:flex;gap:.75rem;flex-wrap:wrap">
+                <span>👤 ${esc(pr.requestedBy)}</span>
+                <span>📍 ${esc(pr.location)} · ${esc(pr.department)}</span>
+                <span>📅 Needed: ${fmtD(pr.dateNeeded)}</span>
+                <span>⏱ ${pr.targetLeadTime||'—'}d target</span>
+              </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:1.1rem;font-weight:700;color:var(--primary)">${fmtM(sub)}</div>
+              <div style="font-size:.75rem;color:var(--muted)">${(pr.items||[]).length} line item(s)</div>
+            </div>
+          </div>
+          <div style="background:#f8fafc;border-radius:var(--r);padding:.6rem .8rem;margin-bottom:.75rem;font-size:.8rem">
+            <b>Justification:</b> ${esc(pr.justification||'—')}
+          </div>
+          <div class="tw" style="margin-bottom:.75rem"><table><thead><tr>
+            <th>Spec Code</th><th>Description</th><th>Qty</th><th>UoM</th><th>Unit Cost</th><th>Total</th>
+          </tr></thead><tbody>
+          ${(pr.items||[]).map(it=>`<tr>
+            <td><b>${esc(it.modelSpec)}</b></td><td style="font-size:.78rem">${esc(it.description||'')}</td>
+            <td>${it.qty}</td><td>${esc(it.uom)}</td>
+            <td class="tr">${fmtM(it.unitCost)}</td>
+            <td class="tr tot-cell">${fmtM(it.qty*it.unitCost)}</td>
+          </tr>`).join('')}
+          </tbody><tfoot><tr class="sum-row"><td colspan="5" class="tr">Total</td><td class="tr">${fmtM(sub)}</td></tr></tfoot>
+          </table></div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn bs" onclick="Approval._approve('${pr.id}')">✅ Approve</button>
+            <button class="btn bd" onclick="Approval._reject('${pr.id}')">❌ Reject</button>
+            <button class="btn bg sm" onclick="PR.openDetail('${pr.id}')">👁 View Full PR</button>
+          </div>
+        </div>`;
+      }).join('')}`;
+  };
+
+  const _approve=async id=>{
+    const pr=await DB.get('prs',id);
+    if(!pr)return;
+    const u=Auth.user();
+    const sub=subtotal(pr.items);
+    if(pr.status==='SUPERVISOR REVIEW'){
+      pr.status=sub>FIN_THRESHOLD?'FINANCE REVIEW':'APPROVED';
+      pr.audit=pr.audit||[];
+      pr.audit.push({action:'Supervisor Approved',by:u.name,at:new Date().toLocaleString(),
+        note:sub>FIN_THRESHOLD?'Forwarded to Finance for approval':'Fully approved — ready for PO'});
+    } else if(pr.status==='FINANCE REVIEW'){
+      pr.status='APPROVED';
+      pr.audit=pr.audit||[];
+      pr.audit.push({action:'Finance Approved',by:u.name,at:new Date().toLocaleString(),note:'Approved — ready for PO creation'});
+    } else {
+      toast('Cannot approve at this stage.','e');return;
+    }
+    pr.updatedAt=now();
+    await DB.put('prs',pr);
+    toast(`${pr.prNo} approved!`,'s');
+    await render();
+  };
+
+  const _reject=async id=>{
+    const reason=prompt('Rejection reason (required):');
+    if(reason===null)return;
+    if(!reason.trim()){toast('Reason is required.','e');return;}
+    const pr=await DB.get('prs',id);
+    if(!pr)return;
+    const u=Auth.user();
+    pr.status='REJECTED';
+    pr.audit=pr.audit||[];
+    pr.audit.push({action:'Rejected',by:u.name,at:new Date().toLocaleString(),note:reason.trim()});
+    pr.updatedAt=now();
+    await DB.put('prs',pr);
+    toast(`${pr.prNo} rejected.`,'w');
+    await render();
+  };
+
+  return{render,_approve,_reject};
+})();
+
+/* ── REPORTS MODULE ── */
+const Reports=(()=>{
+  const render=async()=>{
+    const[prs,pos,grpos]=await Promise.all([DB.all('prs'),DB.all('pos'),DB.all('grpos')]);
+    const totalSpend=grpos.reduce((s,g)=>s+g.items.reduce((ss,it)=>ss+(it.recvQty||it.qty)*(it.unitCost||0),0),0);
+    const poSpend=pos.reduce((s,p)=>s+subtotal(p.items),0);
+    const byLoc={};
+    prs.forEach(p=>{
+      if(!byLoc[p.location])byLoc[p.location]={loc:p.location,count:0,total:0,approved:0,rejected:0};
+      byLoc[p.location].count++;
+      byLoc[p.location].total+=subtotal(p.items);
+      if(['APPROVED','PO CREATED','PARTIAL','RECEIVED','SAP POSTED'].includes(p.status))byLoc[p.location].approved++;
+      if(p.status==='REJECTED')byLoc[p.location].rejected++;
+    });
+    const byDept={};
+    prs.forEach(p=>{
+      if(!byDept[p.department])byDept[p.department]={dept:p.department,count:0,total:0};
+      byDept[p.department].count++;byDept[p.department].total+=subtotal(p.items);
+    });
+    const byStatus={};
+    prs.forEach(p=>{if(!byStatus[p.status])byStatus[p.status]=0;byStatus[p.status]++;});
+    const byVendor={};
+    pos.forEach(po=>{if(!byVendor[po.vendor])byVendor[po.vendor]=0;byVendor[po.vendor]+=subtotal(po.items);});
+    const topVendors=Object.entries(byVendor).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    const withLead=prs.filter(p=>p.grpoDate&&p.dateRequested);
+    const avgLead=withLead.length?Math.round(withLead.reduce((s,p)=>s+daysApart(p.dateRequested,p.grpoDate),0)/withLead.length):null;
+    document.getElementById('v-reports').innerHTML=`
+      <div class="ph"><h2>Reports &amp; Analytics</h2>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="btn bg sm" onclick="Reports.exportPRs()">⬇ Export PRs</button>
+          <button class="btn bg sm" onclick="Reports.exportPOs()">⬇ Export POs</button>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi"><p>Total PRs</p><h3>${prs.length}</h3></div>
+        <div class="kpi kw"><p>Total PO Value</p><h3 style="font-size:.85rem;margin-top:.2rem">${fmtM(poSpend)}</h3></div>
+        <div class="kpi ks"><p>Total Received</p><h3 style="font-size:.85rem;margin-top:.2rem">${fmtM(totalSpend)}</h3></div>
+        <div class="kpi"><p>Avg Lead Time</p><h3>${avgLead??'—'}<span style="font-size:.75rem;font-weight:400"> days</span></h3></div>
+        <div class="kpi"><p>Active POs</p><h3>${pos.filter(p=>p.status==='ISSUED'||p.status==='PARTIAL').length}</h3></div>
+        <div class="kpi kd"><p>Rejected PRs</p><h3>${prs.filter(p=>p.status==='REJECTED').length}</h3></div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>PRs by Status</h3>
+          <div class="tw"><table><thead><tr><th>Status</th><th class="tr">Count</th><th class="tr">%</th></tr></thead><tbody>
+          ${Object.entries(byStatus).sort((a,b)=>b[1]-a[1]).map(([s,c])=>`<tr>
+            <td>${sBadge(s)}</td><td class="tr">${c}</td>
+            <td class="tr">${prs.length?Math.round(c/prs.length*100):0}%</td>
+          </tr>`).join('')||'<tr><td colspan="3" class="tc" style="color:var(--muted)">No data</td></tr>'}
+          </tbody></table></div>
+        </div>
+        <div class="card"><h3>Spend by Location</h3>
+          <div class="tw"><table><thead><tr><th>Location</th><th class="tr">PRs</th><th class="tr">Value</th><th class="tr">Approved</th><th class="tr">Rejected</th></tr></thead><tbody>
+          ${Object.values(byLoc).sort((a,b)=>b.total-a.total).map(r=>`<tr>
+            <td><b>${esc(r.loc)}</b></td><td class="tr">${r.count}</td>
+            <td class="tr">${fmtM(r.total)}</td>
+            <td class="tr" style="color:var(--success)">${r.approved}</td>
+            <td class="tr" style="color:var(--danger)">${r.rejected}</td>
+          </tr>`).join('')||'<tr><td colspan="5" class="tc" style="color:var(--muted)">No data</td></tr>'}
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card"><h3>Spend by Department</h3>
+          <div class="tw"><table><thead><tr><th>Department</th><th class="tr">PRs</th><th class="tr">Total Value</th></tr></thead><tbody>
+          ${Object.values(byDept).sort((a,b)=>b.total-a.total).map(r=>`<tr>
+            <td><b>${esc(r.dept)}</b></td><td class="tr">${r.count}</td><td class="tr">${fmtM(r.total)}</td>
+          </tr>`).join('')||'<tr><td colspan="3" class="tc" style="color:var(--muted)">No data</td></tr>'}
+          </tbody></table></div>
+        </div>
+        <div class="card"><h3>Top Vendors by PO Value</h3>
+          <div class="tw"><table><thead><tr><th>Vendor</th><th class="tr">PO Value</th></tr></thead><tbody>
+          ${topVendors.map(([v,a])=>`<tr>
+            <td style="font-size:.78rem">${esc(v)}</td><td class="tr">${fmtM(a)}</td>
+          </tr>`).join('')||'<tr><td colspan="2" class="tc" style="color:var(--muted)">No data</td></tr>'}
+          </tbody></table></div>
+        </div>
+      </div>
+      <div class="card"><h3>Purchase Request Tracker (Recent 50)</h3>
         <div class="tw"><table><thead><tr>
-          <th>PR No</th><th>Requested By</th><th>Total</th><th>Status</th><th>Updated</th>
+          <th>PR No</th><th>Requestor</th><th>Location</th><th>Dept</th>
+          <th>Date Requested</th><th>Date Needed</th><th>Total</th><th>Status</th><th>Lead Time</th><th>SAP Ref</th>
         </tr></thead><tbody>
-          ${resolved.length?resolved.map(p=>`<tr>
-            <td><a href="#" onclick="PR.openDetail('${p.id}');return false" style="color:var(--primary)">${esc(p.prNo)}</a></td>
-            <td>${esc(p.requestedBy)}</td>
-            <td class="tr">${fmtM(subtotal(p.items))}</td>
+        ${[...prs].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,50).map(p=>{
+          const sub=subtotal(p.items);
+          const act=p.grpoDate&&p.dateRequested?daysApart(p.dateRequested,p.grpoDate):null;
+          return`<tr>
+            <td><a href="#" onclick="PR.openDetail('${p.id}');return false" style="color:var(--primary);font-weight:700">${esc(p.prNo)}</a></td>
+            <td>${esc(p.requestedBy)}</td><td>${esc(p.location)}</td><td>${esc(p.department)}</td>
+            <td>${fmtD(p.dateRequested)}</td><td>${fmtD(p.dateNeeded)}</td>
+            <td class="tr">${fmtM(sub)}</td>
             <td>${sBadge(p.status)}</td>
-            <td>${fmtD(p.updatedAt||p.createdAt)}</td>
-          </tr>`).join(''):`<tr><td colspan="5" class="tc" style="color:var(--muted)">None yet.</td></tr>`}
+            <td>${delBadge(act,p.targetLeadTime)}</td>
+            <td>${esc(p.sapRef||'—')}</td>
+          </tr>`;
+        }).join('')||'<tr><td colspan="10" class="tc" style="color:var(--muted);padding:1.5rem">No data yet.</td></tr>'}
         </tbody></table></div>
       </div>`;
   };
 
-  const act=(prId,action)=>{
-    openModal(action==='approve'?'✅ Approve PR':'❌ Reject PR',`
-      <div class="fg"><label>Remarks ${action==='reject'?'(required)':'(optional)'}</label>
-        <textarea id="ap-rem" rows="3" placeholder="${action==='reject'?'Reason for rejection…':''}"></textarea>
-      </div>
-      <div style="display:flex;gap:.5rem;margin-top:.75rem">
-        <button class="btn ${action==='approve'?'bs':'bd'}" onclick="Approval.confirm('${prId}','${action}')">
-          ${action==='approve'?'✅ Confirm Approval':'❌ Confirm Rejection'}
-        </button>
-        <button class="btn bg" onclick="closeModal()">Cancel</button>
-      </div>`);
+  const exportPRs=async()=>{
+    const prs=await DB.all('prs');
+    const rows=prs.flatMap(p=>(p.items||[]).map(it=>({
+      PRNo:p.prNo,Status:p.status,RequestedBy:p.requestedBy,
+      Location:p.location,Department:p.department,
+      DateRequested:p.dateRequested,DateNeeded:p.dateNeeded,
+      TargetLeadDays:p.targetLeadTime,Category:p.category||'',
+      ModelSpec:it.modelSpec,Description:it.description||'',
+      ReqQty:it.qty,POQty:it.poQty||0,GRPOQty:it.grpoQty||0,
+      UoM:it.uom,UnitCost:it.unitCost,LineTotal:it.qty*it.unitCost,
+      Justification:p.justification||'',SAPRef:p.sapRef||'',CreatedAt:p.createdAt,
+    })));
+    _csv(rows,`PRs_${today()}.csv`);
   };
 
-  const confirm=async(prId,action)=>{
-    const rem=document.getElementById('ap-rem')?.value.trim()||'';
-    if(action==='reject'&&!rem){toast('Remarks required for rejection.','e');return;}
-    const pr=await DB.get('prs',prId);if(!pr)return;
-    const u=Auth.user();
-    const sub=subtotal(pr.items);
-    if(action==='approve'){
-      if(pr.status==='SUPERVISOR REVIEW'){
-        if(sub>FIN_THRESHOLD){
-          pr.status='FINANCE REVIEW';
-          pr.audit.push({action:'Supervisor Approved → Finance',by:u.name,at:new Date().toLocaleString(),note:rem||`₱${fmt(sub)} > threshold`});
-        }else{
-          pr.status='APPROVED';
-          pr.audit.push({action:'Supervisor Approved',by:u.name,at:new Date().toLocaleString(),note:rem||'Approved'});
-        }
-      }else if(pr.status==='FINANCE REVIEW'){
-        pr.status='APPROVED';
-        pr.audit.push({action:'Finance Approved',by:u.name,at:new Date().toLocaleString(),note:rem||'Approved'});
-      }
-    }else{
-      pr.status='REJECTED';
-      pr.audit.push({action:'Rejected',by:u.name,at:new Date().toLocaleString(),note:rem});
-    }
-    pr.updatedAt=now();
-    await DB.put('prs',pr);
-    closeModal();
-    toast(action==='approve'?`${pr.prNo} approved!`:`${pr.prNo} rejected.`,action==='approve'?'s':'e');
-    await render();
+  const exportPOs=async()=>{
+    const pos=await DB.all('pos');
+    const rows=pos.flatMap(po=>(po.items||[]).map(it=>({
+      PONo:po.poNo,Vendor:po.vendor,Buyer:po.buyer,
+      DateOrdered:po.dateOrdered,ExpectedDelivery:po.expectedDelivery,
+      PaymentTerms:po.paymentTerms,Status:po.status,
+      SpecCode:it.modelSpec,Description:it.description||'',
+      Qty:it.qty,UoM:it.uom,UnitCost:it.unitCost,LineTotal:it.qty*it.unitCost,
+    })));
+    _csv(rows,`POs_${today()}.csv`);
   };
 
-  return{render,act,confirm};
+  return{render,exportPRs,exportPOs};
 })();
 
-/* ── REPORTS ────────────────────────────────────────────── */
-const Reports=(()=>{
-  const render=async()=>{
-    const[prs,pos,grpos]=await Promise.all([DB.all('prs'),DB.all('pos'),DB.all('grpos')]);
-    const byLoc={};
-    prs.forEach(p=>{
-      if(!byLoc[p.location])byLoc[p.location]={total:0,spend:0,overdue:0,received:0};
-      byLoc[p.location].total++;
-      byLoc[p.location].spend+=subtotal(p.items);
-      if(p.status==='SAP POSTED'||p.status==='RECEIVED')byLoc[p.location].received++;
-      if(p.dateNeeded&&new Date(p.dateNeeded)<new Date()&&['SUBMITTED','SUPERVISOR REVIEW','FINANCE REVIEW','APPROVED','PO CREATED'].includes(p.status))
-        byLoc[p.location].overdue++;
-    });
-    const completedLT=prs.filter(p=>p.grpoDate&&p.dateRequested).map(p=>daysApart(p.dateRequested,p.grpoDate));
-    const avgLT=completedLT.length?(completedLT.reduce((a,b)=>a+b,0)/completedLT.length).toFixed(1):'—';
-    const delayed=prs.filter(p=>p.targetLeadTime!=null&&p.grpoDate&&p.dateRequested)
-      .map(p=>({prNo:p.prNo,loc:p.location,reqBy:p.requestedBy,actual:daysApart(p.dateRequested,p.grpoDate),target:p.targetLeadTime}))
-      .filter(p=>p.actual>p.target).sort((a,b)=>(b.actual-b.target)-(a.actual-a.target)).slice(0,10);
-    const totalSpend=grpos.reduce((s,g)=>s+subtotal(g.items),0);
-    const STATUSES=['DRAFT','SUPERVISOR REVIEW','FINANCE REVIEW','APPROVED','REJECTED','PO CREATED','PARTIAL','RECEIVED','SAP POSTED'];
-
-    document.getElementById('v-reports').innerHTML=`
-      <div class="ph"><h2>Reports &amp; Analytics</h2>
-        <button class="btn bg sm" onclick="PR.exportCSV()">⬇ Export PRs CSV</button>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi"><p>Total PRs</p><h3>${prs.length}</h3></div>
-        <div class="kpi ks"><p>SAP Posted</p><h3>${prs.filter(p=>p.status==='SAP POSTED').length}</h3></div>
-        <div class="kpi kd"><p>Rejected</p><h3>${prs.filter(p=>p.status==='REJECTED').length}</h3></div>
-        <div class="kpi kw"><p>Avg Lead Time</p><h3 style="font-size:1.1rem">${avgLT}d</h3></div>
-        <div class="kpi"><p>Total POs</p><h3>${pos.length}</h3></div>
-        <div class="kpi ks"><p>Total GRPO Spend</p><h3 style="font-size:.95rem;margin-top:.15rem">${fmtM(totalSpend)}</h3></div>
-      </div>
-      <div class="g2">
-        <div class="card">
-          <h3>By Location</h3>
-          <div class="tw"><table><thead><tr><th>Location</th><th>PRs</th><th>Spend</th><th>Received</th><th>Overdue</th></tr></thead>
-          <tbody>${Object.entries(byLoc).sort((a,b)=>b[1].total-a[1].total).map(([l,d])=>`<tr>
-            <td><b>${l}</b></td><td>${d.total}</td><td class="tr">${fmtM(d.spend)}</td>
-            <td>${d.received}</td><td style="color:${d.overdue?'var(--danger)':'var(--success)'}">${d.overdue}</td>
-          </tr>`).join('')||'<tr><td colspan="5" class="tc" style="color:var(--muted)">No data.</td></tr>'}
-          </tbody></table></div>
-        </div>
-        <div class="card">
-          <h3>Status Distribution</h3>
-          ${STATUSES.map(s=>{
-            const cnt=prs.filter(p=>p.status===s).length;
-            const pct=prs.length?Math.round(cnt/prs.length*100):0;
-            return`<div style="margin-bottom:.55rem">
-              <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.2rem">
-                <span>${sBadge(s)}</span><span style="color:var(--muted)">${cnt} (${pct}%)</span>
-              </div>
-              <div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
-      ${delayed.length?`<div class="card">
-        <h3>⚠️ PRs Exceeding Target Lead Time (top ${delayed.length})</h3>
-        <div class="tw"><table><thead><tr>
-          <th>PR No</th><th>Location</th><th>Requested By</th><th>Actual Days</th><th>Target Days</th><th>Over By</th>
-        </tr></thead><tbody>${delayed.map(d=>`<tr>
-          <td>${esc(d.prNo)}</td><td>${esc(d.loc)}</td><td>${esc(d.reqBy)}</td>
-          <td>${d.actual}</td><td>${d.target}</td>
-          <td style="color:var(--danger);font-weight:700">+${d.actual-d.target}d</td>
-        </tr>`).join('')}</tbody></table></div>
-      </div>`:''}`;
-  };
-  return{render};
-})();
-
-/* ── VENDORS ────────────────────────────────────────────── */
+/* ── VENDORS MODULE ── */
 const Vendors=(()=>{
+  let _eid=null;
+
   const render=async()=>{
     const vendors=await DB.all('vendors');
+    vendors.sort((a,b)=>a.name.localeCompare(b.name));
     document.getElementById('v-vendors').innerHTML=`
-      <div class="ph"><h2>Vendor Master List (${vendors.length})</h2>
-        ${Auth.can(['admin'])?`<button class="btn bp" onclick="Vendors.openForm()">+ Add Vendor</button>`:''}
+      <div class="ph"><h2>Vendor Master</h2>
+        <button class="btn bp" onclick="Vendors.openForm()">+ Add Vendor</button>
       </div>
       <div class="card" style="padding:.75rem">
-        <input id="v-q" style="width:260px" placeholder="Search vendors…" oninput="Vendors.filter()">
+        <input id="ven-q" placeholder="Search vendors…" oninput="Vendors.filter()" style="max-width:300px">
       </div>
       <div class="card" style="padding:.5rem .75rem">
         <div class="tw"><table><thead><tr>
-          <th>#</th><th>Vendor Name</th><th>Contact</th><th>Email</th><th>Phone</th><th>Actions</th>
-        </tr></thead><tbody id="v-tbody">
-        ${vendors.map((v,i)=>`<tr>
-          <td style="color:var(--muted)">${i+1}</td>
+          <th>Vendor Name</th><th>Contact</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th>
+        </tr></thead><tbody id="ven-tbody">
+        ${vendors.length?vendors.map(v=>`<tr>
           <td><b>${esc(v.name)}</b></td>
           <td>${esc(v.contact||'—')}</td>
           <td>${v.email?`<a href="mailto:${esc(v.email)}" style="color:var(--primary)">${esc(v.email)}</a>`:'—'}</td>
           <td>${esc(v.phone||'—')}</td>
-          <td>${Auth.can(['admin'])?`<button class="btn bg sm" onclick="Vendors.openForm('${v.id}')">Edit</button>`:''}
+          <td style="font-size:.78rem;max-width:180px">${esc(v.address||'—')}</td>
+          <td style="white-space:nowrap">
+            <button class="btn bg sm" onclick="Vendors.openForm('${v.id}')">Edit</button>
+            <button class="btn bd sm" onclick="Vendors.del('${v.id}')">Del</button>
           </td>
-        </tr>`).join('')||'<tr><td colspan="6" class="tc" style="color:var(--muted)">No vendors.</td></tr>'}
+        </tr>`).join(''):`<tr><td colspan="6" class="tc" style="color:var(--muted);padding:2rem">No vendors yet.</td></tr>`}
         </tbody></table></div>
       </div>`;
   };
 
   const filter=()=>{
-    const q=(document.getElementById('v-q')?.value||'').toLowerCase();
-    document.querySelectorAll('#v-tbody tr').forEach(tr=>{
-      tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
+    const q=(document.getElementById('ven-q')?.value||'').toLowerCase();
+    document.querySelectorAll('#ven-tbody tr').forEach(tr=>{
+      tr.style.display=!q||tr.textContent.toLowerCase().includes(q)?'':'none';
     });
   };
 
-  const openForm=async(id=null)=>{
-    const v=id?await DB.get('vendors',id):null;
-    openModal(v?`Edit Vendor`:'New Vendor',`
-      <div class="fg"><label>Vendor Name *</label><input type="text" id="vf-name" value="${esc(v?.name||'')}"></div>
+  const openForm=async(eid=null)=>{
+    _eid=eid;
+    const v=eid?await DB.get('vendors',eid):null;
+    openModal(eid?'Edit Vendor':'Add Vendor',`
+      <div class="fg"><label>Vendor Name *</label>
+        <input type="text" id="v-name" value="${esc(v?.name||'')}" placeholder="Full company name"></div>
       <div class="fr">
-        <div class="fg"><label>Contact Person</label><input type="text" id="vf-con" value="${esc(v?.contact||'')}"></div>
-        <div class="fg"><label>Phone</label><input type="text" id="vf-ph" value="${esc(v?.phone||'')}"></div>
+        <div class="fg"><label>Contact Person</label><input type="text" id="v-con" value="${esc(v?.contact||'')}"></div>
+        <div class="fg"><label>Phone</label><input type="text" id="v-ph" value="${esc(v?.phone||'')}"></div>
       </div>
-      <div class="fg"><label>Email</label><input type="email" id="vf-em" value="${esc(v?.email||'')}"></div>
-      <div class="fg"><label>Address</label><textarea id="vf-addr" rows="2">${esc(v?.address||'')}</textarea></div>
+      <div class="fg"><label>Email</label><input type="email" id="v-em" value="${esc(v?.email||'')}"></div>
+      <div class="fg"><label>Address</label><textarea id="v-addr" rows="2">${esc(v?.address||'')}</textarea></div>
       <div style="display:flex;gap:.5rem;margin-top:.75rem">
-        <button class="btn bp" onclick="Vendors.save('${id||''}')">Save Vendor</button>
+        <button class="btn bs" onclick="Vendors.save()">Save Vendor</button>
         <button class="btn bg" onclick="closeModal()">Cancel</button>
       </div>`);
   };
 
-  const save=async(id)=>{
-    const name=document.getElementById('vf-name')?.value.trim();
-    if(!name){toast('Vendor name required.','e');return;}
-    await DB.put('vendors',{
-      id:id||uid(),name,
-      contact:document.getElementById('vf-con')?.value||'',
-      phone:document.getElementById('vf-ph')?.value||'',
-      email:document.getElementById('vf-em')?.value||'',
-      address:document.getElementById('vf-addr')?.value||'',
-    });
+  const save=async()=>{
+    const name=document.getElementById('v-name')?.value.trim();
+    if(!name){toast('Vendor name is required.','e');return;}
+    const v={
+      id:_eid||uid(),name,
+      contact:document.getElementById('v-con')?.value||'',
+      phone:document.getElementById('v-ph')?.value||'',
+      email:document.getElementById('v-em')?.value||'',
+      address:document.getElementById('v-addr')?.value||'',
+    };
+    await DB.put('vendors',v);
     toast('Vendor saved.','s');closeModal();await render();
   };
 
-  return{render,filter,openForm,save};
+  const del=async id=>{
+    if(!confirm('Delete this vendor?'))return;
+    await DB.del('vendors',id);
+    toast('Vendor deleted.','s');await render();
+  };
+
+  return{render,filter,openForm,save,del};
 })();
 
-/* ── INIT ───────────────────────────────────────────────── */
+/* ── INIT ── */
 (async()=>{
   try{
     await DB.open();
     await DB.seed();
-    /* sync auto-increment counters */
-    const[prs,pos,grpos]=await Promise.all([DB.all('prs'),DB.all('pos'),DB.all('grpos')]);
-    const maxN=(arr,fn)=>arr.length?Math.max(...arr.map(fn).filter(n=>n>0)):0;
-    const pm=maxN(prs,p=>+p.prNo?.replace('PR-','')||0);if(pm>_pc)_pc=pm;
-    const om=maxN(pos,p=>+p.poNo?.replace('PO-','')||0);if(om>_oc)_oc=om;
-    const gm=maxN(grpos,g=>+g.grpoNo?.replace('GR-','')||0);if(gm>_gc)_gc=gm;
-  }catch(e){console.error('DB init error',e);}
+  }catch(e){
+    console.error('DB init failed',e);
+    alert('Failed to initialize database. Please use a modern browser with IndexedDB support.');
+  }
 })();
 </script>
 </body>
